@@ -279,7 +279,7 @@ svg.ring{transform:rotate(-90deg)}
  <div class="wrap">
   <div id="errorBanner" style="display:none"></div>
   <div class="profile-card">
-   <div><div class="profile-title" id="dashTitle">MACROGANG</div><div class="profile-sub" id="dashSub">Personalised · Evidence-based</div></div>
+   <div><div class="profile-title" id="dashTitle">MUSCLE GAIN PLAN</div><div class="profile-sub" id="dashSub">Personalised · Evidence-based</div></div>
    <div class="profile-right"><button class="edit-btn" onclick="resetToOnboarding()">✦ Edit Profile</button><div class="pstats" id="pstats"></div></div>
   </div>
   <div class="bmr-strip" id="bmrStrip"></div>
@@ -870,7 +870,7 @@ let activeDay=0,activeTip=0,tipTmr=null;
 function buildDash(plan){
   const{nut,prof}=plan;
   // Title
-  document.getElementById('dashTitle').textContent='MACROGANG';
+  document.getElementById('dashTitle').textContent=prof.goal.toUpperCase()+' PLAN';
   document.getElementById('dashSub').textContent=`${prof.diet} · ${prof.gender} · ${prof.activity.charAt(0).toUpperCase()+prof.activity.slice(1)}`;
 
   // Profile stats
