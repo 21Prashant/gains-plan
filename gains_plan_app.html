@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gains Plan — Personalised Diet Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0c10;--surface:#111318;--card:#161a22;--border:#1f2531;--accent:#e8ff47;--blue:#47c5ff;--orange:#ff6b47;--green:#4ade80;--purple:#c084fc;--amber:#fbbf24;--text:#e8eaf0;--muted:#5a6070}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(232,255,71,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(232,255,71,.02) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0}
+.screen{display:none!important;position:relative;z-index:1}
+.screen.active{display:block!important}
+#onboarding.active,#loading.active{display:flex!important}
+#onboarding{min-height:100vh;align-items:center;justify-content:center;padding:40px 20px}
+.onboard-wrap{width:100%;max-width:540px}
+.brand{text-align:center;margin-bottom:44px}
+.brand h1{font-family:'Bebas Neue',sans-serif;font-size:68px;letter-spacing:3px;color:var(--accent);text-shadow:0 0 60px rgba(232,255,71,.25);line-height:1}
+.brand p{font-size:12px;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;margin-top:8px}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:36px;animation:fadeUp .5s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.field input,.field select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none}
+.field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,255,71,.08)}
+.field select option{background:var(--surface)}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 13px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;user-select:none}
+.chip:hover{border-color:var(--blue);color:var(--blue)}
+.chip.active{background:rgba(232,255,71,.1);border-color:var(--accent);color:var(--accent);font-weight:600}
+.submit-btn{width:100%;background:var(--accent);color:#000;border:none;border-radius:12px;padding:15px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;cursor:pointer;margin-top:6px;transition:all .2s}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(232,255,71,.25)}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+#loading{min-height:100vh;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:40px;text-align:center}
+.loader-ring{width:60px;height:60px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%}
+#loading.active .loader-ring{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-title{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--accent);letter-spacing:2px}
+.loading-sub{font-size:12px;color:var(--muted);min-height:18px}
+.loading-track{width:260px;height:3px;background:var(--border);border-radius:99px;overflow:hidden}
+#loadingBar{height:100%;background:var(--accent);border-radius:99px;width:0%;transition:none}
+.loading-pct{text-align:center;margin-top:6px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted)}
+#dashboard .wrap{max-width:1200px;margin:0 auto;padding:24px 18px}
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px 24px;margin-bottom:14px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px}
+.profile-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4vw,48px);letter-spacing:2px;color:var(--accent);text-shadow:0 0 30px rgba(232,255,71,.2);line-height:1}
+.profile-sub{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:3px}
+.profile-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.edit-btn{background:transparent;border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:11px;font-family:'DM Sans',sans-serif;font-weight:500;color:var(--muted);cursor:pointer;transition:all .2s}
+.edit-btn:hover{border-color:var(--orange);color:var(--orange)}
+.pstats{display:flex;gap:7px;flex-wrap:wrap}
+.pstat{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:8px 12px;text-align:center}
+.pstat-val{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--accent);line-height:1}
+.pstat-lbl{font-size:8px;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-top:2px}
+.pstat.blue .pstat-val{color:var(--blue)}
+.bmr-strip{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.bmr-pill{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 11px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted)}
+.bmr-pill b{color:var(--text);font-weight:600}
+.macro-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:14px}
+.mcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;position:relative;overflow:hidden}
+.mcard::after{content:'';position:absolute;top:-12px;right:-12px;width:44px;height:44px;border-radius:50%;opacity:.12}
+.mcard.p::after{background:var(--accent)}
+.mcard.k::after{background:var(--orange)}
+.mcard.c::after{background:var(--blue)}
+.mcard.f::after{background:var(--purple)}
+.mcard-icon{font-size:16px;margin-bottom:5px}
+.mcard-val{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1}
+.mcard.p .mcard-val{color:var(--accent)}
+.mcard.k .mcard-val{color:var(--orange)}
+.mcard.c .mcard-val{color:var(--blue)}
+.mcard.f .mcard-val{color:var(--purple)}
+.mcard-lbl{font-size:9px;color:var(--muted);margin-top:2px;letter-spacing:.5px}
+.mcard-note{font-size:8px;color:var(--muted);margin-top:3px;font-style:italic}
+.day-sel{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:3px}
+.day-btn{flex-shrink:0;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:11px;font-family:'DM Sans',sans-serif;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s}
+.day-btn:hover{border-color:var(--accent);color:var(--accent)}
+.day-btn.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}
+.top-grid{display:grid;grid-template-columns:210px 1fr;gap:14px;margin-bottom:14px}
+.ring-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.ring-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600}
+svg.ring{transform:rotate(-90deg)}
+.rtrack{fill:none;stroke:var(--border);stroke-width:10}
+.rfill{fill:none;stroke:var(--accent);stroke-width:10;stroke-linecap:round;stroke-dasharray:358;stroke-dashoffset:358;transition:stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 0 7px rgba(232,255,71,.45))}
+.rwrap{position:relative;width:128px;height:128px}
+.rcenter{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.rbig{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--accent);line-height:1}
+.runit{font-size:9px;color:var(--muted)}
+.rmacros{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;width:100%}
+.rmc{background:var(--surface);border-radius:7px;padding:7px 3px;text-align:center;border:1px solid var(--border)}
+.rmc-val{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600}
+.rmc-lbl{font-size:8px;color:var(--muted);margin-top:1px}
+.meal-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px 22px}
+.sec-title{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:12px}
+.meal-row{display:grid;grid-template-columns:54px 22px 1fr auto;align-items:center;gap:8px;padding:7px 5px;margin:0 -5px;border-bottom:1px solid var(--border);border-radius:7px;transition:background .12s}
+.meal-row:last-child{border-bottom:none}
+.meal-row:hover{background:rgba(255,255,255,.02)}
+.meal-time{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted)}
+.mdot{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.mname{font-size:11px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:4px}
+.mdesc{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.4}
+.mbadge{font-size:8px;font-family:'JetBrains Mono',monospace;font-weight:600;padding:1px 5px;border-radius:99px}
+.mprot{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--green);white-space:nowrap}
+.bot-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px}
+.bar-chart{display:flex;flex-direction:column;gap:7px}
+.br{display:flex;flex-direction:column;gap:3px}
+.br-meta{display:flex;justify-content:space-between;font-size:9px}
+.br-food{color:var(--text);font-weight:500}
+.br-g{font-family:'JetBrains Mono',monospace;color:var(--muted)}
+.bar-tr{height:4px;background:var(--border);border-radius:99px;overflow:hidden}
+.bar-fi{height:100%;border-radius:99px;transform-origin:left;transform:scaleX(0);transition:transform 1.1s cubic-bezier(.4,0,.2,1)}
+.wk-wrap{position:relative}
+.wk-bars{display:flex;align-items:flex-end;gap:4px;height:68px}
+.wkcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;justify-content:flex-end}
+.wkbar{width:100%;border-radius:3px 3px 0 0;min-height:3px;transition:height 1s cubic-bezier(.4,0,.2,1)}
+.wklbl{font-size:8px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.tgt-line{position:absolute;left:0;right:0;border-top:1px dashed rgba(232,255,71,.28);display:flex;align-items:center;justify-content:flex-end}
+.tgt-line span{font-size:7px;color:var(--accent);font-family:'JetBrains Mono',monospace;background:var(--card);padding:0 3px}
+.pg-sec{margin-top:8px}
+.pg-lbl{display:flex;justify-content:space-between;font-size:9px;margin-bottom:3px;color:var(--muted)}
+.pg-lbl span:last-child{font-family:'JetBrains Mono',monospace;color:var(--accent)}
+.pg-tr{height:5px;background:var(--border);border-radius:99px;overflow:hidden}
+.pg-fi{height:100%;border-radius:99px;transform:scaleX(0);transform-origin:left;transition:transform 1.2s cubic-bezier(.4,0,.2,1)}
+.tip-card{position:relative;overflow:hidden}
+.tip-card::before{content:'';position:absolute;bottom:-12px;right:-12px;width:70px;height:70px;background:radial-gradient(circle,rgba(71,197,255,.07),transparent 70%)}
+.tip-icon{font-size:22px;margin-bottom:7px}
+.tip-text{font-size:11px;line-height:1.6;color:var(--muted)}
+.tip-text strong{color:var(--blue)}
+.tip-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;gap:5px}
+.tarr{background:var(--surface);border:1px solid var(--border);color:var(--muted);width:24px;height:24px;border-radius:50%;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;user-select:none}
+.tarr:hover{border-color:var(--blue);color:var(--blue)}
+.tnav{display:flex;gap:4px;align-items:center}
+.tdot{width:4px;height:4px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s}
+.tdot.active{background:var(--blue);width:12px;border-radius:2px}
+.err-card{background:rgba(255,107,71,.07);border:1px solid rgba(255,107,71,.25);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:11px;color:var(--orange)}
+/* ── TABS ── */
+.tab-nav{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:3px;border-bottom:1px solid var(--border);padding-bottom:12px}
+.tab-btn{flex-shrink:0;background:transparent;border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:11px;font-family:'DM Sans',sans-serif;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.tab-btn:hover{border-color:var(--accent);color:var(--accent)}
+.tab-btn.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ── CHECKLIST ── */
+.checklist-wrap{max-width:600px}
+.cl-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.cl-title{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--text);letter-spacing:1px}
+.cl-date{font-size:11px;color:var(--muted);margin-top:3px}
+.cl-ring-wrap{position:relative;width:64px;height:64px}
+.cl-ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--green)}
+.cl-meal{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:8px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .15s}
+.cl-meal:hover{border-color:var(--accent)}
+.cl-meal.done{border-color:var(--green);background:rgba(74,222,128,.06)}
+.cl-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .2s}
+.cl-meal.done .cl-check{background:var(--green);border-color:var(--green);color:#000}
+.cl-meal-info{flex:1}
+.cl-meal-name{font-size:13px;font-weight:600;color:var(--text)}
+.cl-meal.done .cl-meal-name{color:var(--muted);text-decoration:line-through}
+.cl-meal-desc{font-size:11px;color:var(--muted);margin-top:2px}
+.cl-meal-prot{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green);font-weight:600;flex-shrink:0}
+.cl-water{margin-top:20px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.cl-water-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.cl-water-sub{font-size:11px;color:var(--muted);margin-bottom:12px}
+.cl-water-cups{display:flex;flex-wrap:wrap;gap:8px}
+.water-cup{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .15s;user-select:none}
+.water-cup.filled{background:rgba(71,197,255,.15);border-color:var(--blue)}
+
+/* ── GROCERY ── */
+.grocery-wrap{}
+.grocery-header{margin-bottom:18px}
+.grocery-title{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--text);letter-spacing:1px}
+.grocery-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.grocery-cat{margin-bottom:16px}
+.grocery-cat-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px;padding-left:4px}
+.grocery-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:7px}
+.grocery-item{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .15s}
+.grocery-item:hover{border-color:var(--accent)}
+.grocery-item.got{border-color:var(--green);background:rgba(74,222,128,.05)}
+.gi-check{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .2s}
+.grocery-item.got .gi-check{background:var(--green);border-color:var(--green);color:#000}
+.gi-info{flex:1}
+.gi-name{font-size:12px;font-weight:500;color:var(--text)}
+.grocery-item.got .gi-name{text-decoration:line-through;color:var(--muted)}
+.gi-qty{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+
+/* ── PROGRESS ── */
+.progress-wrap{}
+.prog-header{margin-bottom:16px}
+.prog-title{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--text);letter-spacing:1px}
+.prog-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.prog-log-form{margin-bottom:16px}
+.prog-input-row{display:flex;gap:10px}
+.prog-input-row input{flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color .2s}
+.prog-input-row input:focus{border-color:var(--accent)}
+.log-btn{background:var(--accent);color:#000;border:none;border-radius:10px;padding:10px 20px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.log-btn:hover{opacity:.85}
+.prog-chart-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px}
+.prog-chart-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:14px}
+.prog-chart-inner{height:120px;position:relative;display:flex;align-items:flex-end;gap:6px}
+.prog-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.prog-bar{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:height .6s ease;background:var(--accent)}
+.prog-bar.latest{background:var(--green)}
+.prog-bar-lbl{font-size:8px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-align:center}
+.prog-bar-val{font-size:9px;color:var(--text);font-family:'JetBrains Mono',monospace}
+.prog-empty{text-align:center;color:var(--muted);font-size:13px;padding:30px;line-height:1.6}
+.prog-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.prog-stat{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:12px;text-align:center}
+.prog-stat-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);line-height:1}
+.prog-stat-val.green{color:var(--green)}
+.prog-stat-val.orange{color:var(--orange)}
+.prog-stat-lbl{font-size:9px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+.prog-goal-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.pgb-title{font-size:11px;font-weight:600;color:var(--text);margin-bottom:8px}
+.pgb-bar-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:6px}
+.pgb-bar-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .8s ease}
+.pgb-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+
+/* ── SUPPLEMENTS ── */
+.supp-wrap{}
+.supp-header{margin-bottom:18px}
+.supp-title{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--text);letter-spacing:1px}
+.supp-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.supp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:16px}
+.supp-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;position:relative;overflow:hidden}
+.supp-card::before{content:'';position:absolute;top:-10px;right:-10px;width:50px;height:50px;border-radius:50%;opacity:.1}
+.supp-card.essential::before{background:var(--green)}
+.supp-card.recommended::before{background:var(--amber)}
+.supp-card.optional::before{background:var(--muted)}
+.supp-tier{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;margin-bottom:6px}
+.supp-card.essential .supp-tier{color:var(--green)}
+.supp-card.recommended .supp-tier{color:var(--amber)}
+.supp-card.optional .supp-tier{color:var(--muted)}
+.supp-name{font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px}
+.supp-dose{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);margin-bottom:8px}
+.supp-why{font-size:11px;color:var(--muted);line-height:1.5}
+.supp-timing{font-size:10px;color:var(--blue);margin-top:6px;font-weight:500}
+.supp-note{font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:9px;padding:12px 14px;font-style:italic}
+@media(max-width:900px){.top-grid,.bot-grid{grid-template-columns:1fr}.macro-grid{grid-template-columns:1fr 1fr}.profile-card{grid-template-columns:1fr}}
+@media(max-width:500px){.form-row{grid-template-columns:1fr}.form-card{padding:20px}.pstats{display:none}}
+</style>
+</head>
+<body>
+
+<!-- ONBOARDING -->
+<div id="onboarding" class="screen active">
+ <div class="onboard-wrap">
+  <div class="brand"><h1>GAINS PLAN</h1><p>Evidence-based personalised nutrition</p></div>
+  <div class="form-card">
+   <div class="form-row">
+    <div class="field"><label>Body Weight</label><input type="number" id="bw" placeholder="e.g. 70" min="30" max="300"></div>
+    <div class="field"><label>Unit</label><select id="bwUnit"><option value="kg">kg</option><option value="lbs">lbs</option></select></div>
+   </div>
+   <div class="form-row">
+    <div class="field"><label>Height (cm or ft'in)</label><input type="text" id="height" placeholder="e.g. 175 or 5'9&quot;"></div>
+    <div class="field"><label>Age</label><input type="number" id="age" placeholder="e.g. 25" min="14" max="80"></div>
+   </div>
+   <div class="field"><label>Gender</label><div class="chips"><div class="chip active" data-group="gender" data-val="Male">♂ Male</div><div class="chip" data-group="gender" data-val="Female">♀ Female</div></div></div>
+   <div class="field"><label>Fitness Goal</label><div class="chips"><div class="chip active" data-group="goal" data-val="Muscle Gain">💪 Muscle Gain</div><div class="chip" data-group="goal" data-val="Fat Loss">🔥 Fat Loss</div><div class="chip" data-group="goal" data-val="Lean Bulk">⚡ Lean Bulk</div><div class="chip" data-group="goal" data-val="Maintenance">🎯 Maintenance</div></div></div>
+   <div class="field"><label>Diet Preference</label><div class="chips"><div class="chip active" data-group="diet" data-val="Veg + Eggs">🥚 Veg + Eggs</div><div class="chip" data-group="diet" data-val="Vegetarian">🥗 Vegetarian</div><div class="chip" data-group="diet" data-val="Non-Veg">🍗 Non-Veg</div><div class="chip" data-group="diet" data-val="Lactose Free">🚫🥛 Lactose Free</div></div></div>
+   <div class="field"><label>Activity Level</label><select id="activity"><option value="sedentary">Sedentary (desk job, no exercise)</option><option value="light">Light (1–2x training/week)</option><option value="moderate" selected>Moderate (3–4x training/week)</option><option value="active">Active (5–6x training/week)</option><option value="athlete">Athlete (daily intense training)</option></select></div>
+   <div class="field"><label>Avoid / Allergies <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;font-size:9px">(optional)</span></label><input type="text" id="avoid" placeholder="e.g. peanuts, soya, gluten…"></div>
+   <button class="submit-btn" id="generateBtn" onclick="startGenerate()">GENERATE MY PLAN →</button>
+  </div>
+ </div>
+</div>
+
+<!-- LOADING -->
+<div id="loading" class="screen">
+ <div class="loader-ring"></div>
+ <div class="loading-title">BUILDING YOUR PLAN</div>
+ <div class="loading-sub" id="loadingSub">Calculating your targets…</div>
+ <div class="loading-track"><div id="loadingBar"></div></div>
+ <div class="loading-pct"><span id="loadingPct">0%</span></div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="screen">
+ <div class="wrap">
+  <div id="errorBanner" style="display:none"></div>
+  <div class="profile-card">
+   <div><div class="profile-title" id="dashTitle">GAINS PLAN</div><div class="profile-sub" id="dashSub">Personalised · Evidence-based</div></div>
+   <div class="profile-right"><button class="edit-btn" onclick="resetToOnboarding()">✦ Edit Profile</button><div class="pstats" id="pstats"></div></div>
+  </div>
+  <div class="bmr-strip" id="bmrStrip"></div>
+  <div class="macro-grid" id="macroGrid"></div>
+  <div class="day-sel" id="daySel"></div>
+  <div class="top-grid">
+   <div class="ring-card">
+    <div class="ring-lbl">Daily Protein</div>
+    <div class="rwrap">
+     <svg class="ring" width="128" height="128" viewBox="0 0 128 128"><circle class="rtrack" cx="64" cy="64" r="57"/><circle class="rfill" id="rfill" cx="64" cy="64" r="57"/></svg>
+     <div class="rcenter"><div class="rbig" id="rnum">0</div><div class="runit" id="rtgt">/—g</div></div>
+    </div>
+    <div class="rmacros">
+     <div class="rmc"><div class="rmc-val" style="color:var(--accent)" id="rmP">—</div><div class="rmc-lbl">Protein</div></div>
+     <div class="rmc"><div class="rmc-val" style="color:var(--blue)" id="rmC">—</div><div class="rmc-lbl">Carbs</div></div>
+     <div class="rmc"><div class="rmc-val" style="color:var(--orange)" id="rmF">—</div><div class="rmc-lbl">Fat</div></div>
+    </div>
+    <div style="font-size:9px;color:var(--muted)" id="rmKcal">— kcal</div>
+   </div>
+   <div class="meal-card"><div class="sec-title">📋 Today's Meals</div><div id="mealList"></div></div>
+  </div>
+  <!-- TAB NAV -->
+  <div class="tab-nav" id="tabNav">
+    <button class="tab-btn active" data-tab="plan">🗓 Diet Plan</button>
+    <button class="tab-btn" data-tab="checklist">✅ Daily Checklist</button>
+    <button class="tab-btn" data-tab="grocery">📦 Grocery List</button>
+    <button class="tab-btn" data-tab="progress">📈 Progress</button>
+    <button class="tab-btn" data-tab="supplements">💊 Supplements</button>
+  </div>
+
+  <!-- TAB: DIET PLAN (existing content) -->
+  <div class="tab-panel active" id="tab-plan">
+  <div class="bot-grid">
+   <div class="card"><div class="sec-title">🥩 Protein Sources</div><div class="bar-chart" id="barChart"></div></div>
+   <div class="card">
+    <div class="sec-title">📈 Weekly Protein</div>
+    <div class="wk-wrap"><div class="tgt-line" id="tgtLine"><span id="tgtLbl">—</span></div><div class="wk-bars" id="wkBars"></div></div>
+    <div class="pg-sec"><div class="pg-lbl"><span>Weekly Avg</span><span id="wkAvg">—</span></div><div class="pg-tr"><div class="pg-fi" id="wkBar" style="background:var(--green)"></div></div></div>
+   </div>
+   <div class="card tip-card" id="tipCard">
+    <div class="sec-title">💡 Nutrition Tip</div>
+    <div class="tip-icon" id="tipIcon">💪</div>
+    <div class="tip-text" id="tipText"></div>
+    <div class="tip-footer"><button class="tarr" id="tPrev">&#8592;</button><div class="tnav" id="tNav"></div><button class="tarr" id="tNext">&#8594;</button></div>
+   </div>
+  </div>
+  </div>
+
+  <!-- TAB: DAILY CHECKLIST -->
+  <div class="tab-panel" id="tab-checklist">
+   <div class="checklist-wrap">
+    <div class="cl-header">
+     <div>
+      <div class="cl-title" id="clTitle">Today's Meals</div>
+      <div class="cl-date" id="clDate"></div>
+     </div>
+     <div class="cl-progress-wrap">
+      <div class="cl-ring-wrap">
+       <svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg)">
+        <circle cx="32" cy="32" r="26" fill="none" stroke="var(--border)" stroke-width="6"/>
+        <circle id="clRing" cx="32" cy="32" r="26" fill="none" stroke="var(--green)" stroke-width="6" stroke-linecap="round" stroke-dasharray="163" stroke-dashoffset="163" style="transition:stroke-dashoffset .5s ease"/>
+       </svg>
+       <div class="cl-ring-center"><span id="clDone">0</span>/<span id="clTotal">4</span></div>
+      </div>
+     </div>
+    </div>
+    <div id="clMeals"></div>
+    <div class="cl-water">
+     <div class="cl-water-title">💧 Water Intake</div>
+     <div class="cl-water-sub" id="clWaterTarget"></div>
+     <div class="cl-water-cups" id="clWaterCups"></div>
+    </div>
+   </div>
+  </div>
+
+  <!-- TAB: GROCERY LIST -->
+  <div class="tab-panel" id="tab-grocery">
+   <div class="grocery-wrap">
+    <div class="grocery-header">
+     <div class="grocery-title">Weekly Shopping List</div>
+     <div class="grocery-sub" id="grocerySub"></div>
+    </div>
+    <div id="groceryList"></div>
+   </div>
+  </div>
+
+  <!-- TAB: PROGRESS TRACKER -->
+  <div class="tab-panel" id="tab-progress">
+   <div class="progress-wrap">
+    <div class="prog-header">
+     <div class="prog-title">Weight Progress</div>
+     <div class="prog-sub" id="progSub"></div>
+    </div>
+    <div class="prog-log-form">
+     <div class="prog-input-row">
+      <input type="number" id="weightInput" placeholder="Enter today's weight (kg)" step="0.1" min="30" max="300">
+      <button class="log-btn" onclick="logWeight()">Log</button>
+     </div>
+    </div>
+    <div id="progChart"></div>
+    <div id="progStats"></div>
+    <div class="prog-goal-box" id="progGoalBox"></div>
+   </div>
+  </div>
+
+  <!-- TAB: SUPPLEMENTS -->
+  <div class="tab-panel" id="tab-supplements">
+   <div class="supp-wrap">
+    <div class="supp-header">
+     <div class="supp-title">Recommended Supplements</div>
+     <div class="supp-sub">Based on your goal · evidence-backed only</div>
+    </div>
+    <div id="suppList"></div>
+    <div class="supp-note">⚠️ These are general recommendations. Consult a doctor before starting any supplement, especially if you have health conditions.</div>
+   </div>
+  </div>
+ </div>
+</div>
+
+<script>
+// ── CHIP GROUPS ──
+document.querySelectorAll('.chip').forEach(c=>{
+  c.onclick=()=>{ document.querySelectorAll(`.chip[data-group="${c.dataset.group}"]`).forEach(x=>x.classList.remove('active')); c.classList.add('active'); };
+});
+const chip=g=>document.querySelector(`.chip[data-group="${g}"].active`)?.dataset.val||'';
+
+// ── TABS ──
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab==='checklist'&&planData) buildChecklist(planData);
+    if(btn.dataset.tab==='grocery'&&planData) buildGrocery(planData);
+    if(btn.dataset.tab==='progress'&&planData) buildProgress(planData);
+    if(btn.dataset.tab==='supplements'&&planData) buildSupplements(planData);
+  };
+});
+
+// ── CHECKLIST ──
+let checkState={}, waterCups=0;
+
+function buildChecklist(plan){
+  const day=DAYS[activeDay];
+  const meals=plan.weekly[day]?.meals||[];
+  const dateStr=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('clDate').textContent=dateStr;
+  document.getElementById('clTotal').textContent=meals.length;
+  const water=Math.round((plan.prof.bwKg*35)/250);
+  document.getElementById('clWaterTarget').textContent=`Target: ${(water*0.25).toFixed(1)} litres · ${water} glasses of 250ml`;
+  const wc=document.getElementById('clWaterCups'); wc.innerHTML='';
+  for(let i=0;i<water;i++){
+    const cup=document.createElement('div');
+    cup.className='water-cup'+(i<waterCups?' filled':'');
+    cup.textContent='💧';
+    cup.onclick=()=>{ waterCups=i<waterCups?i:i+1; buildChecklist(plan); };
+    wc.appendChild(cup);
+  }
+  const list=document.getElementById('clMeals'); list.innerHTML='';
+  meals.forEach((m,i)=>{
+    const key=`${day}_${i}`, done=checkState[key]||false;
+    const el=document.createElement('div'); el.className='cl-meal'+(done?' done':'');
+    el.innerHTML=`<div class="cl-check">${done?'✓':''}</div><div class="cl-meal-info"><div class="cl-meal-name">${m.name} — ${m.desc}</div><div class="cl-meal-desc">${TIMS[m.name]||''}</div></div><div class="cl-meal-prot">${m.protein}g</div>`;
+    el.onclick=()=>{ checkState[key]=!done; buildChecklist(plan); };
+    list.appendChild(el);
+  });
+  const doneCount=meals.filter((_,i)=>checkState[`${day}_${i}`]).length;
+  document.getElementById('clDone').textContent=doneCount;
+  document.getElementById('clRing').style.strokeDashoffset=163-(163*(meals.length>0?doneCount/meals.length:0));
+}
+
+// ── GROCERY LIST ──
+function buildGrocery(plan){
+  const{diet,goal}=plan.prof, pt=plan.nut.protein;
+  const isLF=diet==='Lactose Free', isVeg=diet==='Vegetarian', isNV=diet==='Non-Veg';
+  const cats={
+    '🥚 Proteins & Dairy':[],
+    '🌾 Grains & Carbs':[],
+    '🥦 Vegetables & Fruits':[],
+    '🫘 Legumes & Pulses':[],
+    '🧴 Supplements & Pantry':[],
+  };
+  if(!isVeg&&!isLF){ cats['🥚 Proteins & Dairy'].push({name:'Eggs',qty:'14–21 (2–3/day)'}); }
+  if(isNV){ cats['🥚 Proteins & Dairy'].push({name:'Chicken Breast',qty:`${Math.round(pt*5)}g (≈${(pt*5/1000).toFixed(1)}kg)`},{name:'Fish (white fish)',qty:'400–500g (2 portions)'}); }
+  if(!isLF&&!isVeg){ cats['🥚 Proteins & Dairy'].push({name:'Paneer (low-fat)',qty:`${Math.round(pt*1.5)}g (${Math.ceil(pt*1.5/200)} packs)`},{name:'Full-fat Milk',qty:'3–4 litres'},{name:'Greek Yogurt / Curd',qty:'1kg'}); }
+  if(isVeg){ cats['🥚 Proteins & Dairy'].push({name:'Paneer (low-fat)',qty:`${Math.round(pt*2)}g (${Math.ceil(pt*2/200)} packs)`},{name:'Greek Yogurt',qty:'1.5kg'},{name:'Full-fat Milk',qty:'3 litres'}); }
+  if(isLF){ cats['🥚 Proteins & Dairy'].push({name:'Tofu (firm)',qty:'600–700g'},{name:'Oat Milk',qty:'2 litres'},{name:'Soy Milk',qty:'1 litre'},{name:'Coconut Yogurt',qty:'400g'}); }
+  cats['🥚 Proteins & Dairy'].push({name:isLF?'Plant Protein Powder':'Whey Protein Powder',qty:'700g (≈7 scoops)'});
+  cats['🌾 Grains & Carbs'].push({name:'Whole Wheat Flour (Atta)',qty:'1kg'},{name:'Brown / Basmati Rice',qty:'1kg'},{name:'Rolled Oats',qty:'500g'},{name:'Poha (flattened rice)',qty:'500g'},{name:'Bread (whole wheat)',qty:'1 loaf'});
+  if(!isVeg&&!isLF) cats['🌾 Grains & Carbs'].push({name:'Idli/Dosa Batter',qty:'1 pack or homemade'});
+  cats['🥦 Vegetables & Fruits'].push({name:'Spinach / Palak',qty:'500g'},{name:'Tomatoes',qty:'1kg'},{name:'Onions',qty:'1kg'},{name:'Cucumber',qty:'5–6 pieces'},{name:'Capsicum',qty:'3–4 pieces'},{name:'Bananas',qty:'7–10 (1/day)'},{name:'Mixed vegetables',qty:'500g'},{name:'Lemons',qty:'4–5 pieces'});
+  cats['🫘 Legumes & Pulses'].push({name:'Moong Dal',qty:'500g'},{name:'Rajma (kidney beans)',qty:'500g'},{name:'Chickpeas / Chole',qty:'500g'},{name:'Soya Chunks',qty:isNV?'200g':'500g'},{name:'Toor / Masoor Dal',qty:'500g'},{name:'Sprouts (or sprouting seeds)',qty:'200g'});
+  cats['🧴 Supplements & Pantry'].push({name:'Peanut Butter (natural)',qty:'500g jar'},{name:'Almonds',qty:'200g'},{name:'Walnuts',qty:'100g'},{name:'Olive / Coconut Oil',qty:'500ml'},{name:'Green tea / Black coffee',qty:'1 box'});
+  if(goal==='Muscle Gain'||goal==='Lean Bulk') cats['🧴 Supplements & Pantry'].push({name:'Creatine Monohydrate',qty:'200g (3–5g/day)'});
+
+  document.getElementById('grocerySub').textContent=`${Math.round(plan.prof.bwKg)}kg · ${diet} · ${goal} · tap items to mark as bought`;
+  const container=document.getElementById('groceryList'); container.innerHTML='';
+  for(const[cat,items] of Object.entries(cats)){
+    if(!items.length) continue;
+    const sec=document.createElement('div'); sec.className='grocery-cat';
+    const gid='g_'+cat.replace(/[^a-z0-9]/gi,'');
+    sec.innerHTML=`<div class="grocery-cat-title">${cat}</div><div class="grocery-items" id="${gid}"></div>`;
+    container.appendChild(sec);
+    const grid=document.getElementById(gid);
+    items.forEach((item,i)=>{
+      const key=`gr_${cat}_${i}`, got=checkState[key]||false;
+      const el=document.createElement('div'); el.className='grocery-item'+(got?' got':'');
+      el.innerHTML=`<div class="gi-check">${got?'✓':''}</div><div class="gi-info"><div class="gi-name">${item.name}</div><div class="gi-qty">${item.qty}</div></div>`;
+      el.onclick=()=>{ checkState[key]=!got; buildGrocery(plan); };
+      grid.appendChild(el);
+    });
+  }
+}
+
+// ── PROGRESS TRACKER ──
+let weightLog=[];
+function logWeight(){
+  const val=parseFloat(document.getElementById('weightInput').value);
+  if(!val||val<20||val>300){ alert('Enter a valid weight (20–300 kg)'); return; }
+  const today=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+  if(weightLog.length&&weightLog[weightLog.length-1].date===today) weightLog[weightLog.length-1].weight=val;
+  else weightLog.push({date:today,weight:val});
+  document.getElementById('weightInput').value='';
+  buildProgress(planData);
+}
+function buildProgress(plan){
+  const{goal,hCm}=plan.prof, startBW=plan.prof.bwKg, nut=plan.nut;
+  const ibw=22*((hCm/100)**2);
+  let goalBW, weeksEst;
+  if(goal==='Fat Loss'){ goalBW=Math.round(ibw+2); const def=nut.tdee-nut.kcal; weeksEst=def>0?Math.round((startBW-goalBW)*7700/def/7):null; }
+  else if(goal==='Muscle Gain'||goal==='Lean Bulk'){ goalBW=Math.round(startBW+5); weeksEst=20; }
+  document.getElementById('progSub').textContent=`Start: ${Math.round(startBW)}kg · Goal: ${goal}${goalBW?` · Target: ${goalBW}kg`:''}`;
+  const chartEl=document.getElementById('progChart');
+  if(!weightLog.length){
+    chartEl.innerHTML=`<div class="prog-empty">📊 No entries yet.<br>Log your weight above to start tracking.<br><span style="font-size:10px;color:var(--muted)">Tip: weigh weekly, fasted, same time of day.</span></div>`;
+  } else {
+    const allPts=[{date:'Start',weight:startBW},...weightLog];
+    const max=Math.max(...allPts.map(e=>e.weight))+2, min=Math.min(...allPts.map(e=>e.weight))-2, range=max-min||1;
+    chartEl.innerHTML=`<div class="prog-chart-wrap"><div class="prog-chart-title">Weight Over Time (kg)</div><div class="prog-chart-inner" id="progBars"></div></div>`;
+    document.getElementById('progBars').innerHTML='';
+    allPts.forEach((e,i)=>{
+      const pct=((e.weight-min)/range)*100, isLatest=i===allPts.length-1&&i>0;
+      const w=document.createElement('div'); w.className='prog-bar-wrap';
+      w.innerHTML=`<div class="prog-bar-val">${e.weight}</div><div class="prog-bar${isLatest?' latest':''}" style="height:${Math.max(pct,5)}%"></div><div class="prog-bar-lbl">${e.date}</div>`;
+      document.getElementById('progBars').appendChild(w);
+    });
+  }
+  const statsEl=document.getElementById('progStats');
+  if(weightLog.length){
+    const curr=weightLog[weightLog.length-1].weight, change=+(curr-startBW).toFixed(1), bmi=+(curr/((hCm/100)**2)).toFixed(1);
+    const isGood=(goal==='Fat Loss'&&change<=0)||(goal!=='Fat Loss'&&change>=0);
+    statsEl.innerHTML=`<div class="prog-stats-grid"><div class="prog-stat"><div class="prog-stat-val">${curr}</div><div class="prog-stat-lbl">Current (kg)</div></div><div class="prog-stat"><div class="prog-stat-val ${isGood?'green':'orange'}">${change>0?'+':''}${change}</div><div class="prog-stat-lbl">Change (kg)</div></div><div class="prog-stat"><div class="prog-stat-val blue">${bmi}</div><div class="prog-stat-lbl">BMI Now</div></div></div>`;
+  } else statsEl.innerHTML='';
+  const goalEl=document.getElementById('progGoalBox');
+  if(goalBW){
+    const curr=weightLog.length?weightLog[weightLog.length-1].weight:startBW;
+    let pct=goal==='Fat Loss'?Math.min(Math.max((startBW-curr)/(startBW-goalBW)*100,0),100):Math.min(Math.max((curr-startBW)/(goalBW-startBW)*100,0),100);
+    goalEl.innerHTML=`<div class="pgb-title">Goal Progress${weeksEst&&!weightLog.length?` · ~${weeksEst} weeks estimated`:''}</div><div class="pgb-bar-track"><div class="pgb-bar-fill" style="width:${pct.toFixed(0)}%"></div></div><div class="pgb-labels"><span>${Math.round(startBW)}kg</span><span>${pct.toFixed(0)}% done</span><span>${goalBW}kg</span></div>`;
+  } else goalEl.innerHTML='';
+}
+
+// ── SUPPLEMENTS ──
+function buildSupplements(plan){
+  const{goal,diet}=plan.prof, isLF=diet==='Lactose Free';
+  const supps=[
+    {tier:'essential',name:'Whey / Plant Protein',dose:isLF?'Plant protein 1–2 scoops (25–50g/day)':'Whey protein 1–2 scoops (25–50g/day)',why:'The most practical way to hit daily protein targets. Fast-digesting — ideal post-workout for muscle protein synthesis.',timing:'⏰ Post-workout (30–60 min). Also useful as a morning or pre-bed option.',show:true},
+    {tier:'essential',name:'Creatine Monohydrate',dose:'3–5g daily — no loading phase needed',why:'#1 evidence-based supplement. 700+ studies. Increases strength 5–15%, supports 1–2kg extra lean mass gain over 12 weeks. Completely safe.',timing:'⏰ Any time — take consistently. With food or water.',show:goal==='Muscle Gain'||goal==='Lean Bulk'},
+    {tier:'essential',name:'Vitamin D3 + K2',dose:'1000–2000 IU D3 + 100mcg K2 daily',why:'Majority of Indians are deficient. Vitamin D deficiency reduces testosterone, muscle strength, immunity, and mood. K2 directs calcium to bones.',timing:'⏰ Morning with a fatty meal for best absorption.',show:true},
+    {tier:'recommended',name:'Omega-3 Fish Oil',dose:'2–3g EPA+DHA daily (2–3 capsules)',why:'Reduces post-training muscle soreness and inflammation. Improves joint health and cardiovascular markers. Strong evidence across multiple outcomes.',timing:'⏰ With meals. Split morning and evening dose.',show:true},
+    {tier:'recommended',name:'Magnesium Glycinate',dose:'200–400mg before bed',why:'Critical for sleep quality — magnesium regulates GABA receptors. Also reduces muscle cramps, anxiety, and supports 300+ enzymatic reactions.',timing:'⏰ 30–60 min before bed. Glycinate form is best absorbed with fewest GI side effects.',show:true},
+    {tier:'recommended',name:'Zinc',dose:'25–40mg daily (with food)',why:'Essential for testosterone synthesis and immune function. Regularly depleted through sweat during training. Do not mega-dose — 40mg is the safe upper limit.',timing:'⏰ With food. Do NOT take simultaneously with calcium (absorption competition).',show:goal==='Muscle Gain'||goal==='Lean Bulk'},
+    {tier:'optional',name:'Caffeine',dose:'100–200mg, 30–60 min pre-workout',why:'Increases strength by 3–7%, endurance by 10–15%, and reduces perceived effort. The most proven performance enhancer after creatine. Use coffee or pure caffeine.',timing:'⏰ 30–60 min pre-training. Avoid after 2pm (disrupts sleep quality). Cycle off 1 week per month.',show:true},
+    {tier:'optional',name:'Ashwagandha (KSM-66)',dose:'300–600mg daily',why:'Best-studied adaptogen. Reduces cortisol by ~30% in trials, improves sleep quality, and shows modest gains in strength and testosterone levels.',timing:'⏰ Evening with food or 30 min before bed. Takes 4–8 weeks to see full effects.',show:true},
+    {tier:'optional',name:'Multivitamin',dose:'1 tablet daily with food',why:'Insurance policy against micronutrient gaps — especially useful during calorie restriction when food variety may be limited.',timing:'⏰ With your largest meal of the day.',show:goal==='Fat Loss'},
+  ].filter(s=>s.show);
+
+  const container=document.getElementById('suppList'); container.innerHTML='<div class="supp-grid" id="suppGrid"></div>';
+  const grid=document.getElementById('suppGrid');
+  supps.forEach(s=>{
+    const c=document.createElement('div'); c.className=`supp-card ${s.tier}`;
+    c.innerHTML=`<div class="supp-tier">${s.tier==='essential'?'✅ Essential':s.tier==='recommended'?'⭐ Recommended':'💡 Optional'}</div><div class="supp-name">${s.name}</div><div class="supp-dose">${s.dose}</div><div class="supp-why">${s.why}</div><div class="supp-timing">${s.timing}</div>`;
+    grid.appendChild(c);
+  });
+}
+
+// ── SCREENS ──
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
+function resetToOnboarding(){ show('onboarding'); }
+
+// ── PARSE HEIGHT → cm ──
+function parseH(h){
+  h=h.trim().toLowerCase();
+  const fi=h.match(/(\d+)[''ft]\s*(\d*)/);
+  if(fi) return Math.round(parseInt(fi[1])*30.48+(parseInt(fi[2]||0)*2.54));
+  const inch=h.match(/(\d+\.?\d*)\s*in/);
+  if(inch) return Math.round(parseFloat(inch[1])*2.54);
+  return parseFloat(h.replace(/[^0-9.]/g,''))||170;
+}
+
+// ── EVIDENCE-BASED NUTRITION (Mifflin-St Jeor + meta-analysis protein targets) ──
+function calcNutrition(bwKg, hCm, age, gender, goal, activity){
+  // Mifflin-St Jeor BMR (most validated equation without body fat %)
+  const bmr = gender==='Male'
+    ? Math.round(10*bwKg + 6.25*hCm - 5*age + 5)
+    : Math.round(10*bwKg + 6.25*hCm - 5*age - 161);
+  const mult = {sedentary:1.2,light:1.375,moderate:1.55,active:1.725,athlete:1.9};
+  const tdee = Math.round(bmr*(mult[activity]||1.55));
+  const bmi  = bwKg/((hCm/100)**2);
+
+  // Calorie targets
+  let kcal, kcalNote;
+  if(goal==='Fat Loss'){
+    const def = bmi>32?700:500; // larger deficit for obesity class II+
+    const floor = gender==='Male'?1500:1200;
+    kcal = Math.max(tdee-def, floor);
+    kcalNote = `−${tdee-kcal} kcal deficit`;
+  } else if(goal==='Muscle Gain'){
+    kcal=tdee+300; kcalNote='+300 kcal surplus';
+  } else if(goal==='Lean Bulk'){
+    kcal=tdee+150; kcalNote='+150 kcal surplus';
+  } else {
+    kcal=tdee; kcalNote='TDEE maintenance';
+  }
+
+  // Protein targets (evidence: Morton 2018 meta, Examine.com, 2024 ESPEN)
+  // Fat loss + overweight: use adjusted BW (IBW + 0.4*(actual-IBW)) to avoid excessive prescription
+  let protein, protNote, protPerKg;
+  const ibw = 22*((hCm/100)**2); // ideal BW at BMI 22
+  if(goal==='Fat Loss' && bmi>27){
+    const adjBW = ibw + 0.4*(bwKg-ibw);
+    protein = Math.round(adjBW*1.6);
+    protPerKg = (protein/adjBW).toFixed(1);
+    protNote = `Based on adjusted BW ${Math.round(adjBW)}kg (avoids over-prescription in overweight)`;
+  } else if(goal==='Muscle Gain'||goal==='Lean Bulk'){
+    protPerKg = 1.9; protein = Math.round(bwKg*1.9);
+    protNote = '1.9g/kg — upper range for hypertrophy (Morton 2018)';
+  } else if(goal==='Fat Loss'){
+    protPerKg = 1.6; protein = Math.round(bwKg*1.6);
+    protNote = '1.6g/kg — preserves muscle in deficit (Examine 2024)';
+  } else {
+    protPerKg = 1.4; protein = Math.round(bwKg*1.4);
+    protNote = '1.4g/kg — maintenance (adequate for active individuals)';
+  }
+
+  // Macros: fat=27% of kcal, rest carbs
+  const fat   = Math.round(kcal*0.27/9);
+  const carbs = Math.round(Math.max(kcal-protein*4-fat*9,0)/4);
+  return {bmr,tdee,kcal,kcalNote,bmi:+bmi.toFixed(1),protein,protPerKg,protNote,fat,carbs};
+}
+
+// ── ANIMATION STATE ──
+let _intv=null,_tmr=null,_pct=0,_fetched=false;
+function stopAnim(){ clearInterval(_intv); clearTimeout(_tmr); _intv=_tmr=null; }
+
+// ── STATE ──
+let planData=null;
+
+// ── GENERATE ──
+function startGenerate(){
+  const bwRaw=document.getElementById('bw').value.trim();
+  const bwUnit=document.getElementById('bwUnit').value;
+  const hRaw=document.getElementById('height').value.trim();
+  const ageRaw=document.getElementById('age').value.trim();
+  const gender=chip('gender')||'Male';
+  const goal=chip('goal')||'Muscle Gain';
+  const diet=chip('diet')||'Veg + Eggs';
+  const activity=document.getElementById('activity').value;
+  const avoid=document.getElementById('avoid').value.trim();
+
+  if(!bwRaw||!hRaw||!ageRaw){ alert('Please fill in Body Weight, Height, and Age.'); return; }
+
+  const bwKg  = bwUnit==='lbs'?parseFloat(bwRaw)*0.453592:parseFloat(bwRaw);
+  const hCm   = parseH(hRaw);
+  const age   = parseInt(ageRaw);
+  const nut   = calcNutrition(bwKg,hCm,age,gender,goal,activity);
+  const prof  = {bwKg,hCm,age,gender,goal,diet,activity,avoid};
+
+  // Re-run: skip fetch, build instantly
+  if(_fetched){
+    planData = makePlan(nut,prof);
+    buildDash(planData);
+    show('dashboard');
+    return;
+  }
+
+  document.getElementById('generateBtn').disabled=true;
+  document.getElementById('errorBanner').style.display='none';
+  stopAnim(); _pct=0;
+  show('loading');
+
+  const bEl=document.getElementById('loadingBar');
+  const pEl=document.getElementById('loadingPct');
+  const sEl=document.getElementById('loadingSub');
+  bEl.style.cssText='height:100%;background:var(--accent);border-radius:99px;width:0%;transition:none';
+  pEl.textContent='0%'; sEl.textContent='Calculating your targets…';
+
+  const phases=['Calculating BMR & TDEE…','Setting protein targets…','Building 7-day meal plan…','Finalising your plan…'];
+  _tmr=setTimeout(()=>{
+    bEl.style.transition='width .35s ease';
+    _intv=setInterval(()=>{
+      const step=_pct<40?5:_pct<75?3:_pct<92?1.5:0.5;
+      _pct=Math.min(_pct+step,99);
+      const b=document.getElementById('loadingBar');
+      const p=document.getElementById('loadingPct');
+      const s=document.getElementById('loadingSub');
+      if(b)b.style.width=_pct+'%';
+      if(p)p.textContent=Math.round(_pct)+'%';
+      if(s)s.textContent=phases[Math.min(Math.floor(_pct/25),3)];
+    },120);
+  },50);
+
+  // Build plan locally — no API call needed, nutrition is fully calculated
+  setTimeout(()=>{
+    stopAnim();
+    planData=makePlan(nut,prof);
+    _fetched=true;
+    done();
+    setTimeout(()=>{
+      buildDash(planData);
+      show('dashboard');
+      document.getElementById('generateBtn').disabled=false;
+    },300);
+  },1800);
+}
+
+function done(){
+  const b=document.getElementById('loadingBar');
+  const p=document.getElementById('loadingPct');
+  const s=document.getElementById('loadingSub');
+  if(b){b.style.transition='width .4s ease';b.style.width='100%';}
+  if(p)p.textContent='100%';
+  if(s)s.textContent='Done!';
+}
+
+// ── PROMPT ──
+function buildPrompt(nut,prof){
+  return `You are a registered sports dietitian. Return ONLY raw JSON, zero markdown, zero preamble.
+
+Person: ${Math.round(prof.bwKg)}kg, ${prof.hCm}cm, age ${prof.age}, ${prof.gender}, goal: ${prof.goal}, diet: ${prof.diet}, activity: ${prof.activity}${prof.avoid?', avoid: '+prof.avoid:''}
+Evidence-based targets: Protein ${nut.protein}g/day, Calories ${nut.kcal} kcal/day, Carbs ~${nut.carbs}g, Fat ~${nut.fat}g
+
+Diet rules:
+- "Veg + Eggs": eggs, paneer, curd, milk, dal, soya, legumes. No meat/fish.
+- "Vegetarian": paneer, curd, milk, dal, soya, tofu. No eggs/meat.
+- "Non-Veg": chicken breast, fish, eggs, dairy all fine.
+- "Lactose Free": NO milk, paneer, curd, whey-in-milk. Use soy/oat milk, tofu, plant protein powder.
+
+Meal rules: Exactly 4 meals/day: Breakfast, Lunch, Post-Workout, Dinner.
+- Breakfast: NO roti/chapati. Use eggs, oats, upma, poha, idli, dosa, smoothie.
+- Post-Workout: ALWAYS includes whey protein (or plant protein if lactose free).
+- Indian cuisine style. Descriptions max 8 words. Each day must be different from others.
+- Protein values must be realistic. Total protein across 4 meals must sum to ~${nut.protein}g.
+- Calories per meal must be realistic. Total kcal must sum to ~${nut.kcal}.
+
+Return exactly this JSON (no other text):
+{"weekly":{"Monday":{"meals":[{"name":"Breakfast","desc":"...","protein":N,"kcal":N},{"name":"Lunch","desc":"...","protein":N,"kcal":N},{"name":"Post-Workout","desc":"...","protein":N,"kcal":N},{"name":"Dinner","desc":"...","protein":N,"kcal":N}]},"Tuesday":{"meals":[...]},"Wednesday":{"meals":[...]},"Thursday":{"meals":[...]},"Friday":{"meals":[...]},"Saturday":{"meals":[...]},"Sunday":{"meals":[]}},"proteinSources":[{"food":"...","grams":N,"color":"#hexcode"}],"tips":[{"icon":"emoji","text":"evidence-based tip with <strong>key phrase</strong>"}]}`;
+}
+
+// ── NORMALISE API RESPONSE ──
+function normPlan(p,nut,prof){
+  const dm={Mon:'Monday',Tue:'Tuesday',Wed:'Wednesday',Thu:'Thursday',Fri:'Friday',Sat:'Saturday',Sun:'Sunday'};
+  const weekly={};
+  for(const[k,v] of Object.entries(p.weekly||p.days||{})){
+    const day=dm[k]||k;
+    const meals=Array.isArray(v)?v:(v.meals||[]);
+    weekly[day]={meals:meals.map(m=>({name:m.name||'',desc:m.desc||m.d||'',protein:+((m.protein||m.p||0)),kcal:+((m.kcal||m.k||0)),carbs:+((m.carbs||m.c||0)),fat:+((m.fat||m.f||0))}))};
+  }
+  return {nut,prof,weekly,sources:(p.proteinSources||p.src||[]).map(s=>({food:s.food||s.f||'',grams:+(s.grams||s.g||0),color:s.color||s.c||'#4ade80'})),tips:(p.tips||[]).map(t=>({icon:t.icon||t.i||'💡',text:t.text||t.t||''}))};
+}
+
+// ── FALLBACK PLAN (diet + goal aware, protein scaled to user's actual target) ──
+function makePlan(nut,prof){
+  const pt=nut.protein;
+  const s=b=>Math.round(b*pt/110);
+  const kScale=nut.kcal/2000;
+  const k=b=>Math.round(b*kScale);
+
+  const diets={
+    'Veg + Eggs':{
+      sources:[{food:'Whey Protein (1 scoop)',grams:24,color:'#ff6b47'},{food:'Paneer (100g)',grams:18,color:'#47c5ff'},{food:'Soya Chunks (100g dry)',grams:52,color:'#e8ff47'},{food:'Egg (1 whole)',grams:6,color:'#fbbf24'},{food:'Greek Yogurt (200g)',grams:20,color:'#4ade80'},{food:'Moong Dal (1 cup)',grams:14,color:'#c084fc'}],
+      days:{
+        Monday:   [{name:'Breakfast',desc:'2-egg omelette + vegetable poha',protein:s(22),kcal:k(350)},{name:'Lunch',desc:'2 rotis + moong dal + paneer sabji',protein:s(34),kcal:k(480)},{name:'Post-Workout',desc:'Whey + 500ml full-fat milk',protein:s(40),kcal:k(300)},{name:'Dinner',desc:'2 rotis + rajma curry + curd',protein:s(20),kcal:k(380)}],
+        Tuesday:  [{name:'Breakfast',desc:'Oats porridge + 2 boiled eggs + banana',protein:s(24),kcal:k(380)},{name:'Lunch',desc:'Soya chunk masala + 2 rotis + raita',protein:s(36),kcal:k(460)},{name:'Post-Workout',desc:'Whey in water + 1 banana',protein:s(26),kcal:k(200)},{name:'Dinner',desc:'2 rotis + chana dal + sabji',protein:s(20),kcal:k(370)}],
+        Wednesday:[{name:'Breakfast',desc:'Egg bhurji + vegetable upma',protein:s(22),kcal:k(360)},{name:'Lunch',desc:'100g paneer tikka + 2 rotis + dal',protein:s(32),kcal:k(480)},{name:'Post-Workout',desc:'Whey + 500ml milk',protein:s(40),kcal:k(300)},{name:'Dinner',desc:'2 rotis + chole + Greek yogurt',protein:s(22),kcal:k(390)}],
+        Thursday: [{name:'Breakfast',desc:'Egg omelette + 2 idlis + sambar',protein:s(24),kcal:k(380)},{name:'Lunch',desc:'Rajma + 1 cup rice + cucumber salad',protein:s(30),kcal:k(450)},{name:'Post-Workout',desc:'Whey + 250ml milk',protein:s(32),kcal:k(220)},{name:'Dinner',desc:'2 rotis + palak paneer + dal',protein:s(26),kcal:k(430)}],
+        Friday:   [{name:'Breakfast',desc:'2 boiled eggs + vegetable poha + peanuts',protein:s(22),kcal:k(350)},{name:'Lunch',desc:'Soya keema + 2 rotis + raita',protein:s(38),kcal:k(460)},{name:'Post-Workout',desc:'Whey + 500ml milk',protein:s(40),kcal:k(300)},{name:'Dinner',desc:'2 rotis + kadhi + 80g paneer',protein:s(20),kcal:k(380)}],
+        Saturday: [{name:'Breakfast',desc:'Milk + oats + banana + egg smoothie',protein:s(26),kcal:k(400)},{name:'Lunch',desc:'Chole + 2 rotis + onion tomato salad',protein:s(28),kcal:k(440)},{name:'Post-Workout',desc:'Whey in water',protein:s(24),kcal:k(120)},{name:'Dinner',desc:'2 rotis + palak tofu + curd',protein:s(22),kcal:k(380)}],
+        Sunday:   [{name:'Breakfast',desc:'2-egg masala omelette + dosa + sambar',protein:s(22),kcal:k(370)},{name:'Lunch',desc:'Paneer bhurji + 2 rotis + dal soup',protein:s(34),kcal:k(490)},{name:'Post-Workout',desc:'Whey + 500ml milk',protein:s(40),kcal:k(300)},{name:'Dinner',desc:'2 rotis + egg curry + raita',protein:s(22),kcal:k(380)}],
+      }
+    },
+    'Vegetarian':{
+      sources:[{food:'Soya Chunks (100g dry)',grams:52,color:'#e8ff47'},{food:'Paneer (100g)',grams:18,color:'#47c5ff'},{food:'Greek Yogurt (200g)',grams:20,color:'#4ade80'},{food:'Tofu (100g)',grams:10,color:'#fbbf24'},{food:'Rajma (1 cup cooked)',grams:15,color:'#ff6b47'},{food:'Dal (1 cup cooked)',grams:14,color:'#c084fc'}],
+      days:{
+        Monday:   [{name:'Breakfast',desc:'Greek yogurt + oats + banana smoothie',protein:s(20),kcal:k(380)},{name:'Lunch',desc:'2 rotis + dal + paneer bhurji',protein:s(32),kcal:k(480)},{name:'Post-Workout',desc:'Plant protein + 300ml soy milk',protein:s(28),kcal:k(240)},{name:'Dinner',desc:'2 rotis + rajma + curd',protein:s(22),kcal:k(380)}],
+        Tuesday:  [{name:'Breakfast',desc:'Moong dal chilla + mint chutney',protein:s(18),kcal:k(300)},{name:'Lunch',desc:'Soya chunk masala + 2 rotis + raita',protein:s(34),kcal:k(460)},{name:'Post-Workout',desc:'Plant protein + soy milk',protein:s(28),kcal:k(240)},{name:'Dinner',desc:'2 rotis + palak tofu + dal',protein:s(22),kcal:k(390)}],
+        Wednesday:[{name:'Breakfast',desc:'Overnight oats + peanut butter + banana',protein:s(16),kcal:k(380)},{name:'Lunch',desc:'Paneer tikka + 2 rotis + dal soup',protein:s(32),kcal:k(490)},{name:'Post-Workout',desc:'Plant protein + soy milk',protein:s(28),kcal:k(240)},{name:'Dinner',desc:'2 rotis + chole + Greek yogurt',protein:s(22),kcal:k(400)}],
+        Thursday: [{name:'Breakfast',desc:'Upma + Greek yogurt + almonds',protein:s(18),kcal:k(360)},{name:'Lunch',desc:'Tofu stir fry + quinoa + dal',protein:s(28),kcal:k(460)},{name:'Post-Workout',desc:'Plant protein + soy milk',protein:s(28),kcal:k(240)},{name:'Dinner',desc:'2 rotis + mixed dal + sabji',protein:s(20),kcal:k(380)}],
+        Friday:   [{name:'Breakfast',desc:'Besan chilla + curd + fruits',protein:s(16),kcal:k(320)},{name:'Lunch',desc:'Rajma rice + paneer sabji + salad',protein:s(30),kcal:k(500)},{name:'Post-Workout',desc:'Plant protein + soy milk',protein:s(28),kcal:k(240)},{name:'Dinner',desc:'2 rotis + palak paneer + soup',protein:s(24),kcal:k(420)}],
+        Saturday: [{name:'Breakfast',desc:'Idli + sambar + Greek yogurt',protein:s(16),kcal:k(320)},{name:'Lunch',desc:'Soya keema + 2 rotis + raita',protein:s(34),kcal:k(450)},{name:'Post-Workout',desc:'Plant protein + soy milk',protein:s(28),kcal:k(240)},{name:'Dinner',desc:'2 rotis + chole + curd',protein:s(20),kcal:k(390)}],
+        Sunday:   [{name:'Breakfast',desc:'PB banana smoothie + whole wheat toast',protein:s(14),kcal:k(380)},{name:'Lunch',desc:'Paneer paratha + curd + sabji',protein:s(26),kcal:k(470)},{name:'Post-Workout',desc:'Plant protein + soy milk',protein:s(28),kcal:k(240)},{name:'Dinner',desc:'2 rotis + dal makhani + salad',protein:s(22),kcal:k(430)}],
+      }
+    },
+    'Non-Veg':{
+      sources:[{food:'Chicken Breast (100g)',grams:31,color:'#ff6b47'},{food:'Whey Protein (1 scoop)',grams:24,color:'#e8ff47'},{food:'Egg (1 whole)',grams:6,color:'#fbbf24'},{food:'Fish Fillet (100g)',grams:22,color:'#47c5ff'},{food:'Greek Yogurt (200g)',grams:20,color:'#4ade80'},{food:'Dal (1 cup cooked)',grams:14,color:'#c084fc'}],
+      days:{
+        Monday:   [{name:'Breakfast',desc:'3 scrambled eggs + oats porridge',protein:s(28),kcal:k(420)},{name:'Lunch',desc:'Chicken curry + 2 rotis + salad',protein:s(40),kcal:k(520)},{name:'Post-Workout',desc:'Whey + 500ml milk',protein:s(40),kcal:k(300)},{name:'Dinner',desc:'Grilled chicken 150g + 2 rotis + dal',protein:s(36),kcal:k(480)}],
+        Tuesday:  [{name:'Breakfast',desc:'2 boiled eggs + vegetable upma',protein:s(20),kcal:k(340)},{name:'Lunch',desc:'Fish curry + 1 cup rice + sabji',protein:s(38),kcal:k(510)},{name:'Post-Workout',desc:'Whey + 500ml milk',protein:s(40),kcal:k(300)},{name:'Dinner',desc:'Chicken stir fry + 2 rotis + dal',protein:s(34),kcal:k(470)}],
+        Wednesday:[{name:'Breakfast',desc:'3-egg masala omelette + poha',protein:s(26),kcal:k(380)},{name:'Lunch',desc:'Chicken rice bowl + raita + salad',protein:s(40),kcal:k(530)},{name:'Post-Workout',desc:'Whey in water',protein:s(24),kcal:k(120)},{name:'Dinner',desc:'2 rotis + egg curry + curd',protein:s(28),kcal:k(430)}],
+        Thursday: [{name:'Breakfast',desc:'3 egg bhurji + 2 idlis + sambar',protein:s(26),kcal:k(400)},{name:'Lunch',desc:'Grilled fish + 2 rotis + dal',protein:s(38),kcal:k(510)},{name:'Post-Workout',desc:'Whey + 500ml milk',protein:s(40),kcal:k(300)},{name:'Dinner',desc:'Chicken keema + 2 rotis + salad',protein:s(34),kcal:k(460)}],
+        Friday:   [{name:'Breakfast',desc:'2 boiled eggs + whole wheat toast',protein:s(20),kcal:k(300)},{name:'Lunch',desc:'Chicken biryani + raita + salad',protein:s(38),kcal:k(560)},{name:'Post-Workout',desc:'Whey + 500ml milk',protein:s(40),kcal:k(300)},{name:'Dinner',desc:'Fish tikka + 2 rotis + dal',protein:s(34),kcal:k(460)}],
+        Saturday: [{name:'Breakfast',desc:'Egg paratha + curd + fruits',protein:s(22),kcal:k(400)},{name:'Lunch',desc:'Chicken curry + rice + sabji',protein:s(38),kcal:k(540)},{name:'Post-Workout',desc:'Whey in water',protein:s(24),kcal:k(120)},{name:'Dinner',desc:'Grilled chicken + 2 rotis + soup',protein:s(34),kcal:k(470)}],
+        Sunday:   [{name:'Breakfast',desc:'3 eggs scrambled + dosa + sambar',protein:s(26),kcal:k(420)},{name:'Lunch',desc:'Fish curry + 2 rotis + dal + salad',protein:s(36),kcal:k(520)},{name:'Post-Workout',desc:'Whey + 500ml milk',protein:s(40),kcal:k(300)},{name:'Dinner',desc:'Chicken tikka + 2 rotis + curd',protein:s(32),kcal:k(480)}],
+      }
+    },
+    'Lactose Free':{
+      sources:[{food:'Soya Chunks (100g dry)',grams:52,color:'#e8ff47'},{food:'Plant Protein (1 scoop)',grams:20,color:'#ff6b47'},{food:'Tofu (100g)',grams:10,color:'#47c5ff'},{food:'Egg (1 whole)',grams:6,color:'#fbbf24'},{food:'Rajma (1 cup cooked)',grams:15,color:'#4ade80'},{food:'Dal (1 cup cooked)',grams:14,color:'#c084fc'}],
+      days:{
+        Monday:   [{name:'Breakfast',desc:'2 eggs + oats cooked in soy milk',protein:s(22),kcal:k(370)},{name:'Lunch',desc:'Soya masala + 2 rotis + salad',protein:s(34),kcal:k(450)},{name:'Post-Workout',desc:'Plant protein + 300ml oat milk',protein:s(26),kcal:k(220)},{name:'Dinner',desc:'2 rotis + rajma + coconut raita',protein:s(20),kcal:k(380)}],
+        Tuesday:  [{name:'Breakfast',desc:'2 boiled eggs + poha + roasted peanuts',protein:s(22),kcal:k(350)},{name:'Lunch',desc:'Tofu stir fry + 1 cup quinoa + dal',protein:s(28),kcal:k(440)},{name:'Post-Workout',desc:'Plant protein + oat milk',protein:s(26),kcal:k(220)},{name:'Dinner',desc:'2 rotis + moong dal + sabji',protein:s(18),kcal:k(360)}],
+        Wednesday:[{name:'Breakfast',desc:'Smoothie: soy milk + banana + oats + PB',protein:s(20),kcal:k(400)},{name:'Lunch',desc:'Soya keema + 2 rotis + onion salad',protein:s(34),kcal:k(450)},{name:'Post-Workout',desc:'Plant protein + oat milk',protein:s(26),kcal:k(220)},{name:'Dinner',desc:'2 rotis + chole + coconut raita',protein:s(18),kcal:k(390)}],
+        Thursday: [{name:'Breakfast',desc:'Moong dal chilla + avocado + tomato',protein:s(18),kcal:k(320)},{name:'Lunch',desc:'Rajma rice + tofu sabji + salad',protein:s(28),kcal:k(460)},{name:'Post-Workout',desc:'Plant protein + oat milk',protein:s(26),kcal:k(220)},{name:'Dinner',desc:'2 rotis + dal makhani (no cream)',protein:s(20),kcal:k(380)}],
+        Friday:   [{name:'Breakfast',desc:'2-egg omelette + upma',protein:s(20),kcal:k(340)},{name:'Lunch',desc:'Soya chunk curry + 2 rotis + salad',protein:s(34),kcal:k(450)},{name:'Post-Workout',desc:'Plant protein + oat milk',protein:s(26),kcal:k(220)},{name:'Dinner',desc:'2 rotis + palak tofu + dal soup',protein:s(20),kcal:k(390)}],
+        Saturday: [{name:'Breakfast',desc:'Overnight oats in soy milk + berries',protein:s(16),kcal:k(360)},{name:'Lunch',desc:'Egg curry + 1 cup rice + sabji',protein:s(26),kcal:k(460)},{name:'Post-Workout',desc:'Plant protein + oat milk',protein:s(26),kcal:k(220)},{name:'Dinner',desc:'2 rotis + chole + onion salad',protein:s(18),kcal:k(380)}],
+        Sunday:   [{name:'Breakfast',desc:'2 eggs + PB toast + banana',protein:s(20),kcal:k(360)},{name:'Lunch',desc:'Tofu tikka + 2 rotis + dal + salad',protein:s(28),kcal:k(450)},{name:'Post-Workout',desc:'Plant protein + oat milk',protein:s(26),kcal:k(220)},{name:'Dinner',desc:'2 rotis + soya masala + sabji',protein:s(20),kcal:k(380)}],
+      }
+    }
+  };
+
+  const t=diets[prof.diet]||diets['Veg + Eggs'];
+  const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  const weekly={};
+  DAYS.forEach(d=>{ weekly[d]={meals:t.days[d]||t.days.Monday}; });
+
+  // Goal-specific tips (evidence-based)
+  const tips={
+    'Muscle Gain':[
+      {icon:'💪',text:'Spread protein across <strong>4 meals of 25–40g each</strong>. Research shows this maximises muscle protein synthesis better than 1–2 large meals.'},
+      {icon:'🔬',text:'Evidence shows <strong>1.6–2.0g protein/kg/day</strong> is optimal for hypertrophy. Above 2.2g/kg shows no additional muscle benefit.'},
+      {icon:'😴',text:'<strong>7–9 hours of sleep</strong> is when growth hormone peaks and muscle repair occurs. Consistently under-sleeping will stall progress.'},
+      {icon:'📈',text:'You need a <strong>calorie surplus</strong> to build muscle. Training hard without eating enough cancels the hypertrophy stimulus.'},
+      {icon:'⏰',text:'Post-workout protein timing matters. Consume <strong>whey within 30–60 min</strong> of training to maximise muscle protein synthesis.'},
+    ],
+    'Fat Loss':[
+      {icon:'🔥',text:'A <strong>500 kcal/day deficit</strong> leads to ~0.5kg of fat loss per week — the safest rate to preserve muscle mass.'},
+      {icon:'🛡️',text:'Keep protein at <strong>1.6g/kg+</strong> during fat loss. High protein preserves muscle and increases satiety (reduces hunger by 30–40%).'},
+      {icon:'⚖️',text:'Weigh yourself <strong>weekly, fasted, same day</strong>. Daily fluctuations of 1–3kg are normal water shifts — only trends matter.'},
+      {icon:'🥗',text:'Load meals with <strong>high-volume, low-calorie foods</strong> — dal, sabji, salad, cucumbers — to stay full without exceeding your deficit.'},
+      {icon:'💧',text:'Drink <strong>500ml of water before each meal</strong>. Studies show this reduces meal calorie intake by ~13% through satiety signalling.'},
+    ],
+    'Lean Bulk':[
+      {icon:'⚡',text:'Lean bulk = <strong>150–200 kcal above TDEE</strong>. Slower than a standard bulk but limits fat gain to nearly zero.'},
+      {icon:'📏',text:'Track waist circumference every 2 weeks. If waist grows <strong>more than 0.5cm/month</strong>, reduce calories slightly.'},
+      {icon:'💪',text:'Distribute protein evenly. <strong>4 meals with 25–35g protein</strong> each is more effective than 2–3 large protein doses.'},
+      {icon:'😴',text:'<strong>7–9 hours of sleep</strong> is non-negotiable. Growth hormone secretion peaks during slow-wave sleep — this is when you grow.'},
+    ],
+    'Maintenance':[
+      {icon:'🎯',text:'Match intake to your <strong>TDEE precisely</strong>. Even small consistent surpluses or deficits gradually shift body weight over months.'},
+      {icon:'🔄',text:'Vary protein sources daily. This provides a <strong>complete amino acid profile</strong> and prevents nutritional monotony.'},
+      {icon:'📊',text:'Body weight <strong>naturally fluctuates 1–3kg daily</strong> due to water, food, and glycogen. Track weekly averages, not daily readings.'},
+      {icon:'💧',text:'Drink <strong>35ml of water per kg of body weight</strong> daily. Hydration directly affects strength, cognition, and metabolism.'},
+    ]
+  };
+
+  return {nut,prof,weekly,sources:t.sources,tips:tips[prof.goal]||tips['Muscle Gain']};
+}
+
+// ── JSON REPAIR ──
+function fixJSON(s){
+  s=s.replace(/,\s*"[^"]*"\s*:\s*"[^"]*$/,'').replace(/,\s*"[^"]*"\s*:\s*$/,'').replace(/,\s*"[^"]*"\s*$/,'').replace(/,\s*$/,'');
+  const st=[]; let ins=false,esc=false;
+  for(const c of s){
+    if(esc){esc=false;continue;} if(c==='\\'){esc=true;continue;} if(c==='"'){ins=!ins;continue;} if(ins)continue;
+    if(c==='{'||c==='[')st.push(c); if(c==='}'||c===']')st.pop();
+  }
+  while(st.length)s+=st.pop()==='{' ? '}' : ']';
+  return s;
+}
+
+// ── DASHBOARD ──
+const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const SHORT=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const COLS={Breakfast:'#e8ff47',Lunch:'#4ade80','Post-Workout':'#ff6b47',Dinner:'#c084fc',Snack:'#fbbf24'};
+const EMOJ={Breakfast:'🌅',Lunch:'🍽️','Post-Workout':'💪',Dinner:'🌙',Snack:'🥜'};
+const TIMS={Breakfast:'7:30 AM',Lunch:'1:00 PM','Post-Workout':'7:00 PM',Dinner:'9:30 PM',Snack:'4:30 PM'};
+let activeDay=0,activeTip=0,tipTmr=null;
+
+function buildDash(plan){
+  const{nut,prof}=plan;
+  // Title
+  document.getElementById('dashTitle').textContent=prof.goal.toUpperCase()+' PLAN';
+  document.getElementById('dashSub').textContent=`${prof.diet} · ${prof.gender} · ${prof.activity.charAt(0).toUpperCase()+prof.activity.slice(1)}`;
+
+  // Profile stats
+  const bmi=(prof.bwKg/((prof.hCm/100)**2)).toFixed(1);
+  const bmiCat=bmi<18.5?'Underweight':bmi<25?'Normal':bmi<30?'Overweight':'Obese';
+  document.getElementById('pstats').innerHTML=`
+    <div class="pstat"><div class="pstat-val">${Math.round(prof.bwKg)}</div><div class="pstat-lbl">kg</div></div>
+    <div class="pstat"><div class="pstat-val">${prof.hCm}</div><div class="pstat-lbl">cm</div></div>
+    <div class="pstat"><div class="pstat-val">${prof.age}</div><div class="pstat-lbl">Age</div></div>
+    <div class="pstat blue"><div class="pstat-val">${bmi}</div><div class="pstat-lbl">BMI · ${bmiCat}</div></div>`;
+
+  // BMR strip
+  document.getElementById('bmrStrip').innerHTML=`
+    <div class="bmr-pill">BMR <b>${nut.bmr} kcal</b></div>
+    <div class="bmr-pill">TDEE <b>${nut.tdee} kcal</b></div>
+    <div class="bmr-pill">Target <b>${nut.kcal} kcal</b> · ${nut.kcalNote}</div>
+    <div class="bmr-pill">Protein/kg <b>${nut.protPerKg}g/kg</b></div>`;
+
+  // Macro cards
+  document.getElementById('macroGrid').innerHTML=`
+    <div class="mcard p"><div class="mcard-icon">🥩</div><div class="mcard-val">${nut.protein}g</div><div class="mcard-lbl">Daily Protein</div><div class="mcard-note">${nut.protPerKg}g/kg · ~${Math.round(nut.protein/4)}g per meal</div></div>
+    <div class="mcard k"><div class="mcard-icon">🔥</div><div class="mcard-val">${nut.kcal}</div><div class="mcard-lbl">Daily Calories</div><div class="mcard-note">${nut.kcalNote}</div></div>
+    <div class="mcard c"><div class="mcard-icon">🌾</div><div class="mcard-val">${nut.carbs}g</div><div class="mcard-lbl">Daily Carbs</div><div class="mcard-note">~${Math.round(nut.carbs*4/nut.kcal*100)}% of calories</div></div>
+    <div class="mcard f"><div class="mcard-icon">🥑</div><div class="mcard-val">${nut.fat}g</div><div class="mcard-lbl">Daily Fat</div><div class="mcard-note">~27% of calories</div></div>`;
+
+  // Day selector
+  activeDay=new Date().getDay(); activeDay=activeDay===0?6:activeDay-1;
+  const ds=document.getElementById('daySel'); ds.innerHTML='';
+  DAYS.forEach((d,i)=>{ const b=document.createElement('button'); b.className='day-btn'+(i===activeDay?' active':''); b.textContent=SHORT[i]; b.onclick=()=>{ activeDay=i; document.querySelectorAll('.day-btn').forEach((x,j)=>x.classList.toggle('active',j===i)); renderDay(plan); }; ds.appendChild(b); });
+
+  document.getElementById('rtgt').textContent='/'+nut.protein+'g';
+  document.getElementById('tgtLbl').textContent=nut.protein+'g';
+
+  renderDay(plan);
+  buildBars(plan);
+  buildWeek(plan);
+  buildTips(plan);
+  buildChecklist(plan);
+  buildGrocery(plan);
+  buildProgress(plan);
+  buildSupplements(plan);
+  setTimeout(()=>document.querySelectorAll('.pg-fi,.bar-fi').forEach(e=>e.style.transform='scaleX(1)'),400);
+}
+
+function renderDay(plan){
+  const{nut}=plan; const day=DAYS[activeDay];
+  const meals=plan.weekly[day]?.meals||[];
+
+  // For fallback meals that only have protein+kcal, derive carbs & fat
+  // Fat = 27% of kcal / 9, Carbs = remaining after protein & fat kcal
+  const enriched = meals.map(m => {
+    if (m.carbs || m.fat) return m; // already has values
+    const fatG  = Math.round((m.kcal * 0.27) / 9);
+    const carbG = Math.round(Math.max(m.kcal - m.protein*4 - fatG*9, 0) / 4);
+    return {...m, fat: fatG, carbs: carbG};
+  });
+
+  const tot=enriched.reduce((a,m)=>({p:a.p+(m.protein||0),c:a.c+(m.carbs||0),f:a.f+(m.fat||0),k:a.k+(m.kcal||0)}),{p:0,c:0,f:0,k:0});
+  const circ=358; const pct=Math.min(tot.p/nut.protein,1);
+  const ring=document.getElementById('rfill');
+  ring.style.strokeDashoffset=circ-pct*circ;
+  ring.style.stroke=tot.p>=nut.protein*0.95&&tot.p<=nut.protein*1.05?'#4ade80':tot.p<nut.protein*0.9?'#e8ff47':'#ff6b47';
+  animN('rnum',tot.p);
+  document.getElementById('rmP').textContent=tot.p+'g';
+  document.getElementById('rmC').textContent=tot.c+'g';
+  document.getElementById('rmF').textContent=tot.f+'g';
+  document.getElementById('rmKcal').textContent=tot.k+' kcal';
+  const list=document.getElementById('mealList'); list.innerHTML='';
+  enriched.forEach(m=>{
+    const col=COLS[m.name]||'#888';
+    const isPW=m.name==='Post-Workout';
+    const badge=isPW&&m.desc&&m.desc.includes('500ml')?`<span class="mbadge" style="background:rgba(71,197,255,.12);color:#47c5ff">+milk</span>`:'';
+    const row=document.createElement('div'); row.className='meal-row';
+    row.innerHTML=`<span class="meal-time">${TIMS[m.name]||''}</span><div class="mdot" style="background:${col}18">${EMOJ[m.name]||'🍴'}</div><div><div class="mname">${m.name}${badge}</div><div class="mdesc">${m.desc}</div></div><span class="mprot">${m.protein}g</span>`;
+    list.appendChild(row);
+  });
+}
+
+function animN(id,target){
+  const el=document.getElementById(id); if(!el)return;
+  let t0=null;
+  (function step(ts){ if(!t0)t0=ts; const p=Math.min((ts-t0)/650,1); el.textContent=Math.round(p*target); if(p<1)requestAnimationFrame(step); })(performance.now());
+}
+
+function buildBars(plan){
+  const el=document.getElementById('barChart'); el.innerHTML='';
+  const srcs=plan.sources||plan.proteinSources||[];
+  const max=Math.max(...srcs.map(s=>s.grams),1);
+  srcs.forEach(s=>{ const r=document.createElement('div'); r.className='br'; r.innerHTML=`<div class="br-meta"><span class="br-food">${s.food}</span><span class="br-g">${s.grams}g</span></div><div class="bar-tr"><div class="bar-fi" style="background:${s.color};width:${(s.grams/max)*100}%"></div></div>`; el.appendChild(r); });
+}
+
+function buildWeek(plan){
+  const el=document.getElementById('wkBars'); el.innerHTML='';
+  const tots=DAYS.map(d=>(plan.weekly[d]?.meals||[]).reduce((a,m)=>a+(m.protein||0),0));
+  const maxP=Math.max(...tots,1); const avg=Math.round(tots.reduce((a,b)=>a+b,0)/7); const pt=plan.nut.protein;
+  document.getElementById('wkAvg').textContent=avg+'g';
+  document.getElementById('wkBar').style.width=Math.min(avg/pt,1)*100+'%';
+  tots.forEach((p,i)=>{ const c=document.createElement('div'); c.className='wkcol'; const isA=i===activeDay; c.innerHTML=`<div class="wkbar" style="height:0;background:${isA?'#e8ff47':'#1f2531'};border:1px solid ${isA?'#e8ff47':'#2a3040'}"></div><div class="wklbl">${SHORT[i]}</div>`; el.appendChild(c); setTimeout(()=>c.querySelector('.wkbar').style.height=((p/maxP)*64)+'px',300+i*55); });
+  document.getElementById('tgtLine').style.top=(100-(pt/maxP)*100)+'%';
+}
+
+function buildTips(plan){
+  activeTip=0; const tips=plan.tips||[];
+  renderTip(tips);
+  const nav=document.getElementById('tNav'); nav.innerHTML='';
+  tips.forEach((_,i)=>{ const d=document.createElement('div'); d.className='tdot'+(i===0?' active':''); d.onclick=()=>{activeTip=i;renderTip(tips);}; nav.appendChild(d); });
+  document.getElementById('tPrev').onclick=()=>{activeTip=(activeTip-1+tips.length)%tips.length;renderTip(tips);};
+  document.getElementById('tNext').onclick=()=>{activeTip=(activeTip+1)%tips.length;renderTip(tips);};
+  const card=document.getElementById('tipCard');
+  let tx=0;
+  card.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+  card.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>40){activeTip=dx<0?(activeTip+1)%tips.length:(activeTip-1+tips.length)%tips.length;renderTip(tips);}},{passive:true});
+  if(tipTmr)clearInterval(tipTmr);
+  tipTmr=setInterval(()=>{activeTip=(activeTip+1)%tips.length;renderTip(tips);},7000);
+}
+
+function renderTip(tips){
+  if(!tips?.length)return;
+  const t=tips[activeTip];
+  const icon=document.getElementById('tipIcon'),text=document.getElementById('tipText');
+  icon.style.opacity='0'; text.style.opacity='0';
+  setTimeout(()=>{ icon.textContent=t.icon; text.innerHTML=t.text; icon.style.transition='opacity .25s'; text.style.transition='opacity .25s'; icon.style.opacity='1'; text.style.opacity='1'; },120);
+  document.querySelectorAll('.tdot').forEach((d,i)=>d.classList.toggle('active',i===activeTip));
+}
+</script>
+</body>
+</html>
