@@ -142,7 +142,45 @@ svg.ring{transform:rotate(-90deg)}
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 
-/* ── CHECKLIST ── */
+/* ── REST DAY TOGGLE ── */
+.rest-toggle{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:11px;font-family:'DM Sans',sans-serif;font-weight:500;color:var(--muted);cursor:pointer;transition:all .2s}
+.rest-toggle:hover{border-color:var(--purple);color:var(--purple)}
+.rest-toggle.active{background:rgba(196,132,252,.12);border-color:var(--purple);color:var(--purple);font-weight:600}
+
+/* ── BMI GOAL STRIP ── */
+.bmi-goal-strip{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-bottom:14px}
+.bgs-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px}
+.bgs-label{font-size:11px;font-weight:600;color:var(--text)}
+.bgs-meta{font-size:10px;color:var(--muted)}
+.bgs-track{height:7px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:5px}
+.bgs-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--green));transition:width .8s ease}
+.bgs-ticks{display:flex;justify-content:space-between;font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--muted)}
+.bgs-highlight{color:var(--accent);font-weight:600}
+
+/* ── STREAK ── */
+.streak-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,107,71,.1);border:1px solid rgba(255,107,71,.3);border-radius:99px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--orange);margin-top:4px}
+.streak-badge.zero{background:var(--surface);border-color:var(--border);color:var(--muted)}
+
+/* ── KCAL RUNNING TOTAL ── */
+.kcal-running{text-align:right;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;line-height:1.4}
+.kcal-running b{color:var(--orange);font-size:12px}
+
+/* ── MEAL DETAIL (tap to expand) ── */
+.meal-row{cursor:pointer}
+.meal-hint{font-size:9px;color:var(--muted);margin-top:1px;opacity:.6}
+.modal-meal-name{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--accent);letter-spacing:1px;margin-bottom:4px}
+.modal-meal-time{font-size:11px;color:var(--muted);margin-bottom:16px}
+.modal-macros{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
+.modal-macro{background:var(--surface);border-radius:10px;padding:10px;text-align:center;border:1px solid var(--border)}
+.modal-macro-val{font-family:'Bebas Neue',sans-serif;font-size:22px;line-height:1}
+.modal-macro-lbl{font-size:9px;color:var(--muted);margin-top:2px}
+.modal-portions{margin-bottom:16px}
+.modal-portions-title{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px}
+.portion-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
+.portion-item:last-child{border-bottom:none}
+.portion-name{color:var(--text)}
+.portion-qty{font-family:'JetBrains Mono',monospace;color:var(--accent);font-size:11px}
+.modal-timing{background:rgba(71,197,255,.07);border:1px solid rgba(71,197,255,.2);border-radius:10px;padding:10px 14px;font-size:11px;color:var(--blue)}
 .checklist-wrap{max-width:600px}
 .cl-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
 .cl-title{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--text);letter-spacing:1px}
@@ -259,6 +297,7 @@ svg.ring{transform:rotate(-90deg)}
    <div class="field"><label>Fitness Goal</label><div class="chips"><div class="chip active" data-group="goal" data-val="Muscle Gain">💪 Muscle Gain</div><div class="chip" data-group="goal" data-val="Fat Loss">🔥 Fat Loss</div><div class="chip" data-group="goal" data-val="Lean Bulk">⚡ Lean Bulk</div><div class="chip" data-group="goal" data-val="Maintenance">🎯 Maintenance</div></div></div>
    <div class="field"><label>Diet Preference</label><div class="chips"><div class="chip active" data-group="diet" data-val="Veg + Eggs">🥚 Veg + Eggs</div><div class="chip" data-group="diet" data-val="Vegetarian">🥗 Vegetarian</div><div class="chip" data-group="diet" data-val="Non-Veg">🍗 Non-Veg</div><div class="chip" data-group="diet" data-val="Lactose Free">🚫🥛 Lactose Free</div></div></div>
    <div class="field"><label>Activity Level</label><select id="activity"><option value="sedentary">Sedentary (desk job, no exercise)</option><option value="light">Light (1–2x training/week)</option><option value="moderate" selected>Moderate (3–4x training/week)</option><option value="active">Active (5–6x training/week)</option><option value="athlete">Athlete (daily intense training)</option></select></div>
+   <div class="field"><label>Wake Up Time</label><input type="time" id="wakeTime" value="07:00"></div>
    <div class="field"><label>Avoid / Allergies <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;font-size:9px">(optional)</span></label><input type="text" id="avoid" placeholder="e.g. peanuts, soya, gluten…"></div>
    <button class="submit-btn" id="generateBtn" onclick="startGenerate()">GENERATE MY PLAN →</button>
   </div>
@@ -280,8 +319,15 @@ svg.ring{transform:rotate(-90deg)}
   <div id="errorBanner" style="display:none"></div>
   <div class="profile-card">
    <div><div class="profile-title" id="dashTitle">MUSCLE GAIN PLAN</div><div class="profile-sub" id="dashSub">Personalised · Evidence-based</div></div>
-   <div class="profile-right"><button class="edit-btn" onclick="resetToOnboarding()">✦ Edit Profile</button><div class="pstats" id="pstats"></div></div>
+   <div class="profile-right">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+     <button class="rest-toggle" id="restToggle" onclick="toggleRestDay()">🛌 Rest Day</button>
+     <button class="edit-btn" onclick="resetToOnboarding()">✦ Edit Profile</button>
+    </div>
+    <div class="pstats" id="pstats"></div>
+   </div>
   </div>
+  <div class="bmi-goal-strip" id="bmiGoalStrip"></div>
   <div class="bmr-strip" id="bmrStrip"></div>
   <div class="macro-grid" id="macroGrid"></div>
   <div class="day-sel" id="daySel"></div>
@@ -299,7 +345,15 @@ svg.ring{transform:rotate(-90deg)}
     </div>
     <div style="font-size:9px;color:var(--muted)" id="rmKcal">— kcal</div>
    </div>
-   <div class="meal-card"><div class="sec-title">📋 Today's Meals</div><div id="mealList"></div></div>
+   <div class="meal-card"><div class="sec-title">📋 Today's Meals <span id="restDayBadge" style="display:none;background:rgba(196,132,252,.15);color:var(--purple);font-size:9px;padding:2px 8px;border-radius:99px;font-family:'JetBrains Mono',monospace;margin-left:6px">🛌 REST DAY · −20% carbs</span></div><div id="mealList"></div></div>
+
+  <!-- Meal Detail Modal -->
+  <div id="mealModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center;padding:20px">
+   <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;max-width:420px;width:100%;position:relative;animation:fadeUp .2s ease">
+    <button onclick="closeModal()" style="position:absolute;top:14px;right:14px;background:var(--surface);border:1px solid var(--border);border-radius:50%;width:28px;height:28px;color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">×</button>
+    <div id="modalContent"></div>
+   </div>
+  </div>
   </div>
   <!-- TAB NAV -->
   <div class="tab-nav" id="tabNav">
@@ -328,15 +382,15 @@ svg.ring{transform:rotate(-90deg)}
   </div>
   </div>
 
-  <!-- TAB: DAILY CHECKLIST -->
   <div class="tab-panel" id="tab-checklist">
    <div class="checklist-wrap">
     <div class="cl-header">
      <div>
       <div class="cl-title" id="clTitle">Today's Meals</div>
       <div class="cl-date" id="clDate"></div>
+      <div class="streak-badge" id="streakBadge"></div>
      </div>
-     <div class="cl-progress-wrap">
+     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
       <div class="cl-ring-wrap">
        <svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg)">
         <circle cx="32" cy="32" r="26" fill="none" stroke="var(--border)" stroke-width="6"/>
@@ -344,6 +398,7 @@ svg.ring{transform:rotate(-90deg)}
        </svg>
        <div class="cl-ring-center"><span id="clDone">0</span>/<span id="clTotal">4</span></div>
       </div>
+      <div class="kcal-running" id="kcalRunning"></div>
      </div>
     </div>
     <div id="clMeals"></div>
@@ -406,6 +461,131 @@ document.querySelectorAll('.chip').forEach(c=>{
 });
 const chip=g=>document.querySelector(`.chip[data-group="${g}"].active`)?.dataset.val||'';
 
+// ── MEAL TIMES FROM WAKE TIME ──
+function calcMealTimes(wakeTime){
+  const[wh,wm]=wakeTime.split(':').map(Number);
+  const fmt=(h,m)=>{const ampm=h>=12?'PM':'AM';const hh=h%12||12;return `${hh}:${String(m).padStart(2,'0')} ${ampm}`;};
+  const add=(h,m,addH,addM=0)=>{ let nm=m+addM,nh=h+addH+Math.floor(nm/60); nm%=60; nh%=24; return [nh,nm]; };
+  const [bh,bm]=[wh,wm];
+  const [lh,lm]=add(bh,bm,4,30);
+  const [ph,pm]=add(bh,bm,9);
+  const [dh,dm]=add(bh,bm,12,30);
+  return {
+    Breakfast: fmt(bh,bm),
+    Lunch:     fmt(lh,lm),
+    'Post-Workout': fmt(ph,pm),
+    Dinner:    fmt(dh,dm),
+    Snack:     fmt(...add(bh,bm,7)),
+  };
+}
+
+// ── REST DAY STATE ──
+let isRestDay=false;
+function toggleRestDay(){
+  isRestDay=!isRestDay;
+  document.getElementById('restToggle').classList.toggle('active',isRestDay);
+  document.getElementById('restDayBadge').style.display=isRestDay?'inline':'none';
+  if(planData) renderDay(planData);
+  if(planData) buildChecklist(planData);
+}
+
+// ── MEAL DETAIL MODAL ──
+const PORTIONS={
+  Breakfast:{
+    'Veg + Eggs':[ ['Eggs (whole)',2,'pieces'],['Poha / Upma / Oats','1 cup (150g)',''],['Vegetables (chopped)','½ cup (50g)',''],['Oil / Ghee','1 tsp (5g)',''] ],
+    'Vegetarian':[ ['Oats / Upma','1 cup (150g)',''],['Greek Yogurt','100g',''],['Fruits','1 medium',''],['Nuts','10–15g',''] ],
+    'Non-Veg':[ ['Eggs (whole)',3,'pieces'],['Oats / Toast','1 cup / 2 slices',''],['Vegetables','½ cup',''],['Oil','1 tsp',''] ],
+    'Lactose Free':[ ['Eggs',2,'pieces'],['Oat Milk','200ml',''],['Oats','60g',''],['Banana','1 medium',''] ],
+  },
+  Lunch:{
+    'Veg + Eggs':[ ['Whole Wheat Roti',2,'pieces'],['Dal (cooked)','1 cup (200g)',''],['Paneer / Soya','80–100g',''],['Sabji (cooked)','1 cup',''],['Curd / Raita','100g',''] ],
+    'Vegetarian':[ ['Whole Wheat Roti',2,'pieces'],['Dal (cooked)','1 cup',''],['Paneer / Tofu','80–100g',''],['Sabji','1 cup',''],['Curd','100g',''] ],
+    'Non-Veg':[ ['Whole Wheat Roti',2,'pieces'],['Chicken (cooked)','120–150g',''],['Dal / Rice','1 cup',''],['Salad','large bowl',''] ],
+    'Lactose Free':[ ['Whole Wheat Roti',2,'pieces'],['Soya Chunks (cooked)','100g',''],['Dal','1 cup',''],['Salad','large bowl',''] ],
+  },
+  'Post-Workout':{
+    'Veg + Eggs':[ ['Whey Protein Powder','1 scoop (30g)',''],['Full-fat Milk','500ml',''],['Banana (optional)','1 medium',''] ],
+    'Vegetarian':[ ['Plant Protein Powder','1 scoop (30g)',''],['Soy Milk','300ml',''] ],
+    'Non-Veg':[ ['Whey Protein Powder','1 scoop (30g)',''],['Full-fat Milk','500ml',''] ],
+    'Lactose Free':[ ['Plant Protein Powder','1 scoop (30g)',''],['Oat Milk','300ml',''],['Banana','1 medium',''] ],
+  },
+  Dinner:{
+    'Veg + Eggs':[ ['Whole Wheat Roti',2,'pieces'],['Dal / Rajma / Chole','1 cup (200g)',''],['Sabji','1 cup',''],['Curd','100g',''] ],
+    'Vegetarian':[ ['Whole Wheat Roti',2,'pieces'],['Dal / Legumes','1 cup',''],['Paneer Sabji','80g',''],['Curd','100g',''] ],
+    'Non-Veg':[ ['Whole Wheat Roti',2,'pieces'],['Chicken / Fish','100–120g',''],['Dal','1 cup',''],['Salad','large bowl',''] ],
+    'Lactose Free':[ ['Whole Wheat Roti',2,'pieces'],['Dal / Legumes','1 cup',''],['Soya / Tofu','100g',''],['Salad','large bowl',''] ],
+  },
+};
+
+function openMealModal(meal,diet,mealTimes){
+  const portions=(PORTIONS[meal.name]||{})[diet]||[];
+  const fatG=Math.round((meal.kcal*0.27)/9);
+  const carbG=Math.round(Math.max(meal.kcal-meal.protein*4-fatG*9,0)/4);
+  document.getElementById('modalContent').innerHTML=`
+    <div class="modal-meal-name">${meal.name}</div>
+    <div class="modal-meal-time">⏰ ${mealTimes[meal.name]||''} · Tap outside to close</div>
+    <div class="modal-macros">
+      <div class="modal-macro"><div class="modal-macro-val" style="color:var(--accent)">${meal.protein}g</div><div class="modal-macro-lbl">Protein</div></div>
+      <div class="modal-macro"><div class="modal-macro-val" style="color:var(--blue)">${carbG}g</div><div class="modal-macro-lbl">Carbs</div></div>
+      <div class="modal-macro"><div class="modal-macro-val" style="color:var(--orange)">${fatG}g</div><div class="modal-macro-lbl">Fat</div></div>
+      <div class="modal-macro"><div class="modal-macro-val" style="color:var(--purple)">${meal.kcal}</div><div class="modal-macro-lbl">kcal</div></div>
+    </div>
+    ${portions.length?`<div class="modal-portions"><div class="modal-portions-title">📏 Portions & Quantities</div>${portions.map(p=>`<div class="portion-item"><span class="portion-name">${p[0]}</span><span class="portion-qty">${typeof p[1]==='number'?p[1]+' '+p[2]:p[1]}</span></div>`).join('')}</div>`:''}
+    <div class="modal-timing">💡 ${meal.name==='Breakfast'?'Eat within 1 hour of waking. Prioritise protein first.':meal.name==='Lunch'?'Largest meal of the day. Protein + complex carbs for sustained energy.':meal.name==='Post-Workout'?'Consume within 30–60 min of training. Whey absorbs fastest.':'Keep dinner lighter on carbs. Prioritise protein and vegetables.'}</div>
+  `;
+  const modal=document.getElementById('mealModal');
+  modal.style.display='flex';
+  modal.onclick=e=>{ if(e.target===modal) closeModal(); };
+}
+function closeModal(){ document.getElementById('mealModal').style.display='none'; }
+
+// ── BMI GOAL STRIP ──
+function buildBmiStrip(plan){
+  const{bwKg,hCm,goal,gender}=plan.prof, nut=plan.nut;
+  const bmi=bwKg/((hCm/100)**2);
+  const ibw=22*((hCm/100)**2);
+  const el=document.getElementById('bmiGoalStrip');
+
+  let msg,fill,ticks,highlight;
+  if(goal==='Fat Loss'){
+    const toGoal=Math.max(bwKg-ibw-2,0);
+    const deficit=nut.tdee-nut.kcal;
+    const weeks=deficit>0?Math.round(toGoal*7700/deficit/7):null;
+    const pct=Math.min((ibw/bwKg)*100,100);
+    msg=`You are <b>${toGoal.toFixed(1)}kg</b> away from a healthy BMI of 22–24`;
+    highlight=weeks?`At your ${deficit} kcal/day deficit → ~<b>${weeks} weeks</b> to goal`:`Keep your deficit consistent to see progress`;
+    fill=pct; ticks=[`${Math.round(ibw)}kg (healthy)`,`${Math.round(bwKg)}kg (now)`];
+  } else if(goal==='Muscle Gain'||goal==='Lean Bulk'){
+    const gainGoal=5;
+    const weeksEst=Math.round(gainGoal/0.25);
+    msg=`Goal: gain <b>${gainGoal}kg</b> of lean muscle at current surplus`;
+    highlight=`+300 kcal/day surplus → ~<b>${weeksEst} weeks</b> to add ${gainGoal}kg lean mass`;
+    fill=5; ticks=['Now','','','','+5kg goal'];
+  } else {
+    el.style.display='none'; return;
+  }
+  el.style.display='block';
+  el.innerHTML=`<div class="bgs-row"><div class="bgs-label">${msg}</div></div><div class="bgs-track"><div class="bgs-fill" style="width:${fill}%"></div></div><div class="bgs-ticks">${ticks.map((t,i)=>`<span${i===0?' class="bgs-highlight"':''} >${t}</span>`).join('')}</div><div style="font-size:10px;color:var(--muted);margin-top:6px">${highlight}</div>`;
+}
+
+// ── STREAK LOGIC ──
+let streakData={streak:0,lastDate:null,completedDays:{}};
+function updateStreak(plan){
+  const today=new Date().toDateString();
+  const day=DAYS[activeDay];
+  const meals=plan.weekly[day]?.meals||[];
+  const allDone=meals.length>0&&meals.every((_,i)=>checkState[`${day}_${i}`]);
+  if(allDone&&streakData.lastDate!==today){
+    streakData.completedDays[today]=true;
+    streakData.lastDate=today;
+    // Count consecutive days
+    let s=0,d=new Date();
+    while(streakData.completedDays[d.toDateString()]){ s++; d.setDate(d.getDate()-1); }
+    streakData.streak=s;
+  }
+  return streakData.streak;
+}
+
 // ── TABS ──
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.onclick=()=>{
@@ -425,10 +605,19 @@ let checkState={}, waterCups=0;
 
 function buildChecklist(plan){
   const day=DAYS[activeDay];
+  const mealTimes=calcMealTimes(plan.prof.wakeTime||'07:00');
   const meals=plan.weekly[day]?.meals||[];
   const dateStr=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
   document.getElementById('clDate').textContent=dateStr;
   document.getElementById('clTotal').textContent=meals.length;
+
+  // Streak
+  const streak=updateStreak(plan);
+  const sb=document.getElementById('streakBadge');
+  sb.className='streak-badge'+(streak===0?' zero':'');
+  sb.innerHTML=streak===0?'Start your streak today!':streak===1?'🔥 1 day streak':streak>=7?`🔥🔥 ${streak} day streak — on fire!`:`🔥 ${streak} day streak`;
+
+  // Water
   const water=Math.round((plan.prof.bwKg*35)/250);
   document.getElementById('clWaterTarget').textContent=`Target: ${(water*0.25).toFixed(1)} litres · ${water} glasses of 250ml`;
   const wc=document.getElementById('clWaterCups'); wc.innerHTML='';
@@ -439,14 +628,36 @@ function buildChecklist(plan){
     cup.onclick=()=>{ waterCups=i<waterCups?i:i+1; buildChecklist(plan); };
     wc.appendChild(cup);
   }
-  const list=document.getElementById('clMeals'); list.innerHTML='';
+
+  // Meals with running kcal
+  const list=document.getElementById('mealList_cl')||document.getElementById('clMeals');
+  list.innerHTML='';
+  let runningKcal=0, runningProt=0;
   meals.forEach((m,i)=>{
     const key=`${day}_${i}`, done=checkState[key]||false;
+    const fatG=Math.round((m.kcal*0.27)/9);
+    if(done){ runningKcal+=m.kcal||0; runningProt+=m.protein||0; }
     const el=document.createElement('div'); el.className='cl-meal'+(done?' done':'');
-    el.innerHTML=`<div class="cl-check">${done?'✓':''}</div><div class="cl-meal-info"><div class="cl-meal-name">${m.name} — ${m.desc}</div><div class="cl-meal-desc">${TIMS[m.name]||''}</div></div><div class="cl-meal-prot">${m.protein}g</div>`;
-    el.onclick=()=>{ checkState[key]=!done; buildChecklist(plan); };
+    el.innerHTML=`
+      <div class="cl-check">${done?'✓':''}</div>
+      <div class="cl-meal-info">
+        <div class="cl-meal-name">${m.name} — ${m.desc}</div>
+        <div class="cl-meal-desc">${mealTimes[m.name]||''} · ${m.protein}g protein · ${m.kcal} kcal</div>
+      </div>
+      <div class="cl-meal-prot">${m.protein}g</div>`;
+    el.onclick=()=>{ checkState[key]=!done; buildChecklist(plan); updateStreak(plan); };
     list.appendChild(el);
   });
+
+  // Running total display
+  const totalKcal=meals.reduce((a,m)=>a+(m.kcal||0),0);
+  const totalProt=meals.reduce((a,m)=>a+(m.protein||0),0);
+  const kcalEl=document.getElementById('kcalRunning');
+  kcalEl.innerHTML=runningKcal>0
+    ?`<b>${runningKcal}</b> / ${totalKcal} kcal eaten<br>${runningProt}g / ${totalProt}g protein`
+    :`${totalKcal} kcal · ${totalProt}g protein today`;
+
+  // Ring
   const doneCount=meals.filter((_,i)=>checkState[`${day}_${i}`]).length;
   document.getElementById('clDone').textContent=doneCount;
   document.getElementById('clRing').style.strokeDashoffset=163-(163*(meals.length>0?doneCount/meals.length:0));
@@ -649,6 +860,7 @@ function startGenerate(){
   const diet=chip('diet')||'Veg + Eggs';
   const activity=document.getElementById('activity').value;
   const avoid=document.getElementById('avoid').value.trim();
+  const wakeTime=document.getElementById('wakeTime').value||'07:00';
 
   if(!bwRaw||!hRaw||!ageRaw){ alert('Please fill in Body Weight, Height, and Age.'); return; }
 
@@ -656,7 +868,7 @@ function startGenerate(){
   const hCm   = parseH(hRaw);
   const age   = parseInt(ageRaw);
   const nut   = calcNutrition(bwKg,hCm,age,gender,goal,activity);
-  const prof  = {bwKg,hCm,age,gender,goal,diet,activity,avoid};
+  const prof  = {bwKg,hCm,age,gender,goal,diet,activity,avoid,wakeTime};
 
   // Re-run: skip fetch, build instantly
   if(_fetched){
@@ -908,6 +1120,7 @@ function buildDash(plan){
   buildBars(plan);
   buildWeek(plan);
   buildTips(plan);
+  buildBmiStrip(plan);
   buildChecklist(plan);
   buildGrocery(plan);
   buildProgress(plan);
@@ -916,16 +1129,17 @@ function buildDash(plan){
 }
 
 function renderDay(plan){
-  const{nut}=plan; const day=DAYS[activeDay];
+  const{nut,prof}=plan; const day=DAYS[activeDay];
+  const mealTimes=calcMealTimes(prof.wakeTime||'07:00');
   const meals=plan.weekly[day]?.meals||[];
 
-  // For fallback meals that only have protein+kcal, derive carbs & fat
-  // Fat = 27% of kcal / 9, Carbs = remaining after protein & fat kcal
-  const enriched = meals.map(m => {
-    if (m.carbs || m.fat) return m; // already has values
-    const fatG  = Math.round((m.kcal * 0.27) / 9);
-    const carbG = Math.round(Math.max(m.kcal - m.protein*4 - fatG*9, 0) / 4);
-    return {...m, fat: fatG, carbs: carbG};
+  // Rest day: reduce carbs by 20%, keep protein same
+  const enriched=meals.map(m=>{
+    const fatG=m.fat||Math.round((m.kcal*0.27)/9);
+    const carbG=m.carbs||Math.round(Math.max(m.kcal-m.protein*4-fatG*9,0)/4);
+    const adjCarbs=isRestDay?Math.round(carbG*0.8):carbG;
+    const adjKcal=isRestDay?Math.round(m.kcal-(carbG-adjCarbs)*4):m.kcal;
+    return {...m,fat:fatG,carbs:adjCarbs,kcal:adjKcal};
   });
 
   const tot=enriched.reduce((a,m)=>({p:a.p+(m.protein||0),c:a.c+(m.carbs||0),f:a.f+(m.fat||0),k:a.k+(m.kcal||0)}),{p:0,c:0,f:0,k:0});
@@ -938,13 +1152,23 @@ function renderDay(plan){
   document.getElementById('rmC').textContent=tot.c+'g';
   document.getElementById('rmF').textContent=tot.f+'g';
   document.getElementById('rmKcal').textContent=tot.k+' kcal';
+
   const list=document.getElementById('mealList'); list.innerHTML='';
   enriched.forEach(m=>{
     const col=COLS[m.name]||'#888';
     const isPW=m.name==='Post-Workout';
     const badge=isPW&&m.desc&&m.desc.includes('500ml')?`<span class="mbadge" style="background:rgba(71,197,255,.12);color:#47c5ff">+milk</span>`:'';
     const row=document.createElement('div'); row.className='meal-row';
-    row.innerHTML=`<span class="meal-time">${TIMS[m.name]||''}</span><div class="mdot" style="background:${col}18">${EMOJ[m.name]||'🍴'}</div><div><div class="mname">${m.name}${badge}</div><div class="mdesc">${m.desc}</div></div><span class="mprot">${m.protein}g</span>`;
+    row.innerHTML=`
+      <span class="meal-time">${mealTimes[m.name]||''}</span>
+      <div class="mdot" style="background:${col}18">${EMOJ[m.name]||'🍴'}</div>
+      <div>
+        <div class="mname">${m.name}${badge}</div>
+        <div class="mdesc">${m.desc}</div>
+        <div class="meal-hint">tap for portions & details</div>
+      </div>
+      <span class="mprot">${m.protein}g</span>`;
+    row.onclick=()=>openMealModal(m,prof.diet,mealTimes);
     list.appendChild(row);
   });
 }
