@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gains Plan — Personalised Diet Dashboard</title>
+<title>Macrogang — Personalised Diet Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0c10;--surface:#111318;--card:#161a22;--border:#1f2531;--accent:#e8ff47;--blue:#47c5ff;--orange:#ff6b47;--green:#4ade80;--purple:#c084fc;--amber:#fbbf24;--text:#e8eaf0;--muted:#5a6070}
@@ -245,7 +245,7 @@ svg.ring{transform:rotate(-90deg)}
 <!-- ONBOARDING -->
 <div id="onboarding" class="screen active">
  <div class="onboard-wrap">
-  <div class="brand"><h1>GAINS PLAN</h1><p>Evidence-based personalised nutrition</p></div>
+  <div class="brand"><h1>MACROGANG</h1><p>Your personal diet OS 🔥</p></div>
   <div class="form-card">
    <div class="form-row">
     <div class="field"><label>Body Weight</label><input type="number" id="bw" placeholder="e.g. 70" min="30" max="300"></div>
@@ -279,7 +279,7 @@ svg.ring{transform:rotate(-90deg)}
  <div class="wrap">
   <div id="errorBanner" style="display:none"></div>
   <div class="profile-card">
-   <div><div class="profile-title" id="dashTitle">GAINS PLAN</div><div class="profile-sub" id="dashSub">Personalised · Evidence-based</div></div>
+   <div><div class="profile-title" id="dashTitle">MACROGANG</div><div class="profile-sub" id="dashSub">Personalised · Evidence-based</div></div>
    <div class="profile-right"><button class="edit-btn" onclick="resetToOnboarding()">✦ Edit Profile</button><div class="pstats" id="pstats"></div></div>
   </div>
   <div class="bmr-strip" id="bmrStrip"></div>
@@ -870,7 +870,7 @@ let activeDay=0,activeTip=0,tipTmr=null;
 function buildDash(plan){
   const{nut,prof}=plan;
   // Title
-  document.getElementById('dashTitle').textContent=prof.goal.toUpperCase()+' PLAN';
+  document.getElementById('dashTitle').textContent='MACROGANG';
   document.getElementById('dashSub').textContent=`${prof.diet} · ${prof.gender} · ${prof.activity.charAt(0).toUpperCase()+prof.activity.slice(1)}`;
 
   // Profile stats
