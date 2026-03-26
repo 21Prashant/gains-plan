@@ -142,6 +142,118 @@ svg.ring{transform:rotate(-90deg)}
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 
+/* ── MOTIVATIONAL QUOTE ── */
+.quote-strip{background:linear-gradient(135deg,rgba(232,255,71,.06),rgba(71,197,255,.04));border:1px solid rgba(232,255,71,.15);border-radius:14px;padding:14px 20px;margin-bottom:14px;display:flex;align-items:flex-start;gap:12px}
+.quote-icon{font-size:22px;flex-shrink:0;margin-top:2px}
+.quote-body{flex:1}
+.quote-text{font-size:13px;font-style:italic;color:var(--text);line-height:1.6;font-weight:500}
+.quote-author{font-size:10px;color:var(--accent);margin-top:5px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px}
+
+.wo-rest-chip.disabled{opacity:.35;cursor:not-allowed}
+.wo-rest-chip.disabled:hover{border-color:var(--border);color:var(--muted)}
+.wo-rest-chip.active[style*="not-allowed"]{opacity:.7;border-style:dashed}
+.wo-rest-count{display:flex;align-items:center}
+.wo-rest-count-pill{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:4px 12px;color:var(--muted)}
+.wo-rest-count-pill.done{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4);color:var(--green)}
+.wo-rest-count-pill.over{background:rgba(255,107,71,.1);border-color:rgba(255,107,71,.3);color:var(--orange)}
+.wo-settings-divider{height:1px;background:var(--border);margin:12px 0}
+
+.wo-settings{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:14px}
+.wo-settings-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.wo-settings-label{font-size:12px;font-weight:600;color:var(--text)}
+.wo-settings-sub{font-size:10px;color:var(--muted);margin-top:2px}
+.wo-freq-chips{display:flex;gap:6px}
+.wo-freq-chip{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;color:var(--muted);cursor:pointer;transition:all .15s}
+.wo-freq-chip:hover{border-color:var(--accent);color:var(--accent)}
+.wo-freq-chip.active{background:var(--accent);border-color:var(--accent);color:#000}
+.wo-rest-picker{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.wo-rest-chip{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;user-select:none}
+.wo-rest-chip:hover{border-color:var(--purple);color:var(--purple)}
+.wo-rest-chip.active{background:rgba(196,132,252,.12);border-color:var(--purple);color:var(--purple);font-weight:600}
+
+/* ── WORKOUT TAB ── */
+.wo-wrap{padding-bottom:20px}
+.wo-header-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.wo-title{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--text);letter-spacing:1px}
+.wo-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.wo-day-sel{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:3px}
+.wo-day-btn{flex-shrink:0;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:11px;font-family:'DM Sans',sans-serif;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s}
+.wo-day-btn:hover{border-color:var(--accent);color:var(--accent)}
+.wo-day-btn.active{background:var(--accent);color:#000;font-weight:600;border-color:var(--accent)}
+.wo-day-btn.rest{background:rgba(196,132,252,.1);border-color:rgba(196,132,252,.3);color:var(--purple)}
+.wo-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:12px}
+.wo-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.wo-day-label{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);letter-spacing:1px}
+.wo-focus{font-size:11px;color:var(--muted);margin-top:2px}
+.wo-badges{display:flex;gap:6px;flex-wrap:wrap}
+.wo-badge{font-size:9px;padding:3px 8px;border-radius:99px;font-family:'JetBrains Mono',monospace;font-weight:600}
+.wo-badge.push{background:rgba(255,107,71,.12);color:#ff6b47}
+.wo-badge.pull{background:rgba(71,197,255,.12);color:#47c5ff}
+.wo-badge.legs{background:rgba(232,255,71,.12);color:#e8ff47}
+.wo-badge.full{background:rgba(74,222,128,.12);color:#4ade80}
+.wo-badge.rest{background:rgba(196,132,252,.12);color:#c084fc}
+.wo-badge.cardio{background:rgba(251,191,36,.12);color:#fbbf24}
+.wo-exercise-list{display:flex;flex-direction:column;gap:8px}
+.wo-exercise{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;padding:10px 14px;background:var(--surface);border-radius:10px;border:1px solid var(--border)}
+.wo-ex-name{font-size:13px;font-weight:600;color:var(--text)}
+.wo-ex-meta{font-size:10px;color:var(--muted);margin-top:2px}
+.wo-ex-sets{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--accent);text-align:right;white-space:nowrap}
+.wo-rest-card{text-align:center;padding:32px 20px;background:rgba(196,132,252,.05);border:1px solid rgba(196,132,252,.2);border-radius:16px}
+.wo-rest-icon{font-size:48px;margin-bottom:10px}
+.wo-rest-title{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--purple);letter-spacing:1px;margin-bottom:6px}
+.wo-rest-sub{font-size:12px;color:var(--muted);line-height:1.6;max-width:300px;margin:0 auto}
+
+/* ── GYM LOG ── */
+.gym-log-section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-top:16px;margin-bottom:16px}
+.gym-streak-row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}
+.gym-streak-badge{display:inline-flex;align-items:center;gap:5px;border-radius:99px;padding:5px 12px;font-size:11px;font-weight:600}
+.gym-streak-badge.active{background:rgba(255,107,71,.12);border:1px solid rgba(255,107,71,.3);color:var(--orange)}
+.gym-streak-badge.zero{background:var(--surface);border:1px solid var(--border);color:var(--muted)}
+.gym-log-form{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.gym-log-entry{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--surface);border-radius:9px;margin-bottom:6px;border:1px solid var(--border)}
+.gle-left{font-size:12px;font-weight:600;color:var(--text)}
+.gle-meta{font-size:10px;color:var(--muted);margin-top:2px}
+.gle-right{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--orange)}
+.mp-wrap{}
+.mp-header{margin-bottom:16px}
+.mp-title{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--text);letter-spacing:1px}
+.mp-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.mp-filter-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
+.mp-filter{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 13px;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;user-select:none}
+.mp-filter:hover{border-color:var(--accent);color:var(--accent)}
+.mp-filter.active{background:rgba(232,255,71,.1);border-color:var(--accent);color:var(--accent);font-weight:600}
+.mp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.mp-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color .15s;cursor:pointer}
+.mp-card:hover{border-color:rgba(232,255,71,.4)}
+.mp-card-top{padding:16px 18px 10px;border-bottom:1px solid var(--border)}
+.mp-emoji{font-size:28px;margin-bottom:8px}
+.mp-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
+.mp-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.mp-tag{font-size:9px;padding:2px 7px;border-radius:99px;font-family:'JetBrains Mono',monospace;font-weight:600}
+.mp-tag.breakfast{background:rgba(232,255,71,.1);color:#e8ff47}
+.mp-tag.lunch{background:rgba(74,222,128,.1);color:#4ade80}
+.mp-tag.dinner{background:rgba(192,132,252,.1);color:#c084fc}
+.mp-tag.snack{background:rgba(251,191,36,.1);color:#fbbf24}
+.mp-tag.postworkout{background:rgba(255,107,71,.1);color:#ff6b47}
+.mp-tag.preptime{background:rgba(71,197,255,.1);color:#47c5ff}
+.mp-tag.batchcook{background:rgba(74,222,128,.08);color:#4ade80}
+.mp-macros{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px 18px}
+.mp-macro{text-align:center}
+.mp-macro-val{font-family:'Bebas Neue',sans-serif;font-size:18px;line-height:1}
+.mp-macro-lbl{font-size:8px;color:var(--muted);margin-top:1px}
+.mp-body{padding:0 18px 0;max-height:0;overflow:hidden;transition:none}
+.mp-card.open .mp-body{max-height:900px;padding-bottom:16px;transition:max-height .35s ease}
+.mp-card.open{border-color:var(--accent)}
+.mp-section{margin-top:12px}
+.mp-section-title{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px}
+.mp-ingredients{list-style:none;padding:0}
+.mp-ingredients li{font-size:11px;color:var(--text);margin-bottom:4px;padding-left:14px;position:relative}
+.mp-ingredients li::before{content:'·';position:absolute;left:0;color:var(--accent)}
+.mp-steps{list-style:none;padding:0}
+.mp-steps li{font-size:11px;color:var(--muted);margin-bottom:6px;padding-left:20px;position:relative;line-height:1.5}
+.mp-steps li::before{content:attr(data-n);position:absolute;left:0;color:var(--accent);font-family:'Bebas Neue',sans-serif;font-size:13px}
+.mp-pro-tip{background:rgba(71,197,255,.06);border:1px solid rgba(71,197,255,.15);border-radius:9px;padding:9px 12px;font-size:10px;color:var(--blue);margin-top:10px;line-height:1.5}
+
 /* ── REST DAY TOGGLE ── */
 .rest-toggle{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:11px;font-family:'DM Sans',sans-serif;font-weight:500;color:var(--muted);cursor:pointer;transition:all .2s}
 .rest-toggle:hover{border-color:var(--purple);color:var(--purple)}
@@ -349,8 +461,8 @@ svg.ring{transform:rotate(-90deg)}
 
   <!-- Meal Detail Modal -->
   <div id="mealModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center;padding:20px">
-   <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;max-width:420px;width:100%;position:relative;animation:fadeUp .2s ease">
-    <button onclick="closeModal()" style="position:absolute;top:14px;right:14px;background:var(--surface);border:1px solid var(--border);border-radius:50%;width:28px;height:28px;color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">×</button>
+   <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;max-width:440px;width:100%;position:relative;max-height:90vh;overflow-y:auto;animation:fadeUp .2s ease">
+    <button onclick="closeModal()" style="position:sticky;top:0;float:right;background:var(--surface);border:1px solid var(--border);border-radius:50%;width:28px;height:28px;color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2">×</button>
     <div id="modalContent"></div>
    </div>
   </div>
@@ -358,14 +470,17 @@ svg.ring{transform:rotate(-90deg)}
   <!-- TAB NAV -->
   <div class="tab-nav" id="tabNav">
     <button class="tab-btn active" data-tab="plan">🗓 Diet Plan</button>
+    <button class="tab-btn" data-tab="workout">🏋️ Workout</button>
     <button class="tab-btn" data-tab="checklist">✅ Daily Checklist</button>
     <button class="tab-btn" data-tab="grocery">📦 Grocery List</button>
     <button class="tab-btn" data-tab="progress">📈 Progress</button>
     <button class="tab-btn" data-tab="supplements">💊 Supplements</button>
+    <button class="tab-btn" data-tab="mealprep">👨‍🍳 Meal Prep</button>
   </div>
 
   <!-- TAB: DIET PLAN (existing content) -->
   <div class="tab-panel active" id="tab-plan">
+  <div class="quote-strip" id="quoteStrip"></div>
   <div class="bot-grid">
    <div class="card"><div class="sec-title">🥩 Protein Sources</div><div class="bar-chart" id="barChart"></div></div>
    <div class="card">
@@ -382,6 +497,30 @@ svg.ring{transform:rotate(-90deg)}
   </div>
   </div>
 
+  <!-- TAB: WORKOUT PLAN -->
+  <div class="tab-panel" id="tab-workout">
+   <div class="wo-wrap">
+    <div class="wo-header-row">
+     <div><div class="wo-title" id="woTitle">Workout Plan</div><div class="wo-sub" id="woSub"></div></div>
+    </div>
+    <div class="wo-day-sel" id="woDaySel"></div>
+    <div id="woContent"></div>
+   </div>
+  </div>
+
+  <!-- TAB: MEAL PREP GUIDE -->
+  <div class="tab-panel" id="tab-mealprep">
+   <div class="mp-wrap">
+    <div class="mp-header">
+     <div class="mp-title">Meal Prep Guide</div>
+     <div class="mp-sub" id="mpSub">Recipes tailored to your diet · with macros</div>
+    </div>
+    <div class="mp-filter-row" id="mpFilterRow"></div>
+    <div id="mpGrid"></div>
+   </div>
+  </div>
+
+  <!-- TAB: DAILY CHECKLIST -->
   <div class="tab-panel" id="tab-checklist">
    <div class="checklist-wrap">
     <div class="cl-header">
@@ -402,6 +541,29 @@ svg.ring{transform:rotate(-90deg)}
      </div>
     </div>
     <div id="clMeals"></div>
+
+    <!-- GYM LOG -->
+    <div class="gym-log-section">
+     <div class="cl-water-title">🏋️ Gym Log</div>
+     <div class="gym-streak-row" id="gymStreakRow"></div>
+     <div class="gym-log-form">
+      <select id="gymType" style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none">
+       <option value="">Select workout type…</option>
+       <option value="Push (Chest/Shoulder/Tricep)">Push (Chest/Shoulder/Tricep)</option>
+       <option value="Pull (Back/Bicep)">Pull (Back/Bicep)</option>
+       <option value="Legs (Quad/Ham/Glute)">Legs (Quad/Ham/Glute)</option>
+       <option value="Full Body">Full Body</option>
+       <option value="Cardio / HIIT">Cardio / HIIT</option>
+       <option value="Upper Body">Upper Body</option>
+       <option value="Lower Body">Lower Body</option>
+       <option value="Active Recovery">Active Recovery</option>
+      </select>
+      <input type="number" id="gymDuration" placeholder="Min" min="10" max="300" style="width:72px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none">
+      <button onclick="logGym()" style="background:var(--accent);color:#000;border:none;border-radius:9px;padding:9px 16px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;cursor:pointer">LOG</button>
+     </div>
+     <div id="gymLogList"></div>
+    </div>
+
     <div class="cl-water">
      <div class="cl-water-title">💧 Water Intake</div>
      <div class="cl-water-sub" id="clWaterTarget"></div>
@@ -479,14 +641,28 @@ function calcMealTimes(wakeTime){
   };
 }
 
-// ── REST DAY STATE ──
-let isRestDay=false;
+// ── REST DAY STATE — per-day selection, not a global toggle ──
+// userRestDays is a Set of day indices (0=Mon … 6=Sun) chosen by user in workout tab
+// todayRestDay is true only if TODAY's day index is in userRestDays
+// userRestDays declared in workout section below
+function isTodayRest(){ return userRestDays.has(activeDay); }
+
+function syncRestDayBadge(){
+  const on=isTodayRest();
+  const btn=document.getElementById('restToggle');
+  const badge=document.getElementById('restDayBadge');
+  if(btn) btn.classList.toggle('active',on);
+  if(badge) badge.style.display=on?'inline':'none';
+}
+
 function toggleRestDay(){
-  isRestDay=!isRestDay;
-  document.getElementById('restToggle').classList.toggle('active',isRestDay);
-  document.getElementById('restDayBadge').style.display=isRestDay?'inline':'none';
-  if(planData) renderDay(planData);
-  if(planData) buildChecklist(planData);
+  // Toggle today's day index in the set
+  if(userRestDays.has(activeDay)) userRestDays.delete(activeDay);
+  else userRestDays.add(activeDay);
+  syncRestDayBadge();
+  if(planData){ renderDay(planData); buildChecklist(planData); }
+  // Refresh workout tab if open
+  if(planData) buildWorkout(planData);
 }
 
 // ── MEAL DETAIL MODAL ──
@@ -517,26 +693,6 @@ const PORTIONS={
   },
 };
 
-function openMealModal(meal,diet,mealTimes){
-  const portions=(PORTIONS[meal.name]||{})[diet]||[];
-  const fatG=Math.round((meal.kcal*0.27)/9);
-  const carbG=Math.round(Math.max(meal.kcal-meal.protein*4-fatG*9,0)/4);
-  document.getElementById('modalContent').innerHTML=`
-    <div class="modal-meal-name">${meal.name}</div>
-    <div class="modal-meal-time">⏰ ${mealTimes[meal.name]||''} · Tap outside to close</div>
-    <div class="modal-macros">
-      <div class="modal-macro"><div class="modal-macro-val" style="color:var(--accent)">${meal.protein}g</div><div class="modal-macro-lbl">Protein</div></div>
-      <div class="modal-macro"><div class="modal-macro-val" style="color:var(--blue)">${carbG}g</div><div class="modal-macro-lbl">Carbs</div></div>
-      <div class="modal-macro"><div class="modal-macro-val" style="color:var(--orange)">${fatG}g</div><div class="modal-macro-lbl">Fat</div></div>
-      <div class="modal-macro"><div class="modal-macro-val" style="color:var(--purple)">${meal.kcal}</div><div class="modal-macro-lbl">kcal</div></div>
-    </div>
-    ${portions.length?`<div class="modal-portions"><div class="modal-portions-title">📏 Portions & Quantities</div>${portions.map(p=>`<div class="portion-item"><span class="portion-name">${p[0]}</span><span class="portion-qty">${typeof p[1]==='number'?p[1]+' '+p[2]:p[1]}</span></div>`).join('')}</div>`:''}
-    <div class="modal-timing">💡 ${meal.name==='Breakfast'?'Eat within 1 hour of waking. Prioritise protein first.':meal.name==='Lunch'?'Largest meal of the day. Protein + complex carbs for sustained energy.':meal.name==='Post-Workout'?'Consume within 30–60 min of training. Whey absorbs fastest.':'Keep dinner lighter on carbs. Prioritise protein and vegetables.'}</div>
-  `;
-  const modal=document.getElementById('mealModal');
-  modal.style.display='flex';
-  modal.onclick=e=>{ if(e.target===modal) closeModal(); };
-}
 function closeModal(){ document.getElementById('mealModal').style.display='none'; }
 
 // ── BMI GOAL STRIP ──
@@ -570,6 +726,452 @@ function buildBmiStrip(plan){
 
 // ── STREAK LOGIC ──
 let streakData={streak:0,lastDate:null,completedDays:{}};
+let gymLog={}; // { "Mon Mar 25 2024": [{type,duration,time}] }
+let gymStreakData={streak:0,lastDate:null,completedDays:{}};
+let checkState={};
+let waterCups=0;
+
+// ── MOTIVATIONAL QUOTES (1 per day, cycles by day of year) ──
+const QUOTES=[
+  {text:"The body achieves what the mind believes.",author:"Napoleon Hill"},
+  {text:"Don't stop when you're tired. Stop when you're done.",author:"David Goggins"},
+  {text:"Take care of your body. It's the only place you have to live.",author:"Jim Rohn"},
+  {text:"The groundwork for all happiness is good health.",author:"Leigh Hunt"},
+  {text:"A year from now you'll wish you had started today.",author:"Karen Lamb"},
+  {text:"Success is the sum of small efforts, repeated day in and day out.",author:"Robert Collier"},
+  {text:"The pain you feel today will be the strength you feel tomorrow.",author:"Arnold Schwarzenegger"},
+  {text:"Your body can stand almost anything. It's your mind you have to convince.",author:"David Goggins"},
+  {text:"Strength does not come from the body. It comes from the will of the soul.",author:"Mahatma Gandhi"},
+  {text:"The only bad workout is the one that didn't happen.",author:"Joe Wicks"},
+  {text:"It never gets easier. You just get stronger.",author:"Greg Glassman"},
+  {text:"Sweat is magic. Cover yourself in it daily to grant your wishes.",author:"Jillian Michaels"},
+  {text:"No matter how slow you go, you are still lapping everyone on the couch.",author:"Wil Reynolds"},
+  {text:"Believe you can and you're halfway there.",author:"Theodore Roosevelt"},
+  {text:"You don't have to be great to start, but you have to start to be great.",author:"Zig Ziglar"},
+  {text:"Push harder than yesterday if you want a different tomorrow.",author:"Dwayne Johnson"},
+  {text:"Great things never come from comfort zones.",author:"Roy T. Bennett"},
+  {text:"Dream it. Believe it. Build it.",author:"Evan Carmichael"},
+  {text:"Wake up with determination. Go to bed with satisfaction.",author:"George Lorimer"},
+  {text:"Do something today that your future self will thank you for.",author:"Sean Patrick Flanery"},
+  {text:"Little by little, a little becomes a lot.",author:"Tanzanian Proverb"},
+  {text:"You are what you repeatedly do. Excellence is not an act but a habit.",author:"Aristotle"},
+  {text:"The first wealth is health.",author:"Ralph Waldo Emerson"},
+  {text:"Energy and persistence conquer all things.",author:"Benjamin Franklin"},
+  {text:"All progress takes place outside the comfort zone.",author:"Michael Bobak"},
+  {text:"Fitness is not about being better than someone else. It's about being better than you used to be.",author:"Khloe Kardashian"},
+  {text:"Discipline is the bridge between goals and accomplishment.",author:"Jim Rohn"},
+  {text:"Your health is an investment, not an expense.",author:"Bhupinder Singh"},
+  {text:"The secret of getting ahead is getting started.",author:"Mark Twain"},
+  {text:"Stay hungry, stay foolish.",author:"Steve Jobs"},
+];
+function buildQuote(){
+  const el=document.getElementById('quoteStrip'); if(!el) return;
+  const dayIdx=Math.floor((Date.now()/(1000*60*60*24)))%QUOTES.length;
+  const q=QUOTES[dayIdx];
+  el.innerHTML=`<div class="quote-icon">💬</div><div class="quote-body"><div class="quote-text">"${q.text}"</div><div class="quote-author">— ${q.author}</div></div>`;
+}
+
+// ── WORKOUT PLAN ──
+
+let woActiveDay=0;
+let woFrequency=4; // default 4x/week
+let userRestDays=new Set([3,5,6]); // default 3 rest days for 4x: Thu, Sat, Sun
+
+// Exercise library per goal and muscle group
+const EX={
+  push_heavy:[
+    {name:'Barbell Bench Press',sets:'4 sets',reps:'6–8 reps',note:'Primary chest builder. Control the descent.'},
+    {name:'Overhead Press (BB)',sets:'4 sets',reps:'6–8 reps',note:'Shoulder compound. Drive bar overhead.'},
+    {name:'Incline DB Press',sets:'3 sets',reps:'8–10 reps',note:'Upper chest emphasis.'},
+    {name:'Lateral Raises',sets:'3 sets',reps:'12–15 reps',note:'Side delts. Controlled tempo.'},
+    {name:'Tricep Pushdown',sets:'3 sets',reps:'10–12 reps',note:'Full extension at bottom.'},
+  ],
+  push_volume:[
+    {name:'Incline Barbell Press',sets:'4 sets',reps:'8–10 reps',note:'Volume push. Lighter than strength day.'},
+    {name:'Cable Crossover',sets:'3 sets',reps:'12–15 reps',note:'Chest isolation. Slow squeeze at peak.'},
+    {name:'Arnold Press',sets:'3 sets',reps:'10–12 reps',note:'Full shoulder rotation.'},
+    {name:'Cable Lateral Raise',sets:'3 sets',reps:'15 reps',note:'Better tension than dumbbell.'},
+    {name:'Skull Crushers',sets:'3 sets',reps:'10–12 reps',note:'Keep elbows in throughout.'},
+  ],
+  pull_heavy:[
+    {name:'Deadlift',sets:'4 sets',reps:'4–6 reps',note:'Brace hard. Drive floor away.'},
+    {name:'Pull-ups / Lat Pulldown',sets:'4 sets',reps:'6–10 reps',note:'Full ROM. Dead hang to chin over bar.'},
+    {name:'Barbell Row',sets:'3 sets',reps:'8–10 reps',note:'Chest to bench for strict form.'},
+    {name:'Face Pulls',sets:'3 sets',reps:'15–20 reps',note:'Shoulder health. Do not skip.'},
+    {name:'Barbell Curl',sets:'3 sets',reps:'8–10 reps',note:'Strict form. No swinging.'},
+  ],
+  pull_volume:[
+    {name:'Weighted Pull-ups',sets:'4 sets',reps:'5–8 reps',note:'Add weight when bodyweight feels easy.'},
+    {name:'T-Bar Row',sets:'3 sets',reps:'8–10 reps',note:'Mid-back thickness.'},
+    {name:'Single Arm DB Row',sets:'3 sets',reps:'10–12/side',note:'Full stretch at bottom.'},
+    {name:'Reverse Fly',sets:'3 sets',reps:'15 reps',note:'Rear delts. No momentum.'},
+    {name:'Hammer Curl',sets:'3 sets',reps:'10–12 reps',note:'Brachialis and forearm.'},
+  ],
+  legs_heavy:[
+    {name:'Barbell Back Squat',sets:'4 sets',reps:'6–8 reps',note:'Break parallel every rep.'},
+    {name:'Romanian Deadlift',sets:'3 sets',reps:'8–10 reps',note:'Hinge, not squat. Feel hamstring stretch.'},
+    {name:'Leg Press',sets:'3 sets',reps:'10–12 reps',note:'Feet high and wide for glute bias.'},
+    {name:'Leg Curl',sets:'3 sets',reps:'12–15 reps',note:'Slow eccentric for hamstring growth.'},
+    {name:'Calf Raise',sets:'4 sets',reps:'15–20 reps',note:'Full ROM. Pause at top.'},
+  ],
+  legs_volume:[
+    {name:'Front Squat / Goblet Squat',sets:'3 sets',reps:'10–12 reps',note:'Quad dominant. Upright torso.'},
+    {name:'Walking Lunges',sets:'3 sets',reps:'12 reps/leg',note:'Drive through heel on step.'},
+    {name:'Hack Squat',sets:'3 sets',reps:'10–12 reps',note:'Quad isolation.'},
+    {name:'Stiff Leg Deadlift',sets:'3 sets',reps:'10–12 reps',note:'Keep back flat. Feel glutes.'},
+    {name:'Calf Raise',sets:'3 sets',reps:'15–20 reps',note:'High reps for calves.'},
+  ],
+  full_body:[
+    {name:'Barbell Squat',sets:'3 sets',reps:'8–10 reps',note:'Full compound. Legs and core.'},
+    {name:'Bench Press',sets:'3 sets',reps:'8–10 reps',note:'Maintain chest strength.'},
+    {name:'Deadlift',sets:'3 sets',reps:'6–8 reps',note:'Pull heavy. Back health.'},
+    {name:'Pull-ups',sets:'3 sets',reps:'8–12 reps',note:'Lat width and back strength.'},
+    {name:'Overhead Press',sets:'3 sets',reps:'8–10 reps',note:'Shoulder compound.'},
+    {name:'Plank',sets:'3 sets',reps:'45–60s',note:'Core stability.'},
+  ],
+  upper_body:[
+    {name:'Bench Press',sets:'3 sets',reps:'8–10 reps',note:'Chest compound.'},
+    {name:'Barbell Row',sets:'3 sets',reps:'8–10 reps',note:'Back compound.'},
+    {name:'Overhead Press',sets:'3 sets',reps:'8–10 reps',note:'Shoulder strength.'},
+    {name:'Pull-ups',sets:'3 sets',reps:'Max reps',note:'Lat width.'},
+    {name:'Tricep Dips',sets:'3 sets',reps:'10–12 reps',note:'Bodyweight tricep.'},
+    {name:'Barbell Curl',sets:'3 sets',reps:'10–12 reps',note:'Bicep strength.'},
+  ],
+  lower_body:[
+    {name:'Squat',sets:'3 sets',reps:'8–12 reps',note:'Compound leg movement.'},
+    {name:'Romanian Deadlift',sets:'3 sets',reps:'10–12 reps',note:'Posterior chain.'},
+    {name:'Lunges',sets:'3 sets',reps:'10 reps/leg',note:'Unilateral stability.'},
+    {name:'Leg Curl',sets:'3 sets',reps:'12–15 reps',note:'Hamstring isolation.'},
+    {name:'Calf Raise',sets:'3 sets',reps:'15–20 reps',note:'Don\'t skip calves.'},
+  ],
+  cardio:[
+    {name:'Warm-up Walk/Jog',sets:'1',reps:'5 min easy',note:'Raise heart rate gradually.'},
+    {name:'HIIT Intervals',sets:'8–10 rounds',reps:'30s sprint / 90s walk',note:'Max effort on sprints.'},
+    {name:'Incline Treadmill Walk',sets:'1',reps:'10–15 min',note:'Burns calories, low impact.'},
+    {name:'Core Circuit',sets:'3 rounds',reps:'Plank 45s + 15 crunches',note:'Finish every cardio session.'},
+  ],
+  fat_loss_full:[
+    {name:'Barbell Squat',sets:'3 sets',reps:'10–12 reps',note:'Short rest 60s. Keeps heart rate up.'},
+    {name:'Bench Press',sets:'3 sets',reps:'10–12 reps',note:'Maintain muscle in deficit.'},
+    {name:'Deadlift',sets:'3 sets',reps:'8–10 reps',note:'Full body fat burner.'},
+    {name:'Pull-ups / Lat Pulldown',sets:'3 sets',reps:'8–10 reps',note:'Back compound.'},
+    {name:'Overhead Press',sets:'3 sets',reps:'10–12 reps',note:'Shoulder retention.'},
+    {name:'Plank',sets:'3 sets',reps:'45s hold',note:'Core stability.'},
+  ],
+};
+
+// Build schedule based on frequency — assigns workout type to each day
+function buildSchedule(goal, freq, restDays){
+  // restDays = Set of day indices (0=Mon…6=Sun) chosen by user
+  // workDays = days NOT in restDays
+  const allDays=[0,1,2,3,4,5,6];
+  const workDays=allDays.filter(i=>!restDays.has(i));
+
+  // Define workout sequence per goal and frequency
+  const sequences={
+    'Muscle Gain':{
+      3:['push_heavy','pull_heavy','legs_heavy'],
+      4:['push_heavy','pull_heavy','legs_heavy','push_volume'],
+      5:['push_heavy','pull_heavy','legs_heavy','push_volume','pull_volume'],
+      6:['push_heavy','pull_heavy','legs_heavy','push_volume','pull_volume','legs_volume'],
+    },
+    'Fat Loss':{
+      3:['fat_loss_full','cardio','fat_loss_full'],
+      4:['fat_loss_full','cardio','fat_loss_full','cardio'],
+      5:['fat_loss_full','cardio','fat_loss_full','fat_loss_full','cardio'],
+      6:['fat_loss_full','cardio','fat_loss_full','cardio','fat_loss_full','cardio'],
+    },
+    'Lean Bulk':{
+      3:['push_heavy','pull_heavy','legs_heavy'],
+      4:['push_heavy','pull_heavy','legs_heavy','upper_body'],
+      5:['push_heavy','pull_heavy','legs_heavy','push_volume','pull_volume'],
+      6:['push_heavy','pull_heavy','legs_heavy','push_volume','pull_volume','lower_body'],
+    },
+    'Maintenance':{
+      3:['upper_body','lower_body','cardio'],
+      4:['upper_body','lower_body','cardio','full_body'],
+      5:['push_heavy','pull_heavy','legs_heavy','cardio','full_body'],
+      6:['push_heavy','pull_heavy','legs_heavy','push_volume','pull_volume','cardio'],
+    },
+  };
+
+  const labels={
+    push_heavy:{label:'PUSH DAY',focus:'Chest · Shoulders · Triceps',badge:'push'},
+    push_volume:{label:'PUSH — VOLUME',focus:'Chest · Shoulders · Triceps',badge:'push'},
+    pull_heavy:{label:'PULL DAY',focus:'Back · Biceps · Rear Delts',badge:'pull'},
+    pull_volume:{label:'PULL — VOLUME',focus:'Back · Biceps',badge:'pull'},
+    legs_heavy:{label:'LEGS DAY',focus:'Quads · Hamstrings · Glutes · Calves',badge:'legs'},
+    legs_volume:{label:'LEGS — VOLUME',focus:'Quads · Hamstrings · Glutes',badge:'legs'},
+    full_body:{label:'FULL BODY',focus:'All muscle groups',badge:'full'},
+    upper_body:{label:'UPPER BODY',focus:'Chest · Back · Shoulders · Arms',badge:'push'},
+    lower_body:{label:'LOWER BODY',focus:'Quads · Hamstrings · Glutes · Calves',badge:'legs'},
+    fat_loss_full:{label:'FULL BODY',focus:'Compound lifts · High intensity',badge:'full'},
+    cardio:{label:'CARDIO / HIIT',focus:'Fat burn · Conditioning',badge:'cardio'},
+  };
+
+  const seq=sequences[goal]?.[freq]||sequences['Maintenance'][4];
+  const schedule={}; // dayIdx → {label,focus,badge,exercises}
+
+  allDays.forEach(i=>{
+    if(restDays.has(i)){
+      schedule[i]={label:'REST DAY',focus:'Recovery & Repair',badge:'rest',exercises:[]};
+    } else {
+      const wi=workDays.indexOf(i);
+      const type=seq[wi%seq.length];
+      const meta=labels[type]||labels.full_body;
+      schedule[i]={...meta,exercises:EX[type]||EX.full_body};
+    }
+  });
+  return schedule;
+}
+
+// Freq → required rest days count
+const FREQ_CONFIG={
+  3:{label:'1–3×',workDays:3,restDays:4},
+  4:{label:'4×',  workDays:4,restDays:3},
+  5:{label:'5×',  workDays:5,restDays:2},
+  6:{label:'6×',  workDays:6,restDays:1},
+};
+
+// Default rest days per frequency (sensible defaults)
+const DEFAULT_REST={
+  3:new Set([3,4,5,6]),   // Thu Fri Sat Sun
+  4:new Set([3,5,6]),     // Thu Sat Sun
+  5:new Set([3,6]),       // Thu Sun
+  6:new Set([6]),         // Sun
+};
+
+function enforceRestDayCount(freq){
+  const required=FREQ_CONFIG[freq].restDays;
+  // If too many rest days, remove from end until correct
+  while(userRestDays.size > required){
+    const last=[...userRestDays].pop();
+    userRestDays.delete(last);
+  }
+  // If too few, add defaults until correct
+  const defaults=[6,5,4,3,2,1,0]; // preferred order: Sun, Sat, Fri, Thu, Wed, Tue, Mon
+  for(const d of defaults){
+    if(userRestDays.size>=required) break;
+    if(!userRestDays.has(d)) userRestDays.add(d);
+  }
+}
+
+function buildWorkout(plan){
+  const goal=plan.prof.goal;
+  const cfg=FREQ_CONFIG[woFrequency];
+  const restAllowed=cfg.restDays;
+  const restChosen=userRestDays.size;
+
+  document.getElementById('woTitle').textContent=goal.toUpperCase()+' WORKOUT PLAN';
+  document.getElementById('woSub').textContent=`${cfg.label} per week · ${restAllowed} rest day${restAllowed>1?'s':''}`;
+
+  const el=document.getElementById('woContent'); el.innerHTML='';
+
+  // ── Settings card ──
+  el.innerHTML=`
+    <div class="wo-settings">
+      <div class="wo-settings-row">
+        <div>
+          <div class="wo-settings-label">Training Frequency</div>
+          <div class="wo-settings-sub">How many days per week you train</div>
+        </div>
+        <div class="wo-freq-chips" id="woFreqChips"></div>
+      </div>
+      <div class="wo-settings-divider"></div>
+      <div class="wo-settings-row">
+        <div>
+          <div class="wo-settings-label">Choose Your Rest Days</div>
+          <div class="wo-settings-sub" id="woRestSub"></div>
+        </div>
+        <div class="wo-rest-count" id="woRestCount"></div>
+      </div>
+      <div class="wo-rest-picker" id="woRestPicker"></div>
+    </div>`;
+
+  // Frequency chips
+  const freqEl=document.getElementById('woFreqChips');
+  [3,4,5,6].forEach(f=>{
+    const c=document.createElement('div');
+    c.className='wo-freq-chip'+(woFrequency===f?' active':'');
+    c.textContent=FREQ_CONFIG[f].label;
+    c.onclick=()=>{
+      woFrequency=f;
+      userRestDays=new Set(DEFAULT_REST[f]);
+      enforceRestDayCount(f);
+      syncRestDayBadge();
+      if(planData){ renderDay(planData); buildChecklist(planData); }
+      if(planData) buildWorkout(planData);
+    };
+    freqEl.appendChild(c);
+  });
+
+  // Rest day counter pill
+  const countEl=document.getElementById('woRestCount');
+  const cMatch=restChosen===restAllowed;
+  countEl.innerHTML=`<span class="wo-rest-count-pill ${cMatch?'done':restChosen>restAllowed?'over':''}">${restChosen} / ${restAllowed}</span>`;
+  document.getElementById('woRestSub').textContent=
+    cMatch ? '✅ Perfect — diet auto-adjusts on rest days'
+    : restChosen<restAllowed ? 'Select '+(restAllowed-restChosen)+' more rest day'+(restAllowed-restChosen>1?'s':'')
+    : 'Remove '+(restChosen-restAllowed)+' rest day'+(restChosen-restAllowed>1?'s':'')+' to match '+cfg.label+'/week';
+
+  // Rest picker logic:
+  // - User can ALWAYS remove a rest day (they may need to swap)
+  // - User can ONLY ADD a rest day if below the required count
+  // - When count < required: show warning and prompt to add more
+  // - When count > required: should not happen (enforced on freq change)
+  const picker=document.getElementById('woRestPicker');
+  DAYS.forEach((d,i)=>{
+    const isRest=userRestDays.has(i);
+    const cantAdd = !isRest && restChosen >= restAllowed; // can't add when full
+
+    const chip=document.createElement('div');
+    chip.className='wo-rest-chip'+(isRest?' active':cantAdd?' disabled':'');
+    chip.textContent=SHORT[i];
+    chip.title=isRest
+      ? 'Click to remove rest day'
+      : cantAdd
+        ? `Max ${restAllowed} rest day${restAllowed>1?'s':''} reached — remove one to swap`
+        : 'Click to set as rest day';
+
+    chip.onclick=()=>{
+      if(cantAdd) return; // can't add when at max
+      if(isRest){
+        userRestDays.delete(i);
+        // If removing the currently viewed day, shift view to first non-rest
+        const newRestSet=new Set(userRestDays);
+        if(newRestSet.has(woActiveDay)||i===woActiveDay){
+          // stay on current day
+        }
+      } else {
+        userRestDays.add(i);
+        // If user just marked current woActiveDay as rest, shift to first work day
+        if(i===woActiveDay){
+          const firstWork=[0,1,2,3,4,5,6].find(d=>!userRestDays.has(d));
+          if(firstWork!==undefined) woActiveDay=firstWork;
+        }
+      }
+      syncRestDayBadge();
+      if(planData){ renderDay(planData); buildChecklist(planData); }
+      if(planData) buildWorkout(planData);
+    };
+    picker.appendChild(chip);
+  });
+
+  // Show warning if rest count doesn't match required
+  if(restChosen !== restAllowed){
+    const warn=document.createElement('div');
+    const diff=restAllowed-restChosen;
+    warn.style.cssText='font-size:11px;color:'+(diff>0?'var(--amber)':'var(--orange)')+';margin-top:8px;padding:6px 10px;background:rgba(251,191,36,.08);border-radius:8px;border:1px solid rgba(251,191,36,.2)';
+    warn.textContent=diff>0
+      ? `⚠️ Select ${diff} more rest day${diff>1?'s':''} to complete your ${cfg.label}/week schedule`
+      : `⚠️ You have ${Math.abs(diff)} extra rest day${Math.abs(diff)>1?'s':''} — remove ${Math.abs(diff)} to match ${cfg.label}/week`;
+    picker.parentNode.insertBefore(warn, picker.nextSibling);
+  }
+
+  // Day selector
+  const sel=document.getElementById('woDaySel'); sel.innerHTML='';
+  const schedule=buildSchedule(goal,woFrequency,userRestDays);
+  DAYS.forEach((d,i)=>{
+    const dp=schedule[i];
+    const isRest=dp.badge==='rest';
+    const btn=document.createElement('button');
+    btn.className='wo-day-btn'+(isRest?' rest':'')+(i===woActiveDay?' active':'');
+    btn.textContent=SHORT[i];
+    btn.onclick=()=>{
+      woActiveDay=i;
+      document.querySelectorAll('.wo-day-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
+      renderWoDay(schedule,i);
+    };
+    sel.appendChild(btn);
+  });
+
+  renderWoDay(schedule,woActiveDay);
+}
+
+function setFrequency(f){
+  woFrequency=f;
+  userRestDays=new Set(DEFAULT_REST[f]);
+  enforceRestDayCount(f);
+  syncRestDayBadge();
+  if(planData){ renderDay(planData); buildWorkout(planData); }
+}
+
+function renderWoDay(schedule,dayIdx){
+  const dp=schedule[dayIdx];
+  const existing=document.getElementById('woSessionCard');
+  if(existing) existing.remove();
+  const container=document.getElementById('woContent');
+
+  const card=document.createElement('div');
+  card.id='woSessionCard';
+
+  if(dp.badge==='rest'){
+    card.innerHTML=`<div class="wo-rest-card"><div class="wo-rest-icon">😴</div><div class="wo-rest-title">Rest & Recover</div><div class="wo-rest-sub">Muscle is built during recovery, not in the gym. Sleep 7–9 hours, eat your protein targets, stay hydrated.<br><br><span style="color:var(--muted)">Optional: 20 min walk or light stretching.</span></div></div>`;
+    container.appendChild(card);
+  } else {
+    const badgeMap={push:'push',pull:'pull',legs:'legs',full:'full',cardio:'cardio'};
+    card.innerHTML=`
+      <div class="wo-card">
+        <div class="wo-card-top">
+          <div><div class="wo-day-label">${dp.label}</div><div class="wo-focus">${dp.focus}</div></div>
+          <span class="wo-badge ${badgeMap[dp.badge]||'full'}">${DAYS[dayIdx].substring(0,3)}</span>
+        </div>
+        <div class="wo-exercise-list" id="woExList"></div>
+        <div style="margin-top:14px;padding:10px 14px;background:rgba(232,255,71,.05);border:1px solid rgba(232,255,71,.12);border-radius:9px;font-size:10px;color:var(--muted)">
+          💡 Rest 60–90s between sets for hypertrophy. Rest 2–3 min for strength sets (under 8 reps). Log your workout in Daily Checklist to track your gym streak.
+        </div>
+      </div>`;
+    container.appendChild(card);
+    const list=document.getElementById('woExList');
+    dp.exercises.forEach(ex=>{
+      const row=document.createElement('div'); row.className='wo-exercise';
+      row.innerHTML=`<div><div class="wo-ex-name">${ex.name}</div><div class="wo-ex-meta">${ex.note}</div></div><div class="wo-ex-sets"><div>${ex.sets}</div><div style="color:var(--muted);font-size:10px">${ex.reps}</div></div>`;
+      list.appendChild(row);
+    });
+  }
+}
+
+// ── GYM LOG ──
+function logGym(){
+  const type=document.getElementById('gymType').value;
+  const dur=parseInt(document.getElementById('gymDuration').value)||0;
+  if(!type){ alert('Select a workout type first.'); return; }
+  const today=new Date().toDateString();
+  if(!gymLog[today]) gymLog[today]=[];
+  gymLog[today].push({type,duration:dur,time:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})});
+  // Update gym streak
+  gymStreakData.completedDays[today]=true;
+  gymStreakData.lastDate=today;
+  let s=0, d=new Date();
+  while(gymStreakData.completedDays[d.toDateString()]){ s++; d.setDate(d.getDate()-1); }
+  gymStreakData.streak=s;
+  document.getElementById('gymType').value='';
+  document.getElementById('gymDuration').value='';
+  renderGymLog();
+}
+function renderGymLog(){
+  // Streak badge
+  const sb=document.getElementById('gymStreakRow'); if(!sb) return;
+  const s=gymStreakData.streak;
+  sb.innerHTML=`
+    <div class="gym-streak-badge ${s>0?'active':'zero'}">${s>0?`🔥 ${s} day gym streak`:'Log your first workout!'}</div>
+    ${s>=7?'<div class="gym-streak-badge active">🏆 Week complete!</div>':''}
+    ${s>=30?'<div class="gym-streak-badge active">💪 30-day warrior!</div>':''}`;
+  // Log list
+  const list=document.getElementById('gymLogList'); if(!list) return;
+  list.innerHTML='';
+  const today=new Date().toDateString();
+  const todayLogs=gymLog[today]||[];
+  if(!todayLogs.length){
+    list.innerHTML=`<div style="font-size:11px;color:var(--muted);padding:4px 0">No workouts logged today yet.</div>`;
+    return;
+  }
+  todayLogs.forEach(entry=>{
+    const el=document.createElement('div'); el.className='gym-log-entry';
+    el.innerHTML=`<div><div class="gle-left">${entry.type}</div><div class="gle-meta">Logged at ${entry.time}</div></div><div class="gle-right">${entry.duration?entry.duration+' min':'—'}</div>`;
+    list.appendChild(el);
+  });
+}
 function updateStreak(plan){
   const today=new Date().toDateString();
   const day=DAYS[activeDay];
@@ -594,73 +1196,380 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     btn.classList.add('active');
     document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
     if(btn.dataset.tab==='checklist'&&planData) buildChecklist(planData);
+    if(btn.dataset.tab==='workout'&&planData) buildWorkout(planData);
+    if(btn.dataset.tab==='mealprep'&&planData) buildMealPrep(planData);
     if(btn.dataset.tab==='grocery'&&planData) buildGrocery(planData);
     if(btn.dataset.tab==='progress'&&planData) buildProgress(planData);
     if(btn.dataset.tab==='supplements'&&planData) buildSupplements(planData);
   };
 });
 
-// ── CHECKLIST ──
-let checkState={}, waterCups=0;
+// ── MEAL PREP GUIDE ──
+let mpActiveFilter = 'All';
+
+const MEAL_PREP_DB = [
+
+  // ─── SMOOTHIES & SHAKES ───
+  { id:'s1', emoji:'🥤', name:'High-Protein Banana Oat Shake',
+    tags:['postworkout','breakfast'], prepTime:'3 min', batchCook:false,
+    protein:38, carbs:52, fat:8, kcal:432,
+    diets:['Veg + Eggs','Vegetarian','Non-Veg','Lactose Free'],
+    ingredients:['1 scoop whey protein (or plant protein)', '1 ripe banana', '60g rolled oats', '250ml full-fat milk (or oat/soy milk)', '1 tbsp peanut butter', '4–5 ice cubes'],
+    steps:['Add all ingredients to a blender.', 'Blend on high for 45 seconds until smooth and creamy.', 'Adjust thickness with more milk or oats.', 'Drink immediately — oats thicken quickly.'],
+    proTip:'Freeze the banana overnight for a thicker, colder shake without needing ice. Pre-measure oats and keep in a jar for faster morning prep.' },
+
+  { id:'s2', emoji:'🟢', name:'Green Protein Smoothie',
+    tags:['breakfast','snack'], prepTime:'5 min', batchCook:false,
+    protein:28, carbs:38, fat:6, kcal:318,
+    diets:['Veg + Eggs','Vegetarian','Non-Veg','Lactose Free'],
+    ingredients:['1 scoop protein powder', '1 large handful spinach (30g)', '1 banana', '200ml almond/oat/soy milk', '½ cucumber', '1 tbsp chia seeds', '½ tsp ginger (optional)'],
+    steps:['Add spinach and milk first to blender (blends smoother).', 'Add remaining ingredients.', 'Blend 60 seconds until completely smooth.', 'Taste and add honey if needed.'],
+    proTip:'You cannot taste the spinach at all. Pack in 3g of iron and 2x your daily Vitamin K with no compromise on flavour.' },
+
+  { id:'s3', emoji:'🍫', name:'Chocolate Peanut Butter Protein Shake',
+    tags:['postworkout','snack'], prepTime:'3 min', batchCook:false,
+    protein:42, carbs:30, fat:14, kcal:410,
+    diets:['Veg + Eggs','Vegetarian','Non-Veg','Lactose Free'],
+    ingredients:['1.5 scoops chocolate whey/plant protein', '2 tbsp natural peanut butter', '250ml milk or oat milk', '1 tbsp cocoa powder', '1 tsp honey', '3–4 ice cubes'],
+    steps:['Blend all ingredients for 30 seconds.', 'Adjust sweetness with honey.', 'Serve immediately.'],
+    proTip:'This doubles as dessert. Swap peanut butter for almond butter to vary the flavour and get more Vitamin E.' },
+
+  { id:'s4', emoji:'🌸', name:'Mango Lassi Protein Shake',
+    tags:['breakfast','snack'], prepTime:'4 min', batchCook:false,
+    protein:24, carbs:48, fat:4, kcal:324,
+    diets:['Veg + Eggs','Vegetarian'],
+    ingredients:['150g fresh or frozen mango chunks', '200g thick curd/Greek yogurt', '1 scoop vanilla whey protein', '½ tsp cardamom powder', '1 tsp honey', '2–3 ice cubes'],
+    steps:['Add all ingredients to blender.', 'Blend until smooth — about 40 seconds.', 'Pour into a glass and serve chilled.'],
+    proTip:'Use frozen mango to skip the ice and get a thicker shake. Can prep ahead and store in the fridge for up to 24 hours.' },
+
+  // ─── OVERNIGHT & NO-COOK BREAKFASTS ───
+  { id:'b1', emoji:'🌙', name:'Overnight Oats (5 Ways)',
+    tags:['breakfast'], prepTime:'5 min + overnight', batchCook:true,
+    protein:22, carbs:58, fat:10, kcal:410,
+    diets:['Veg + Eggs','Vegetarian','Lactose Free'],
+    ingredients:['80g rolled oats', '200ml milk (full-fat or oat/soy milk)', '1 tbsp chia seeds', '1 tbsp honey or maple syrup', 'Toppings: banana + PB, mango + coconut, berries + almonds, dates + walnuts, apple + cinnamon'],
+    steps:['Mix oats, milk, chia seeds, and sweetener in a jar or container.', 'Stir well so chia seeds are evenly distributed.', 'Seal and refrigerate overnight (minimum 6 hours).', 'In the morning, stir and add your toppings.', 'Eat cold or microwave 90 seconds for warm version.'],
+    proTip:'Prep 5 jars on Sunday night for the full week. Add protein powder to any version for +24g protein per jar.' },
+
+  { id:'b2', emoji:'🥣', name:'High-Protein Masala Oats',
+    tags:['breakfast'], prepTime:'10 min', batchCook:false,
+    protein:20, carbs:42, fat:8, kcal:320,
+    diets:['Veg + Eggs','Vegetarian','Lactose Free'],
+    ingredients:['80g rolled oats', '1 small onion (finely chopped)', '1 tomato (chopped)', '½ cup mixed vegetables (peas, carrot, capsicum)', '1 tsp cumin seeds', '½ tsp turmeric', '½ tsp red chilli powder', '1 tsp oil', 'Salt to taste', '2 cups water'],
+    steps:['Heat oil in a pan, add cumin seeds and let them splutter.', 'Add onion and sauté until golden (3 min).', 'Add tomatoes and cook until soft (2 min).', 'Add vegetables, spices, and salt. Mix well.', 'Add oats and water. Stir continuously on medium heat for 4–5 min until thick.', 'Garnish with coriander. Serve hot.'],
+    proTip:'Add a beaten egg into the oats while stirring to push protein to 32g without changing the taste significantly.' },
+
+  { id:'b3', emoji:'🫙', name:'Greek Yogurt Parfait',
+    tags:['breakfast','snack'], prepTime:'5 min', batchCook:true,
+    protein:26, carbs:40, fat:8, kcal:336,
+    diets:['Veg + Eggs','Vegetarian'],
+    ingredients:['200g thick Greek yogurt (plain)', '40g granola (low-sugar)', '1 banana or handful mixed berries', '1 tbsp honey', '1 tbsp chopped almonds or walnuts', '1 tsp chia seeds (optional)'],
+    steps:['Layer Greek yogurt at the bottom of a bowl or jar.', 'Add granola layer for crunch.', 'Top with sliced banana or berries.', 'Drizzle honey and sprinkle nuts and chia seeds.', 'Eat immediately or prep up to 2 hours ahead (granola stays crunchy).'],
+    proTip:'Add ½ scoop of vanilla protein powder mixed into the yogurt to hit 38g protein. Prep 3 days ahead in jars (add granola just before eating).' },
+
+  // ─── EGGS ───
+  { id:'e1', emoji:'🍳', name:'Masala Egg Bhurji',
+    tags:['breakfast'], prepTime:'10 min', batchCook:false,
+    protein:22, carbs:8, fat:14, kcal:242,
+    diets:['Veg + Eggs','Non-Veg'],
+    ingredients:['3 whole eggs', '1 small onion (finely chopped)', '1 tomato (chopped)', '1 green chilli', '½ tsp cumin seeds', '¼ tsp turmeric', '½ tsp red chilli powder', '1 tsp oil or ghee', 'Coriander leaves', 'Salt to taste'],
+    steps:['Heat oil/ghee, add cumin seeds until they splutter.', 'Add onion and cook until golden (3 min).', 'Add tomato, green chilli, turmeric, chilli powder. Cook 2 min.', 'Crack eggs directly into the pan.', 'Scramble continuously on medium heat for 2–3 min.', 'Garnish with coriander. Serve hot with roti or on its own.'],
+    proTip:'Meal prep a large batch of the onion-tomato base on Sunday. Store in fridge. Each morning just heat the base and add eggs — ready in 4 minutes.' },
+
+  { id:'e2', emoji:'🥗', name:'3-Egg Protein Omelette',
+    tags:['breakfast'], prepTime:'8 min', batchCook:false,
+    protein:20, carbs:6, fat:14, kcal:226,
+    diets:['Veg + Eggs','Non-Veg'],
+    ingredients:['3 whole eggs', '30g paneer or 2 tbsp cottage cheese (crumbled)', '½ capsicum (diced)', '¼ onion (diced)', 'Handful spinach', '1 tsp oil', 'Salt, pepper, chilli flakes'],
+    steps:['Whisk eggs with salt and pepper until fluffy.', 'Heat oil in non-stick pan on medium heat.', 'Sauté vegetables for 2 min.', 'Pour egg mixture over vegetables.', 'Add paneer/cottage cheese on one half.', 'When edges set, fold omelette in half. Cook 1 more min.', 'Serve immediately.'],
+    proTip:'Add 2 egg whites to 2 whole eggs for higher protein with less fat. Pre-chop all vegetables on Sunday and store in containers.' },
+
+  // ─── LEGUMES / DAL ───
+  { id:'d1', emoji:'🫘', name:'High-Protein Moong Dal Chilla',
+    tags:['breakfast','snack'], prepTime:'15 min + 4h soak', batchCook:true,
+    protein:18, carbs:30, fat:4, kcal:228,
+    diets:['Veg + Eggs','Vegetarian','Lactose Free'],
+    ingredients:['1 cup yellow moong dal (soaked 4h)', '1 green chilli', '½ inch ginger', '½ tsp cumin seeds', '¼ tsp turmeric', 'Salt to taste', '2 tsp oil for cooking', 'Veggies: onion, tomato, coriander (optional)'],
+    steps:['Drain soaked moong dal and blend with chilli, ginger, cumin, turmeric, and salt. Add minimal water — batter should be thick.', 'Heat a tawa/pan on medium heat. Lightly oil.', 'Pour a ladleful of batter, spread in circular motion like a dosa.', 'Add chopped veggies on top and press lightly.', 'Cook 2–3 min until edges lift. Flip and cook 1 min.', 'Serve with mint chutney.'],
+    proTip:'Prep batter for 3 days ahead and store in the fridge. Each morning just pour and cook. Add an egg to each chilla for +6g protein.' },
+
+  { id:'d2', emoji:'🍛', name:'Batch Rajma (Kidney Bean Curry)',
+    tags:['lunch','dinner'], prepTime:'45 min', batchCook:true,
+    protein:15, carbs:38, fat:4, kcal:248,
+    diets:['Veg + Eggs','Vegetarian','Lactose Free'],
+    ingredients:['400g dried rajma (soak overnight)', '2 large onions (finely chopped)', '3 tomatoes (pureed)', '1 tbsp ginger-garlic paste', '2 tsp rajma/chole masala', '1 tsp cumin seeds', '1 tsp oil', 'Salt, coriander to garnish'],
+    steps:['Pressure cook soaked rajma for 5–6 whistles until very soft.', 'Heat oil, add cumin seeds. Add onions and cook until dark golden (10 min — do not rush this).', 'Add ginger-garlic paste, cook 2 min.', 'Add pureed tomatoes, cook until oil separates (8–10 min).', 'Add masala and salt. Add cooked rajma with its water.', 'Simmer on low heat 15 min, mashing some beans for thickness.', 'Garnish with coriander and serve with rice or roti.'],
+    proTip:'Make a large batch (double recipe) every Sunday. Divides into 6–8 portions. Rajma actually tastes better the next day. Freeze portions for up to 1 month.' },
+
+  { id:'d3', emoji:'🟡', name:'Soya Chunk Masala',
+    tags:['lunch','dinner'], prepTime:'25 min', batchCook:true,
+    protein:36, carbs:20, fat:6, kcal:280,
+    diets:['Veg + Eggs','Vegetarian','Lactose Free'],
+    ingredients:['100g dry soya chunks', '2 onions (chopped)', '2 tomatoes (pureed)', '1 tbsp ginger-garlic paste', '1 tsp cumin', '2 tsp chole/rajma masala', '½ tsp garam masala', '1 tbsp oil', 'Salt, coriander'],
+    steps:['Boil soya chunks in salted water 5 min. Drain and squeeze out all water (key step — removes raw smell).', 'Heat oil, add cumin. Add onions, cook golden (8 min).', 'Add ginger-garlic, cook 2 min. Add tomato puree, cook until oil separates.', 'Add masalas and salt. Add squeezed soya chunks.', 'Add ½ cup water, cover and simmer 10 min.', 'Finish with garam masala and coriander.'],
+    proTip:'Soya chunks are the highest plant protein per rupee. 100g dry = 52g protein. Squeeze them very well after boiling — this is what removes the rubbery texture most people dislike.' },
+
+  { id:'d4', emoji:'🥬', name:'Palak Paneer',
+    tags:['lunch','dinner'], prepTime:'30 min', batchCook:true,
+    protein:18, carbs:12, fat:16, kcal:260,
+    diets:['Veg + Eggs','Vegetarian'],
+    ingredients:['200g paneer (cubed)', '300g spinach (palak)', '1 onion (chopped)', '2 tomatoes (pureed)', '1 tbsp ginger-garlic paste', '1 tsp cumin', '½ tsp garam masala', '2 tbsp fresh cream (optional)', '1 tbsp oil', 'Salt to taste'],
+    steps:['Blanch spinach in boiling water 2 min. Immediately transfer to ice water (keeps colour vibrant). Blend to smooth paste.', 'Heat oil, add cumin, then onion. Cook golden.', 'Add ginger-garlic paste, then tomato puree. Cook until oil separates.', 'Add spinach puree and salt. Simmer 5 min.', 'Add paneer cubes. Simmer 5 more minutes.', 'Finish with garam masala and cream if using.'],
+    proTip:'Blanch and blend a large batch of spinach, freeze in ice cube trays. Use directly from frozen for any recipe.' },
+
+  // ─── NON-VEG SPECIFIC ───
+  { id:'n1', emoji:'🍗', name:'Batch Grilled Chicken Breast',
+    tags:['lunch','dinner','postworkout'], prepTime:'35 min', batchCook:true,
+    protein:31, carbs:2, fat:4, kcal:164,
+    diets:['Non-Veg'],
+    ingredients:['500g chicken breast (butterflied/flattened)', '1 tbsp olive oil', '1 tsp each: cumin, coriander, paprika, garlic powder', '½ tsp turmeric', '1 tsp red chilli flakes', 'Salt to taste', 'Lemon juice'],
+    steps:['Butterfly chicken breasts (slice lengthwise, open like a book) for even cooking.', 'Mix oil and all spices into a marinade. Coat chicken thoroughly.', 'Marinate minimum 30 min (overnight for best flavour).', 'Grill on high heat 4–5 min each side until internal temp reaches 75°C.', 'Rest 5 minutes before slicing.', 'Slice and portion into containers for the week.'],
+    proTip:'Prep 1kg every Sunday = 6–7 servings. Use in wraps, rice bowls, alongside dal, or eat cold with salad. Stores 4 days in fridge, 3 months frozen.' },
+
+  { id:'n2', emoji:'🐟', name:'Spiced Fish Fillet',
+    tags:['lunch','dinner'], prepTime:'20 min', batchCook:false,
+    protein:28, carbs:4, fat:8, kcal:200,
+    diets:['Non-Veg'],
+    ingredients:['200g fish fillet (rohu, basa, or tilapia)', '1 tsp turmeric', '1 tsp red chilli powder', '1 tsp coriander powder', '½ tsp garam masala', '1 tbsp mustard oil or regular oil', '1 tsp ginger-garlic paste', 'Lemon juice, salt'],
+    steps:['Pat fish dry with paper towel (removes excess moisture for better browning).', 'Mix all spices with oil and ginger-garlic paste into a paste.', 'Coat fish evenly. Marinate 15 min minimum.', 'Heat pan on high heat (important — low heat makes fish stick and fall apart).', 'Place fish carefully. Do NOT move for 3 min.', 'Flip once, cook 2–3 more min.', 'Squeeze lemon and serve.'],
+    proTip:'Fish is the fastest-cooking high-protein meal. From fridge to plate in 20 minutes. Buy frozen fillets in bulk — much cheaper than fresh.' },
+
+  { id:'n3', emoji:'🥚', name:'Egg Curry (Anda Masala)',
+    tags:['lunch','dinner'], prepTime:'25 min', batchCook:true,
+    protein:14, carbs:12, fat:12, kcal:212,
+    diets:['Non-Veg'],
+    ingredients:['4 boiled eggs', '2 onions (finely chopped)', '2 tomatoes (pureed)', '1 tbsp ginger-garlic paste', '1 tsp each: cumin, coriander powder, red chilli', '½ tsp garam masala', '1 tbsp oil', 'Coriander to garnish'],
+    steps:['Boil eggs 8 min, peel, and make shallow cuts on them for gravy absorption.', 'Heat oil. Fry onions dark golden (10 min).', 'Add ginger-garlic, cook 2 min. Add tomato puree, cook 8–10 min until oil surfaces.', 'Add all spices and salt. Cook 2 min.', 'Add ½ cup water and bring to simmer.', 'Add eggs and simmer 5 min.', 'Garnish with coriander.'],
+    proTip:'Score the eggs deeply before adding to the gravy — the masala soaks in and transforms the flavour completely.' },
+
+  // ─── LACTOSE-FREE SPECIFIC ───
+  { id:'lf1', emoji:'🌿', name:'Tofu Bhurji (Egg-Free Scramble)',
+    tags:['breakfast','lunch'], prepTime:'12 min', batchCook:false,
+    protein:14, carbs:8, fat:8, kcal:160,
+    diets:['Vegetarian','Lactose Free'],
+    ingredients:['200g firm tofu (crumbled)', '1 small onion (chopped)', '1 tomato (chopped)', '½ tsp turmeric', '½ tsp red chilli powder', '1 tsp oil', 'Salt, coriander', 'Optional: ½ tsp nutritional yeast for cheesy flavour'],
+    steps:['Press tofu in a clean towel for 10 min to remove excess moisture.', 'Crumble tofu coarsely with your hands.', 'Heat oil, sauté onion until golden.', 'Add tomato and spices, cook 3 min.', 'Add crumbled tofu, mix well.', 'Cook on medium heat 5–7 min, stirring occasionally.', 'Garnish with coriander.'],
+    proTip:'Pressing tofu is the most important step — skipping it makes it watery. Use extra-firm tofu for best texture that mimics egg bhurji.' },
+
+  { id:'lf2', emoji:'🟤', name:'Peanut Butter & Banana Overnight Oats',
+    tags:['breakfast'], prepTime:'5 min + overnight', batchCook:true,
+    protein:18, carbs:60, fat:12, kcal:420,
+    diets:['Veg + Eggs','Vegetarian','Lactose Free'],
+    ingredients:['80g rolled oats', '200ml oat milk or soy milk', '2 tbsp natural peanut butter', '1 ripe banana (mashed)', '1 tbsp chia seeds', '1 tsp maple syrup or honey', 'Pinch of salt', 'Optional: cacao nibs or dark chocolate chips on top'],
+    steps:['Mash banana in a bowl.', 'Mix in oat milk, peanut butter, chia seeds, sweetener, and salt.', 'Add oats and stir well.', 'Transfer to jar, seal, and refrigerate overnight.', 'In the morning, stir and top with banana slices and optional toppings.'],
+    proTip:'The combination of banana + peanut butter tastes like dessert but is genuinely high in nutrients. Add a scoop of plant protein for +20g protein.' },
+
+  // ─── RICE BOWLS & ONE-POT MEALS ───
+  { id:'r1', emoji:'🍚', name:'Curd Rice (Protein Variation)',
+    tags:['lunch','dinner'], prepTime:'20 min', batchCook:false,
+    protein:16, carbs:52, fat:8, kcal:344,
+    diets:['Veg + Eggs','Vegetarian'],
+    ingredients:['1 cup cooked rice (slightly overcooked)', '200g thick curd', '2 tbsp milk', '1 tsp oil', '½ tsp mustard seeds', '½ tsp cumin', '8–10 curry leaves', '1 green chilli (slit)', '1 tbsp grated carrot and pomegranate for garnish', 'Salt to taste'],
+    steps:['Cool cooked rice slightly. Mash gently.', 'Mix curd and milk into rice until creamy.', 'Heat oil in a small pan. Add mustard seeds, let splutter. Add cumin, curry leaves, green chilli.', 'Pour tempering over curd rice and mix.', 'Season with salt. Garnish with grated carrot.', 'Serve at room temperature or chilled.'],
+    proTip:'Add 100g paneer crumbled into the curd rice for 18g extra protein. Curd rice is also an excellent gut-health meal due to probiotics.' },
+
+  { id:'r2', emoji:'🥙', name:'High-Protein Paneer Wrap',
+    tags:['lunch','snack'], prepTime:'15 min', batchCook:false,
+    protein:28, carbs:38, fat:14, kcal:390,
+    diets:['Veg + Eggs','Vegetarian'],
+    ingredients:['2 whole wheat rotis (large)', '100g paneer (sliced)', '½ capsicum (sliced)', '¼ onion (sliced)', '½ tsp each: cumin, chilli powder, chaat masala', '1 tsp oil', '2 tbsp green chutney', '1 tbsp curd'],
+    steps:['Heat oil in pan. Add paneer slices, season with spices.', 'Pan-fry paneer 2 min per side until golden.', 'In same pan, sauté capsicum and onion 2 min.', 'Mix curd with a pinch of salt.', 'Warm rotis on tawa.', 'Spread green chutney on roti, add curd, then paneer and vegetables.', 'Fold tightly and serve.'],
+    proTip:'Wrap tightly in foil for a portable lunch. Make 3–4 at once and store in the fridge — reheat on a tawa for 2 min and they taste fresh-made.' },
+
+  { id:'r3', emoji:'🍱', name:'Soya Keema Rice Bowl',
+    tags:['lunch','dinner'], prepTime:'30 min', batchCook:true,
+    protein:40, carbs:55, fat:8, kcal:456,
+    diets:['Veg + Eggs','Vegetarian','Lactose Free'],
+    ingredients:['100g soya mince/keema (dry)', '1 cup rice (cooked)', '1 onion (chopped)', '2 tomatoes (chopped)', '1 tbsp ginger-garlic paste', '2 tsp mixed spices (cumin, coriander, chilli)', '1 tsp oil', 'Peas (optional)', 'Coriander, lemon'],
+    steps:['Soak soya mince in hot water 10 min. Squeeze out all water thoroughly.', 'Heat oil, sauté onion golden. Add ginger-garlic, cook 2 min.', 'Add tomatoes and all spices. Cook until oil separates (8 min).', 'Add squeezed soya mince and peas. Mix well, cook 8–10 min.', 'Taste and adjust salt.', 'Serve over cooked rice. Squeeze lemon and garnish with coriander.'],
+    proTip:'This is 40g protein in one bowl — highest plant protein bowl in this guide. Double the soya keema and store for 4 days. Use in wraps, with roti, or on rice.' },
+
+  // ─── SNACKS & SMALL MEALS ───
+  { id:'sn1', emoji:'🌱', name:'Sprouted Moong Salad',
+    tags:['snack'], prepTime:'5 min + 2 days sprout', batchCook:true,
+    protein:14, carbs:28, fat:2, kcal:186,
+    diets:['Veg + Eggs','Vegetarian','Lactose Free'],
+    ingredients:['1 cup sprouted moong beans', '1 tomato (diced)', '½ cucumber (diced)', '¼ onion (diced)', '1 green chilli (optional)', '1 tbsp lemon juice', '½ tsp chaat masala', '½ tsp cumin powder', 'Coriander', 'Salt to taste'],
+    steps:['To sprout: soak 1 cup moong 8h. Drain, tie in muslin cloth, leave 2 days. Rinse twice daily.', 'Mix sprouted moong with all vegetables.', 'Add lemon juice, chaat masala, cumin, and salt.', 'Toss well and garnish with coriander.', 'Eat immediately or refrigerate up to 24 hours.'],
+    proTip:'Sprout a large batch every 4 days — it becomes a zero-effort snack for the rest of the week. Sprouting increases protein digestibility and adds vitamin C and enzymes.' },
+
+  { id:'sn2', emoji:'🥜', name:'Roasted Chana & Nut Mix',
+    tags:['snack'], prepTime:'15 min', batchCook:true,
+    protein:14, carbs:32, fat:10, kcal:274,
+    diets:['Veg + Eggs','Vegetarian','Non-Veg','Lactose Free'],
+    ingredients:['1 cup dry roasted chana (black or white)', '¼ cup almonds', '¼ cup walnuts', '2 tbsp pumpkin seeds', '½ tsp chaat masala', '½ tsp cumin powder', '¼ tsp black pepper', 'Salt to taste'],
+    steps:['If using raw chana, dry roast in a pan on medium heat 8–10 min stirring constantly until fragrant.', 'Let cool completely.', 'Mix all nuts and seeds with roasted chana.', 'Add all spices and toss to coat.', 'Store in an airtight jar.'],
+    proTip:'Make 500g at a time — lasts 2 weeks in an airtight container. Perfect pre-workout or mid-morning snack. Zero prep when you need it.' },
+
+  { id:'sn3', emoji:'🥛', name:'High-Protein Curd Bowl',
+    tags:['snack','breakfast'], prepTime:'3 min', batchCook:false,
+    protein:20, carbs:18, fat:5, kcal:197,
+    diets:['Veg + Eggs','Vegetarian'],
+    ingredients:['200g thick Greek yogurt or hung curd', '1 tbsp honey or jaggery powder', '5–6 almonds (roughly chopped)', '1 tbsp mixed seeds (sunflower, pumpkin, flax)', '½ tsp cinnamon', 'Optional: ½ banana or a few berries'],
+    steps:['Spoon curd into a bowl.', 'Top with honey, chopped almonds, seeds, and cinnamon.', 'Add fruit if using.', 'Eat immediately.'],
+    proTip:'Make hung curd at home: pour regular curd into a muslin cloth, hang over a bowl in the fridge overnight. Doubles the protein per gram by removing excess whey.' },
+];
+
+function buildMealPrep(plan){
+  const diet=plan.prof.diet;
+  document.getElementById('mpSub').textContent=
+    `${MEAL_PREP_DB.filter(m=>m.diets.includes(diet)).length} recipes for ${diet} · tap any card to expand`;
+
+  // Filter buttons
+  const filters=['All','Breakfast','Lunch / Dinner','Post-Workout','Snack','Batch Cook'];
+  const filterRow=document.getElementById('mpFilterRow'); filterRow.innerHTML='';
+  filters.forEach(f=>{
+    const btn=document.createElement('div');
+    btn.className='mp-filter'+(mpActiveFilter===f?' active':'');
+    btn.textContent=f;
+    btn.onclick=()=>{ mpActiveFilter=f; buildMealPrep(plan); };
+    filterRow.appendChild(btn);
+  });
+
+  // Filter & render
+  const filtered=MEAL_PREP_DB.filter(m=>{
+    if(!m.diets.includes(diet)) return false;
+    if(mpActiveFilter==='All') return true;
+    if(mpActiveFilter==='Batch Cook') return m.batchCook;
+    const tagMap={'Breakfast':'breakfast','Lunch / Dinner':'lunch','Post-Workout':'postworkout','Snack':'snack'};
+    return m.tags.includes(tagMap[mpActiveFilter])||m.tags.includes('dinner');
+  });
+
+  const grid=document.getElementById('mpGrid');
+  grid.className='mp-grid';
+  grid.innerHTML='';
+
+  filtered.forEach(m=>{
+    const tagHTML=m.tags.map(t=>`<span class="mp-tag ${t==='postworkout'?'postworkout':t}">${t==='postworkout'?'Post-Workout':t.charAt(0).toUpperCase()+t.slice(1)}</span>`).join('')
+      +`<span class="mp-tag preptime">⏱ ${m.prepTime}</span>`
+      +(m.batchCook?`<span class="mp-tag batchcook">📦 Batch Cook</span>`:'');
+
+    const card=document.createElement('div');
+    card.className='mp-card';
+    card.innerHTML=`
+      <div class="mp-card-top">
+        <div class="mp-emoji">${m.emoji}</div>
+        <div class="mp-name">${m.name}</div>
+        <div class="mp-tags">${tagHTML}</div>
+      </div>
+      <div class="mp-macros">
+        <div class="mp-macro"><div class="mp-macro-val" style="color:var(--accent)">${m.protein}g</div><div class="mp-macro-lbl">Protein</div></div>
+        <div class="mp-macro"><div class="mp-macro-val" style="color:var(--blue)">${m.carbs}g</div><div class="mp-macro-lbl">Carbs</div></div>
+        <div class="mp-macro"><div class="mp-macro-val" style="color:var(--orange)">${m.fat}g</div><div class="mp-macro-lbl">Fat</div></div>
+        <div class="mp-macro"><div class="mp-macro-val" style="color:var(--purple)">${m.kcal}</div><div class="mp-macro-lbl">kcal</div></div>
+      </div>
+      <div class="mp-body">
+        <div class="mp-section">
+          <div class="mp-section-title">🛒 Ingredients</div>
+          <ul class="mp-ingredients">${m.ingredients.map(i=>`<li>${i}</li>`).join('')}</ul>
+        </div>
+        <div class="mp-section">
+          <div class="mp-section-title">👨‍🍳 Steps</div>
+          <ol class="mp-steps">${m.steps.map((s,i)=>`<li data-n="${i+1}">${s}</li>`).join('')}</ol>
+        </div>
+        <div class="mp-pro-tip">💡 <b>Pro tip:</b> ${m.proTip}</div>
+      </div>`;
+
+    card.querySelector('.mp-card-top').onclick=()=>{
+      const isOpen=card.classList.contains('open');
+      // Collapse all instantly — no transition on close
+      document.querySelectorAll('.mp-card').forEach(c=>{
+        c.classList.remove('open');
+        const body=c.querySelector('.mp-body');
+        if(body) body.style.transition='none';
+      });
+      // Open clicked card with animation
+      if(!isOpen){
+        const body=card.querySelector('.mp-body');
+        if(body) body.style.transition='max-height .35s ease';
+        card.classList.add('open');
+      }
+    };
+    grid.appendChild(card);
+  });
+
+  if(!filtered.length){
+    grid.innerHTML=`<div style="color:var(--muted);font-size:13px;padding:30px;text-align:center">No recipes found for this filter + diet combo.</div>`;
+  }
+}
 
 function buildChecklist(plan){
+  // Guard — only run when elements exist in DOM
+  if(!document.getElementById('clMeals')) return;
+
   const day=DAYS[activeDay];
   const mealTimes=calcMealTimes(plan.prof.wakeTime||'07:00');
   const meals=plan.weekly[day]?.meals||[];
   const dateStr=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
-  document.getElementById('clDate').textContent=dateStr;
-  document.getElementById('clTotal').textContent=meals.length;
+
+  const clDate=document.getElementById('clDate');
+  const clTotal=document.getElementById('clTotal');
+  const clDone=document.getElementById('clDone');
+  const clRing=document.getElementById('clRing');
+  const clMeals=document.getElementById('clMeals');
+  const clWaterTarget=document.getElementById('clWaterTarget');
+  const clWaterCups=document.getElementById('clWaterCups');
+  const kcalRunning=document.getElementById('kcalRunning');
+  const streakBadge=document.getElementById('streakBadge');
+
+  if(clDate) clDate.textContent=dateStr;
+  if(clTotal) clTotal.textContent=meals.length;
 
   // Streak
   const streak=updateStreak(plan);
-  const sb=document.getElementById('streakBadge');
-  sb.className='streak-badge'+(streak===0?' zero':'');
-  sb.innerHTML=streak===0?'Start your streak today!':streak===1?'🔥 1 day streak':streak>=7?`🔥🔥 ${streak} day streak — on fire!`:`🔥 ${streak} day streak`;
+  if(streakBadge){
+    streakBadge.className='streak-badge'+(streak===0?' zero':'');
+    streakBadge.innerHTML=streak===0?'Start your streak today!':streak===1?'🔥 1 day streak':streak>=7?`🔥🔥 ${streak} day streak — on fire!`:`🔥 ${streak} day streak`;
+  }
 
   // Water
   const water=Math.round((plan.prof.bwKg*35)/250);
-  document.getElementById('clWaterTarget').textContent=`Target: ${(water*0.25).toFixed(1)} litres · ${water} glasses of 250ml`;
-  const wc=document.getElementById('clWaterCups'); wc.innerHTML='';
-  for(let i=0;i<water;i++){
-    const cup=document.createElement('div');
-    cup.className='water-cup'+(i<waterCups?' filled':'');
-    cup.textContent='💧';
-    cup.onclick=()=>{ waterCups=i<waterCups?i:i+1; buildChecklist(plan); };
-    wc.appendChild(cup);
+  if(clWaterTarget) clWaterTarget.textContent=`Target: ${(water*0.25).toFixed(1)} litres · ${water} glasses of 250ml`;
+  if(clWaterCups){
+    clWaterCups.innerHTML='';
+    for(let i=0;i<water;i++){
+      const cup=document.createElement('div');
+      cup.className='water-cup'+(i<waterCups?' filled':'');
+      cup.textContent='💧';
+      cup.onclick=()=>{ waterCups=i<waterCups?i:i+1; buildChecklist(plan); };
+      clWaterCups.appendChild(cup);
+    }
   }
 
-  // Meals with running kcal
-  const list=document.getElementById('mealList_cl')||document.getElementById('clMeals');
-  list.innerHTML='';
-  let runningKcal=0, runningProt=0;
-  meals.forEach((m,i)=>{
-    const key=`${day}_${i}`, done=checkState[key]||false;
-    const fatG=Math.round((m.kcal*0.27)/9);
-    if(done){ runningKcal+=m.kcal||0; runningProt+=m.protein||0; }
-    const el=document.createElement('div'); el.className='cl-meal'+(done?' done':'');
-    el.innerHTML=`
-      <div class="cl-check">${done?'✓':''}</div>
-      <div class="cl-meal-info">
-        <div class="cl-meal-name">${m.name} — ${m.desc}</div>
-        <div class="cl-meal-desc">${mealTimes[m.name]||''} · ${m.protein}g protein · ${m.kcal} kcal</div>
-      </div>
-      <div class="cl-meal-prot">${m.protein}g</div>`;
-    el.onclick=()=>{ checkState[key]=!done; buildChecklist(plan); updateStreak(plan); };
-    list.appendChild(el);
-  });
+  // Meals
+  if(clMeals){
+    clMeals.innerHTML='';
+    let runningKcal=0, runningProt=0;
+    meals.forEach((m,i)=>{
+      const key=`${day}_${i}`, done=checkState[key]||false;
+      if(done){ runningKcal+=m.kcal||0; runningProt+=m.protein||0; }
+      const el=document.createElement('div'); el.className='cl-meal'+(done?' done':'');
+      el.innerHTML=`
+        <div class="cl-check">${done?'✓':''}</div>
+        <div class="cl-meal-info">
+          <div class="cl-meal-name">${m.name} — ${m.desc}</div>
+          <div class="cl-meal-desc">${mealTimes[m.name]||''} · ${m.protein}g protein · ${m.kcal} kcal</div>
+        </div>
+        <div class="cl-meal-prot">${m.protein}g</div>`;
+      el.onclick=()=>{ checkState[key]=!done; buildChecklist(plan); updateStreak(plan); };
+      clMeals.appendChild(el);
+    });
 
-  // Running total display
-  const totalKcal=meals.reduce((a,m)=>a+(m.kcal||0),0);
-  const totalProt=meals.reduce((a,m)=>a+(m.protein||0),0);
-  const kcalEl=document.getElementById('kcalRunning');
-  kcalEl.innerHTML=runningKcal>0
-    ?`<b>${runningKcal}</b> / ${totalKcal} kcal eaten<br>${runningProt}g / ${totalProt}g protein`
-    :`${totalKcal} kcal · ${totalProt}g protein today`;
+    // Running total
+    const totalKcal=meals.reduce((a,m)=>a+(m.kcal||0),0);
+    const totalProt=meals.reduce((a,m)=>a+(m.protein||0),0);
+    if(kcalRunning) kcalRunning.innerHTML=runningKcal>0
+      ?`<b>${runningKcal}</b> / ${totalKcal} kcal eaten<br>${runningProt}g / ${totalProt}g protein`
+      :`${totalKcal} kcal · ${totalProt}g protein today`;
+  }
 
   // Ring
   const doneCount=meals.filter((_,i)=>checkState[`${day}_${i}`]).length;
-  document.getElementById('clDone').textContent=doneCount;
-  document.getElementById('clRing').style.strokeDashoffset=163-(163*(meals.length>0?doneCount/meals.length:0));
+  if(clDone) clDone.textContent=doneCount;
+  if(clRing) clRing.style.strokeDashoffset=163-(163*(meals.length>0?doneCount/meals.length:0));
+
+  // Gym log
+  renderGymLog();
 }
 
 // ── GROCERY LIST ──
@@ -1059,7 +1968,202 @@ function makePlan(nut,prof){
   return {nut,prof,weekly,sources:t.sources,tips:tips[prof.goal]||tips['Muscle Gain']};
 }
 
-// ── JSON REPAIR ──
+// ── MEAL SWAPS LIBRARY ──
+// 3 alternatives per meal type per diet, with similar protein
+const SWAPS={
+  Breakfast:{
+    'Veg + Eggs':[
+      {desc:'Moong dal chilla (3) + mint chutney',protein:22,kcal:320,note:'High protein, no eggs'},
+      {desc:'Paneer bhurji (80g) + 2 idlis + sambar',protein:24,kcal:380,note:'Filling, south Indian style'},
+      {desc:'Greek yogurt (200g) + oats + banana + almonds',protein:20,kcal:400,note:'No cooking needed'},
+      {desc:'Besan chilla (3) + curd + sliced veggies',protein:18,kcal:300,note:'Light & quick'},
+    ],
+    'Vegetarian':[
+      {desc:'Moong dal chilla (3) + mint chutney',protein:20,kcal:300,note:'No eggs, high protein'},
+      {desc:'Overnight oats + PB + chia seeds + banana',protein:16,kcal:380,note:'Prep the night before'},
+      {desc:'Paneer sandwich (whole wheat) + green chutney',protein:18,kcal:340,note:'Quick grab-and-go'},
+      {desc:'Tofu scramble + whole wheat toast',protein:18,kcal:320,note:'Egg-free scramble alternative'},
+    ],
+    'Non-Veg':[
+      {desc:'3 boiled eggs + whole wheat toast + avocado',protein:24,kcal:380,note:'Simple, no cooking'},
+      {desc:'Chicken keema paratha (1) + curd',protein:28,kcal:420,note:'High protein, filling'},
+      {desc:'Egg white omelette (4 whites) + oats',protein:22,kcal:300,note:'Lower fat option'},
+      {desc:'Tuna sandwich (whole wheat) + cucumber',protein:28,kcal:350,note:'High protein, minimal prep'},
+    ],
+    'Lactose Free':[
+      {desc:'Moong dal chilla + avocado + tomato salsa',protein:20,kcal:320,note:'No dairy, no eggs needed'},
+      {desc:'Smoothie: soy milk + banana + oats + PB + protein',protein:28,kcal:420,note:'Drink your breakfast'},
+      {desc:'2 eggs + poha + roasted peanuts',protein:22,kcal:350,note:'Balanced, dairy-free'},
+      {desc:'Overnight oats in oat milk + berries + hemp seeds',protein:16,kcal:360,note:'Prep the night before'},
+    ],
+  },
+  Lunch:{
+    'Veg + Eggs':[
+      {desc:'Chole (1 cup) + 2 rotis + onion salad',protein:28,kcal:440,note:'No paneer needed'},
+      {desc:'Rajma rice bowl + raita + salad',protein:26,kcal:460,note:'Complete protein combo'},
+      {desc:'Paneer wrap (2 rotis) + green chutney',protein:30,kcal:480,note:'On-the-go friendly'},
+      {desc:'Soya chunks pulao + curd + salad',protein:32,kcal:450,note:'One-pot meal'},
+    ],
+    'Vegetarian':[
+      {desc:'Rajma rice bowl + raita + sliced cucumber',protein:26,kcal:450,note:'No paneer, still high protein'},
+      {desc:'Tofu tikka (100g) + 2 rotis + dal soup',protein:28,kcal:460,note:'Egg-free, dairy-free option'},
+      {desc:'Mixed dal (toor + masoor) + 2 rotis + sabji',protein:24,kcal:430,note:'Simple, everyday option'},
+      {desc:'Paneer paratha (2) + curd + onion',protein:28,kcal:500,note:'Filling weekend option'},
+    ],
+    'Non-Veg':[
+      {desc:'Grilled chicken 150g + 1 cup rice + salad',protein:42,kcal:520,note:'Clean, simple'},
+      {desc:'Fish curry + 2 rotis + dal',protein:38,kcal:510,note:'Omega-3 boost'},
+      {desc:'Chicken wrap (2 rotis) + green chutney',protein:36,kcal:480,note:'Quick, portable'},
+      {desc:'Egg curry (3 eggs) + 2 rotis + raita',protein:30,kcal:460,note:'Budget-friendly swap'},
+    ],
+    'Lactose Free':[
+      {desc:'Soya chunk masala + 2 rotis + salad',protein:34,kcal:450,note:'High protein, dairy-free'},
+      {desc:'Rajma rice + tofu sabji + lemon',protein:28,kcal:460,note:'Complete amino acids'},
+      {desc:'Dal + 2 rotis + roasted vegetables',protein:22,kcal:400,note:'Light, easy to digest'},
+      {desc:'Quinoa + chole + salad',protein:24,kcal:420,note:'Grain-free option'},
+    ],
+  },
+  'Post-Workout':{
+    'Veg + Eggs':[
+      {desc:'Whey in water + 2 boiled eggs + banana',protein:36,kcal:350,note:'If you\'re out of milk'},
+      {desc:'Greek yogurt (250g) + whey (half scoop) + honey',protein:34,kcal:380,note:'Creamy, no milk needed'},
+      {desc:'Cottage cheese (200g) + fruit',protein:28,kcal:300,note:'Slow + fast protein combo'},
+      {desc:'Amul Protein Shake (ready to drink)',protein:28,kcal:200,note:'Zero prep, on-the-go'},
+    ],
+    'Vegetarian':[
+      {desc:'Plant protein (1 scoop) + soy milk + banana',protein:30,kcal:320,note:'Complete plant protein'},
+      {desc:'Greek yogurt (250g) + granola + berries',protein:22,kcal:360,note:'No powder needed'},
+      {desc:'Paneer (100g) + fruit',protein:18,kcal:250,note:'Whole food option'},
+      {desc:'Soy milk smoothie + oats + dates',protein:20,kcal:380,note:'Energy + protein combo'},
+    ],
+    'Non-Veg':[
+      {desc:'Whey in water + 2 boiled eggs',protein:36,kcal:260,note:'Low calorie, high protein'},
+      {desc:'Chicken breast 100g + banana',protein:34,kcal:320,note:'Whole food post-workout'},
+      {desc:'Tuna can + crackers + lemon',protein:30,kcal:280,note:'No cooking, portable'},
+      {desc:'Greek yogurt + whey + mixed nuts',protein:34,kcal:380,note:'Sustained release protein'},
+    ],
+    'Lactose Free':[
+      {desc:'Plant protein + oat milk + banana + PB',protein:30,kcal:380,note:'Tasty, no dairy'},
+      {desc:'Soy milk + protein powder + frozen berries',protein:28,kcal:300,note:'Smoothie format'},
+      {desc:'2 boiled eggs + banana + almonds',protein:22,kcal:320,note:'No powder needed'},
+      {desc:'Edamame (1 cup) + plant protein shake',protein:32,kcal:360,note:'Whole food + supplement'},
+    ],
+  },
+  Dinner:{
+    'Veg + Eggs':[
+      {desc:'Egg curry (2 eggs) + 2 rotis + salad',protein:26,kcal:420,note:'Quick protein source'},
+      {desc:'Palak paneer (80g) + 2 rotis',protein:22,kcal:400,note:'Iron + protein combo'},
+      {desc:'Mixed dal + 2 rotis + roasted sabji',protein:20,kcal:380,note:'Light on stomach at night'},
+      {desc:'Paneer tikka (100g) + salad + roti',protein:22,kcal:380,note:'High protein, lower carb'},
+    ],
+    'Vegetarian':[
+      {desc:'Dal makhani + 2 rotis + salad',protein:22,kcal:440,note:'Rich, satisfying'},
+      {desc:'Tofu scramble + 2 rotis + sabji',protein:20,kcal:380,note:'Egg-free protein option'},
+      {desc:'Rajma + 1 cup rice + raita',protein:24,kcal:450,note:'Complete protein meal'},
+      {desc:'Mixed dal + khichdi + papad',protein:18,kcal:360,note:'Easy on digestion at night'},
+    ],
+    'Non-Veg':[
+      {desc:'Grilled fish 150g + salad + 1 roti',protein:36,kcal:400,note:'Light, lower carb dinner'},
+      {desc:'Chicken soup + 2 rotis',protein:32,kcal:380,note:'Easy to digest at night'},
+      {desc:'Egg bhurji (3 eggs) + 2 rotis + sabji',protein:28,kcal:420,note:'Quick budget dinner'},
+      {desc:'Baked chicken 150g + roasted veggies',protein:38,kcal:380,note:'Clean, lower carb'},
+    ],
+    'Lactose Free':[
+      {desc:'Soya chunk sabji + 2 rotis + salad',protein:28,kcal:400,note:'No dairy needed'},
+      {desc:'Dal + khichdi + roasted papad',protein:18,kcal:360,note:'Light, easy digestion'},
+      {desc:'Tofu stir fry + 1 cup rice',protein:20,kcal:380,note:'Asian-style swap'},
+      {desc:'Chole + 1 roti + onion salad',protein:22,kcal:380,note:'Simple, satisfying'},
+    ],
+  },
+};
+
+// Track meal swaps: { "Monday_0": {desc,protein,kcal} }
+let mealSwaps={};
+
+function openMealModal(meal, diet, mealTimes, dayName, mealIndex){
+  const fatG=Math.round((meal.kcal*0.27)/9);
+  const carbG=Math.round(Math.max(meal.kcal-meal.protein*4-fatG*9,0)/4);
+  const swapOptions=(SWAPS[meal.name]||{})[diet]||[];
+  const swapKey=`${dayName}_${mealIndex}`;
+  const currentSwap=mealSwaps[swapKey];
+
+  document.getElementById('modalContent').innerHTML=`
+    <div class="modal-meal-name">${meal.name}</div>
+    <div class="modal-meal-time">⏰ ${mealTimes[meal.name]||''}</div>
+
+    <!-- Current meal macros -->
+    <div class="modal-macros">
+      <div class="modal-macro"><div class="modal-macro-val" style="color:var(--accent)">${meal.protein}g</div><div class="modal-macro-lbl">Protein</div></div>
+      <div class="modal-macro"><div class="modal-macro-val" style="color:var(--blue)">${carbG}g</div><div class="modal-macro-lbl">Carbs</div></div>
+      <div class="modal-macro"><div class="modal-macro-val" style="color:var(--orange)">${fatG}g</div><div class="modal-macro-lbl">Fat</div></div>
+      <div class="modal-macro"><div class="modal-macro-val" style="color:var(--purple)">${meal.kcal}</div><div class="modal-macro-lbl">kcal</div></div>
+    </div>
+
+    <!-- Current meal -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px">
+        ${currentSwap?'🔄 SWAPPED TO':'📋 CURRENT MEAL'}
+      </div>
+      <div style="font-size:13px;font-weight:600;color:var(--text)">${currentSwap?currentSwap.desc:meal.desc}</div>
+      ${currentSwap?`<div style="font-size:10px;color:var(--muted);margin-top:3px">${currentSwap.protein}g protein · ${currentSwap.kcal} kcal</div><button onclick="clearSwap('${swapKey}')" style="margin-top:8px;background:rgba(255,107,71,.1);border:1px solid rgba(255,107,71,.3);border-radius:7px;padding:5px 12px;font-size:11px;color:var(--orange);cursor:pointer">↩ Restore original</button>`:''}
+    </div>
+
+    <!-- Swap options -->
+    ${swapOptions.length?`
+    <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px">🔀 Swap with something else</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${swapOptions.map((sw,i)=>`
+        <div onclick="applySwap('${swapKey}','${sw.desc.replace(/'/g,"\\'")}',${sw.protein},${sw.kcal})" style="background:var(--surface);border:1px solid ${currentSwap&&currentSwap.desc===sw.desc?'var(--green)':'var(--border)'};border-radius:10px;padding:11px 14px;cursor:pointer;transition:border-color .15s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='${currentSwap&&currentSwap.desc===sw.desc?'var(--green)':'var(--border)'}'">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+            <div>
+              <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px">${sw.desc}</div>
+              <div style="font-size:10px;color:var(--muted)">${sw.note}</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--green)">${sw.protein}g</div>
+              <div style="font-size:9px;color:var(--muted)">${sw.kcal} kcal</div>
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>`:''}
+
+    <!-- Timing tip -->
+    <div class="modal-timing" style="margin-top:14px">
+      💡 ${meal.name==='Breakfast'?'Eat within 1 hour of waking. Prioritise protein first.':meal.name==='Lunch'?'Largest meal of the day. Protein + complex carbs for sustained energy.':meal.name==='Post-Workout'?'Consume within 30–60 min of training. Fast protein wins here.':'Lighter on carbs at night. Prioritise protein and vegetables.'}
+    </div>
+  `;
+
+  const modal=document.getElementById('mealModal');
+  modal.style.display='flex';
+  modal.onclick=e=>{ if(e.target===modal) closeModal(); };
+}
+
+function applySwap(key, desc, protein, kcal){
+  mealSwaps[key]={desc,protein,kcal};
+  if(planData) renderDay(planData);
+  // Re-render modal in place — find the original meal from the swap key
+  const [dayName, idxStr]=key.split('_');
+  const idx=parseInt(idxStr);
+  const meal=planData.weekly[dayName]?.meals[idx];
+  if(meal){
+    const mealTimes=calcMealTimes(planData.prof.wakeTime||'07:00');
+    const swappedMeal={...meal,desc,protein,kcal};
+    openMealModal(swappedMeal,planData.prof.diet,mealTimes,dayName,idx);
+  }
+}
+
+function clearSwap(key){
+  delete mealSwaps[key];
+  if(planData) renderDay(planData);
+  // Re-render modal with original meal
+  const [dayName,idxStr]=key.split('_');
+  const idx=parseInt(idxStr);
+  const meal=planData.weekly[dayName]?.meals[idx];
+  if(meal){
+    const mealTimes=calcMealTimes(planData.prof.wakeTime||'07:00');
+    openMealModal(meal,planData.prof.diet,mealTimes,dayName,idx);
+  }
+}
 function fixJSON(s){
   s=s.replace(/,\s*"[^"]*"\s*:\s*"[^"]*$/,'').replace(/,\s*"[^"]*"\s*:\s*$/,'').replace(/,\s*"[^"]*"\s*$/,'').replace(/,\s*$/,'');
   const st=[]; let ins=false,esc=false;
@@ -1111,7 +2215,7 @@ function buildDash(plan){
   // Day selector
   activeDay=new Date().getDay(); activeDay=activeDay===0?6:activeDay-1;
   const ds=document.getElementById('daySel'); ds.innerHTML='';
-  DAYS.forEach((d,i)=>{ const b=document.createElement('button'); b.className='day-btn'+(i===activeDay?' active':''); b.textContent=SHORT[i]; b.onclick=()=>{ activeDay=i; document.querySelectorAll('.day-btn').forEach((x,j)=>x.classList.toggle('active',j===i)); renderDay(plan); }; ds.appendChild(b); });
+  DAYS.forEach((d,i)=>{ const b=document.createElement('button'); b.className='day-btn'+(i===activeDay?' active':''); b.textContent=SHORT[i]; b.onclick=()=>{ activeDay=i; document.querySelectorAll('.day-btn').forEach((x,j)=>x.classList.toggle('active',j===i)); syncRestDayBadge(); renderDay(plan); }; ds.appendChild(b); });
 
   document.getElementById('rtgt').textContent='/'+nut.protein+'g';
   document.getElementById('tgtLbl').textContent=nut.protein+'g';
@@ -1121,7 +2225,9 @@ function buildDash(plan){
   buildWeek(plan);
   buildTips(plan);
   buildBmiStrip(plan);
-  buildChecklist(plan);
+  buildQuote();
+  buildWorkout(plan);
+  buildMealPrep(plan);
   buildGrocery(plan);
   buildProgress(plan);
   buildSupplements(plan);
@@ -1133,14 +2239,21 @@ function renderDay(plan){
   const mealTimes=calcMealTimes(prof.wakeTime||'07:00');
   const meals=plan.weekly[day]?.meals||[];
 
-  // Rest day: reduce carbs by 20%, keep protein same
+  // Rest day: reduce carbs by 20%, keep protein same, show adjustment note
+  const restToday=isTodayRest();
   const enriched=meals.map(m=>{
     const fatG=m.fat||Math.round((m.kcal*0.27)/9);
     const carbG=m.carbs||Math.round(Math.max(m.kcal-m.protein*4-fatG*9,0)/4);
-    const adjCarbs=isRestDay?Math.round(carbG*0.8):carbG;
-    const adjKcal=isRestDay?Math.round(m.kcal-(carbG-adjCarbs)*4):m.kcal;
-    return {...m,fat:fatG,carbs:adjCarbs,kcal:adjKcal};
+    const adjCarbs=restToday?Math.round(carbG*0.8):carbG;
+    const adjKcal=restToday?Math.round(m.kcal-(carbG-adjCarbs)*4):m.kcal;
+    let adjDesc=m.desc;
+    if(restToday){
+      if(m.name==='Post-Workout') adjDesc=adjDesc.replace('500ml full-fat milk','300ml low-fat milk').replace('500ml milk','300ml milk');
+      if(m.name==='Lunch'||m.name==='Dinner') adjDesc=adjDesc.replace('2 rotis','1 roti').replace('1 cup rice','½ cup rice');
+    }
+    return {...m,fat:fatG,carbs:adjCarbs,kcal:adjKcal,desc:adjDesc};
   });
+  syncRestDayBadge();
 
   const tot=enriched.reduce((a,m)=>({p:a.p+(m.protein||0),c:a.c+(m.carbs||0),f:a.f+(m.fat||0),k:a.k+(m.kcal||0)}),{p:0,c:0,f:0,k:0});
   const circ=358; const pct=Math.min(tot.p/nut.protein,1);
@@ -1154,21 +2267,25 @@ function renderDay(plan){
   document.getElementById('rmKcal').textContent=tot.k+' kcal';
 
   const list=document.getElementById('mealList'); list.innerHTML='';
-  enriched.forEach(m=>{
-    const col=COLS[m.name]||'#888';
-    const isPW=m.name==='Post-Workout';
-    const badge=isPW&&m.desc&&m.desc.includes('500ml')?`<span class="mbadge" style="background:rgba(71,197,255,.12);color:#47c5ff">+milk</span>`:'';
+  enriched.forEach((m,idx)=>{
+    const swapKey=`${day}_${idx}`;
+    const swap=mealSwaps[swapKey];
+    const dm=swap?{...m,desc:swap.desc,protein:swap.protein,kcal:swap.kcal}:m;
+    const col=COLS[dm.name]||'#888';
+    const isPW=dm.name==='Post-Workout';
+    const badge=isPW&&dm.desc&&dm.desc.includes('500ml')?`<span class="mbadge" style="background:rgba(71,197,255,.12);color:#47c5ff">+milk</span>`:'';
+    const swapBadge=swap?`<span class="mbadge" style="background:rgba(196,132,252,.12);color:var(--purple)">🔄</span>`:'';
     const row=document.createElement('div'); row.className='meal-row';
     row.innerHTML=`
-      <span class="meal-time">${mealTimes[m.name]||''}</span>
-      <div class="mdot" style="background:${col}18">${EMOJ[m.name]||'🍴'}</div>
+      <span class="meal-time">${mealTimes[dm.name]||''}</span>
+      <div class="mdot" style="background:${col}18">${EMOJ[dm.name]||'🍴'}</div>
       <div>
-        <div class="mname">${m.name}${badge}</div>
-        <div class="mdesc">${m.desc}</div>
-        <div class="meal-hint">tap for portions & details</div>
+        <div class="mname">${dm.name}${badge}${swapBadge}</div>
+        <div class="mdesc">${dm.desc}</div>
+        <div class="meal-hint">tap to swap or see details</div>
       </div>
-      <span class="mprot">${m.protein}g</span>`;
-    row.onclick=()=>openMealModal(m,prof.diet,mealTimes);
+      <span class="mprot">${dm.protein}g</span>`;
+    row.onclick=()=>openMealModal(dm,prof.diet,mealTimes,day,idx);
     list.appendChild(row);
   });
 }
