@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Macrogang — Personalised Diet Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0c10;--surface:#111318;--card:#161a22;--border:#1f2531;--accent:#e8ff47;--blue:#47c5ff;--orange:#ff6b47;--green:#4ade80;--purple:#c084fc;--amber:#fbbf24;--text:#e8eaf0;--muted:#5a6070}
@@ -13,7 +14,19 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .screen{display:none!important;position:relative;z-index:1}
 .screen.active{display:block!important}
 #onboarding.active,#loading.active{display:flex!important}
-#onboarding{min-height:100vh;align-items:center;justify-content:center;padding:40px 20px}
+#welcome.active{display:flex!important}
+#welcome{min-height:100vh;align-items:center;justify-content:center;padding:40px 20px}
+.welcome-wrap{width:100%;max-width:420px;text-align:center}
+.welcome-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:36px;margin-top:32px;animation:fadeUp .5s ease both}
+.welcome-icon{font-size:48px;margin-bottom:12px}
+.welcome-title{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--text);letter-spacing:1px}
+.welcome-sub{font-size:12px;color:var(--muted);margin-top:6px;margin-bottom:4px;line-height:1.5}
+.welcome-note{font-size:10px;color:var(--muted);margin-top:14px;line-height:1.5}
+.welcome-returning{background:rgba(232,255,71,.06);border:1px solid rgba(232,255,71,.2);border-radius:14px;padding:20px;margin-top:16px;text-align:left}
+.wr-greeting{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--accent);letter-spacing:1px}
+.wr-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.wr-btn{background:var(--accent);color:#000;border:none;border-radius:10px;padding:12px 24px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;cursor:pointer;width:100%;margin-top:14px;transition:all .2s}
+.wr-btn:hover{opacity:.88}
 .onboard-wrap{width:100%;max-width:540px}
 .brand{text-align:center;margin-bottom:44px}
 .brand h1{font-family:'Bebas Neue',sans-serif;font-size:68px;letter-spacing:3px;color:var(--accent);text-shadow:0 0 60px rgba(232,255,71,.25);line-height:1}
@@ -393,7 +406,50 @@ svg.ring{transform:rotate(-90deg)}
 <body>
 
 <!-- ONBOARDING -->
-<div id="onboarding" class="screen active">
+<!-- WELCOME / IDENTITY SCREEN -->
+<div id="welcome" class="screen active">
+ <div class="welcome-wrap">
+  <div class="brand"><h1>MACROGANG</h1><p>Your personal diet OS 🔥</p></div>
+  <div class="welcome-card" id="welcomeCard">
+   <div class="welcome-icon">👋</div>
+   <div class="welcome-title">Welcome!</div>
+   <div class="welcome-sub">Enter your details to get started or restore your data</div>
+   <div class="field" style="margin-top:20px"><label>Your Name</label><input type="text" id="wName" placeholder="e.g. Prashant" autocomplete="name"></div>
+   <div class="field"><label>Phone Number <span style="color:var(--muted);font-weight:400;font-size:9px">(used to restore your data on any device)</span></label><input type="tel" id="wPhone" placeholder="e.g. 9876543210" maxlength="10"></div>
+   <button class="submit-btn" id="welcomeBtn" onclick="handleWelcome()">LET'S GO →</button>
+   <div class="welcome-note">Your data is saved securely and privately. Only you can see it.</div>
+  </div>
+ </div>
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+<div id="editModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:center;justify-content:center;padding:20px;overflow-y:auto">
+ <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;max-width:500px;width:100%;position:relative;max-height:90vh;overflow-y:auto;margin:auto">
+  <button onclick="closeEditModal()" style="position:sticky;top:0;float:right;background:var(--surface);border:1px solid var(--border);border-radius:50%;width:28px;height:28px;color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">×</button>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--accent);letter-spacing:1px;margin-bottom:4px">EDIT PROFILE</div>
+  <div style="font-size:11px;color:var(--muted);margin-bottom:20px">Your progress and history will be preserved</div>
+  <div class="form-row">
+   <div class="field"><label>Body Weight</label><input type="number" id="ebw" placeholder="e.g. 70" min="30" max="300"></div>
+   <div class="field"><label>Unit</label><select id="ebwUnit"><option value="kg">kg</option><option value="lbs">lbs</option></select></div>
+  </div>
+  <div class="form-row">
+   <div class="field"><label>Height (cm or ft'in)</label><input type="text" id="eheight" placeholder="e.g. 175"></div>
+   <div class="field"><label>Age</label><input type="number" id="eage" placeholder="e.g. 25" min="14" max="80"></div>
+  </div>
+  <div class="field"><label>Gender</label><div class="chips"><div class="chip active" data-group="egender" data-val="Male">♂ Male</div><div class="chip" data-group="egender" data-val="Female">♀ Female</div></div></div>
+  <div class="field"><label>Fitness Goal</label><div class="chips"><div class="chip active" data-group="egoal" data-val="Muscle Gain">💪 Muscle Gain</div><div class="chip" data-group="egoal" data-val="Fat Loss">🔥 Fat Loss</div><div class="chip" data-group="egoal" data-val="Lean Bulk">⚡ Lean Bulk</div><div class="chip" data-group="egoal" data-val="Maintenance">🎯 Maintenance</div></div></div>
+  <div class="field"><label>Diet Preference</label><div class="chips"><div class="chip active" data-group="ediet" data-val="Veg + Eggs">🥚 Veg + Eggs</div><div class="chip" data-group="ediet" data-val="Vegetarian">🥗 Vegetarian</div><div class="chip" data-group="ediet" data-val="Non-Veg">🍗 Non-Veg</div><div class="chip" data-group="ediet" data-val="Lactose Free">🚫🥛 Lactose Free</div></div></div>
+  <div class="field"><label>Activity Level</label><select id="eactivity"><option value="sedentary">Sedentary (desk job, no exercise)</option><option value="light">Light (1–2x/week)</option><option value="moderate">Moderate (3–4x/week)</option><option value="active">Active (5–6x/week)</option><option value="athlete">Athlete (daily)</option></select></div>
+  <div class="field"><label>Wake Up Time</label><input type="time" id="ewakeTime" value="07:00"></div>
+  <div class="field"><label>Avoid / Allergies <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;font-size:9px">(optional)</span></label><input type="text" id="eavoid" placeholder="e.g. peanuts, soya…"></div>
+  <button class="submit-btn" id="saveProfileBtn" onclick="saveEditProfile()" style="margin-top:8px">SAVE & UPDATE PLAN →</button>
+ </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:13px;color:var(--text);z-index:300;box-shadow:0 8px 32px rgba(0,0,0,.4);white-space:nowrap"></div>
+
+<div id="onboarding" class="screen">
  <div class="onboard-wrap">
   <div class="brand"><h1>MACROGANG</h1><p>Your personal diet OS 🔥</p></div>
   <div class="form-card">
@@ -434,7 +490,7 @@ svg.ring{transform:rotate(-90deg)}
    <div class="profile-right">
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
      <button class="rest-toggle" id="restToggle" onclick="toggleRestDay()">🛌 Rest Day</button>
-     <button class="edit-btn" onclick="resetToOnboarding()">✦ Edit Profile</button>
+     <button class="edit-btn" onclick="openEditModal()">✦ Edit Profile</button>
     </div>
     <div class="pstats" id="pstats"></div>
    </div>
@@ -617,7 +673,264 @@ svg.ring{transform:rotate(-90deg)}
 </div>
 
 <script>
-// ── CHIP GROUPS ──
+// ══════════════════════════════════════
+// SUPABASE CONFIG
+// ══════════════════════════════════════
+const SUPA_URL = 'https://kzqtimhuibqxbspcitgy.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt6cXRpbWh1aWJxeGJzcGNpdGd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2MDIxODksImV4cCI6MjA5MDE3ODE4OX0.NWvKKjWl8ajRGvoSQgk2LO4OzrulqX5rJaUbwAJQBXo';
+const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+// ── USER IDENTITY ──
+let currentUser = null; // { id, name, phone }
+
+// ── TOAST ──
+let _toastTimer = null;
+function showToast(msg, duration=2800){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.style.display='block';
+  clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>el.style.display='none', duration);
+}
+
+// ══════════════════════════════════════
+// APP INIT — runs on page load
+// ══════════════════════════════════════
+async function initApp(){
+  // Check if user already identified on this device
+  const savedPhone = localStorage.getItem('mg_phone');
+  const savedName  = localStorage.getItem('mg_name');
+  if(savedPhone && savedName){
+    // Try to restore from Supabase
+    const restored = await restoreUser(savedPhone);
+    if(restored) return; // went straight to dashboard
+  }
+  // No saved user — show welcome screen
+  show('welcome');
+}
+
+// ── HANDLE WELCOME SCREEN SUBMIT ──
+async function handleWelcome(){
+  const name  = document.getElementById('wName').value.trim();
+  const phone = document.getElementById('wPhone').value.trim().replace(/\D/g,'');
+  if(!name){ showToast('⚠️ Enter your name'); return; }
+  if(phone.length < 10){ showToast('⚠️ Enter a valid 10-digit phone number'); return; }
+
+  const btn = document.getElementById('welcomeBtn');
+  btn.disabled=true; btn.textContent='Checking…';
+
+  try {
+    // Test connection first
+    const { data, error } = await sb.from('user_data').select('*').eq('phone', phone).maybeSingle();
+
+    console.log('Supabase response → data:', data, '| error:', error);
+
+    if(error){
+      console.error('Supabase error code:', error.code, '| message:', error.message, '| hint:', error.hint);
+
+      if(error.code === '42501' || error.message?.includes('row-level security')){
+        showToast('❌ Database permissions error — see console', 4000);
+        alert('RLS Error: Go to Supabase → SQL Editor → run:\nALTER TABLE user_data DISABLE ROW LEVEL SECURITY;');
+      } else if(error.code === '42P01' || error.message?.includes('does not exist')){
+        showToast('❌ Table not found — see console', 4000);
+        alert('Table missing. Go to Supabase → SQL Editor and create the user_data table.');
+      } else {
+        showToast('❌ ' + (error.message || 'Connection failed'), 4000);
+      }
+      btn.disabled=false; btn.textContent='LET\'S GO →';
+      return;
+    }
+
+    if(data){
+      await loadUserData(data);
+      showToast(`Welcome back, ${data.name}! 🔥`);
+    } else {
+      currentUser = { name, phone };
+      localStorage.setItem('mg_phone', phone);
+      localStorage.setItem('mg_name', name);
+      const { error: insertErr } = await sb.from('user_data').insert({ name, phone });
+      if(insertErr){
+        console.error('Insert error:', insertErr);
+        showToast('❌ Could not create account: ' + insertErr.message, 4000);
+        btn.disabled=false; btn.textContent='LET\'S GO →';
+        return;
+      }
+      show('onboarding');
+      btn.disabled=false; btn.textContent='LET\'S GO →';
+    }
+  } catch(e) {
+    console.error('Network/fetch error:', e);
+    showToast('❌ Network error — are you online?', 4000);
+    btn.disabled=false; btn.textContent='LET\'S GO →';
+  }
+}
+
+// ── RESTORE USER FROM SAVED PHONE ──
+async function restoreUser(phone){
+  const { data, error } = await sb.from('user_data').select('*').eq('phone', phone).maybeSingle();
+  if(error || !data) return false;
+  await loadUserData(data);
+  return true;
+}
+
+// ── LOAD ALL DATA FROM SUPABASE ROW ──
+async function loadUserData(row){
+  currentUser = { id: row.id, name: row.name, phone: row.phone };
+  localStorage.setItem('mg_phone', row.phone);
+  localStorage.setItem('mg_name', row.name);
+
+  // If no profile saved yet — go to onboarding
+  if(!row.profile || !row.profile.goal){
+    show('onboarding');
+    return;
+  }
+
+  // Restore all state
+  const prof = row.profile;
+  const nut  = calcNutrition(prof.bwKg, prof.hCm, prof.age, prof.gender, prof.goal, prof.activity);
+  planData   = makePlan(nut, prof);
+  _fetched   = true;
+
+  // Restore progress data
+  if(row.check_state)     checkState     = row.check_state;
+  if(row.weight_log)      weightLog      = row.weight_log;
+  if(row.gym_log)         gymLog         = row.gym_log;
+  if(row.streak_data)     streakData     = row.streak_data;
+  if(row.gym_streak_data) gymStreakData   = row.gym_streak_data;
+  if(row.meal_swaps)      mealSwaps      = row.meal_swaps;
+  if(row.rest_days)       userRestDays   = new Set(row.rest_days);
+  if(row.wo_frequency)    woFrequency    = row.wo_frequency;
+  if(row.water_state){
+    const ws = row.water_state;
+    waterCups    = ws.cups    || 0;
+    waterCupsDay = ws.day     || '';
+  }
+
+  // Update last_active
+  sb.from('user_data').update({ last_active: new Date().toISOString() }).eq('phone', row.phone);
+
+  buildDash(planData);
+  show('dashboard');
+
+  // Show welcome back message in profile
+  setTimeout(()=>{
+    const sub = document.getElementById('dashSub');
+    if(sub) sub.textContent = `Welcome back, ${row.name}! 🔥 · ${prof.diet} · ${prof.goal}`;
+    setTimeout(()=>{ if(sub) sub.textContent=`${prof.diet} · ${prof.gender} · ${prof.activity.charAt(0).toUpperCase()+prof.activity.slice(1)}`; }, 3000);
+  }, 400);
+}
+
+// ══════════════════════════════════════
+// SAVE TO SUPABASE — called after every meaningful action
+// ══════════════════════════════════════
+async function saveToSupabase(partial={}){
+  if(!currentUser?.phone) return;
+  const payload = {
+    updated_at: new Date().toISOString(),
+    last_active: new Date().toISOString(),
+    ...partial
+  };
+  const { error } = await sb.from('user_data').update(payload).eq('phone', currentUser.phone);
+  if(error) console.warn('Save error:', error.message);
+}
+
+// Save full state (called after plan generation or profile edit)
+function saveFullState(){
+  if(!planData || !currentUser?.phone) return;
+  saveToSupabase({
+    profile:         planData.prof,
+    plan:            { nut: planData.nut },
+    check_state:     checkState,
+    weight_log:      weightLog,
+    gym_log:         gymLog,
+    streak_data:     streakData,
+    gym_streak_data: gymStreakData,
+    meal_swaps:      mealSwaps,
+    rest_days:       [...userRestDays],
+    wo_frequency:    woFrequency,
+    water_state:     { cups: waterCups, day: waterCupsDay },
+  });
+}
+
+// Lightweight save — just the changed piece
+function savePartial(key, value){
+  if(!currentUser?.phone) return;
+  saveToSupabase({ [key]: value });
+}
+
+// ══════════════════════════════════════
+// EDIT PROFILE MODAL
+// ══════════════════════════════════════
+function openEditModal(){
+  if(!planData) return;
+  const p = planData.prof;
+  // Pre-fill all fields
+  document.getElementById('ebw').value     = Math.round(p.bwKg);
+  document.getElementById('ebwUnit').value = 'kg';
+  document.getElementById('eheight').value = p.hCm;
+  document.getElementById('eage').value    = p.age;
+  document.getElementById('ewakeTime').value = p.wakeTime || '07:00';
+  document.getElementById('eavoid').value  = p.avoid || '';
+  document.getElementById('eactivity').value = p.activity;
+  // Set chip selections
+  ['egender','egoal','ediet'].forEach(g=>{
+    const field = g.replace('e','');
+    document.querySelectorAll(`.chip[data-group="${g}"]`).forEach(c=>{
+      c.classList.toggle('active', c.dataset.val === p[field]);
+    });
+  });
+  document.getElementById('editModal').style.display='flex';
+}
+
+function closeEditModal(){
+  document.getElementById('editModal').style.display='none';
+}
+
+async function saveEditProfile(){
+  const bwRaw    = document.getElementById('ebw').value.trim();
+  const bwUnit   = document.getElementById('ebwUnit').value;
+  const hRaw     = document.getElementById('eheight').value.trim();
+  const ageRaw   = document.getElementById('eage').value.trim();
+  const gender   = chip('egender') || 'Male';
+  const goal     = chip('egoal')   || 'Muscle Gain';
+  const diet     = chip('ediet')   || 'Veg + Eggs';
+  const activity = document.getElementById('eactivity').value;
+  const wakeTime = document.getElementById('ewakeTime').value || '07:00';
+  const avoid    = document.getElementById('eavoid').value.trim();
+
+  if(!bwRaw||!hRaw||!ageRaw){ showToast('⚠️ Fill in all required fields'); return; }
+
+  const btn = document.getElementById('saveProfileBtn');
+  btn.disabled=true; btn.textContent='SAVING…';
+
+  const bwKg = bwUnit==='lbs' ? parseFloat(bwRaw)*0.453592 : parseFloat(bwRaw);
+  const hCm  = parseH(hRaw);
+  const age  = parseInt(ageRaw);
+  const nut  = calcNutrition(bwKg,hCm,age,gender,goal,activity);
+  const prof = {bwKg,hCm,age,gender,goal,diet,activity,avoid,wakeTime};
+
+  // Keep progress, reset plan-specific state
+  checkState = {};
+  mealSwaps  = {};
+
+  planData = makePlan(nut, prof);
+
+  // Save to Supabase
+  await saveToSupabase({
+    profile:     prof,
+    plan:        { nut },
+    check_state: {},
+    meal_swaps:  {},
+  });
+
+  closeEditModal();
+  buildDash(planData);
+  show('dashboard');
+  showToast('✅ Profile updated! Plan regenerated 💪');
+
+  btn.disabled=false; btn.textContent='SAVE & UPDATE PLAN →';
+}
+
+// ── CHIP GROUPS (includes edit modal groups) ──
 document.querySelectorAll('.chip').forEach(c=>{
   c.onclick=()=>{ document.querySelectorAll(`.chip[data-group="${c.dataset.group}"]`).forEach(x=>x.classList.remove('active')); c.classList.add('active'); };
 });
@@ -661,8 +974,8 @@ function toggleRestDay(){
   else userRestDays.add(activeDay);
   syncRestDayBadge();
   if(planData){ renderDay(planData); buildChecklist(planData); }
-  // Refresh workout tab if open
   if(planData) buildWorkout(planData);
+  savePartial('rest_days',[...userRestDays]);
 }
 
 // ── MEAL DETAIL MODAL ──
@@ -730,6 +1043,7 @@ let gymLog={}; // { "Mon Mar 25 2024": [{type,duration,time}] }
 let gymStreakData={streak:0,lastDate:null,completedDays:{}};
 let checkState={};
 let waterCups=0;
+let waterCupsDay=''; // track which day the cups belong to
 
 // ── MOTIVATIONAL QUOTES (1 per day, cycles by day of year) ──
 const QUOTES=[
@@ -1001,6 +1315,7 @@ function buildWorkout(plan){
       syncRestDayBadge();
       if(planData){ renderDay(planData); buildChecklist(planData); }
       if(planData) buildWorkout(planData);
+      savePartial('rest_days',[...userRestDays]); savePartial('wo_frequency',f);
     };
     freqEl.appendChild(c);
   });
@@ -1053,6 +1368,7 @@ function buildWorkout(plan){
       syncRestDayBadge();
       if(planData){ renderDay(planData); buildChecklist(planData); }
       if(planData) buildWorkout(planData);
+      savePartial('rest_days',[...userRestDays]);
     };
     picker.appendChild(chip);
   });
@@ -1101,6 +1417,7 @@ function renderWoDay(schedule,dayIdx){
   const existing=document.getElementById('woSessionCard');
   if(existing) existing.remove();
   const container=document.getElementById('woContent');
+  if(!dp||!container) return; // guard against undefined schedule entry
 
   const card=document.createElement('div');
   card.id='woSessionCard';
@@ -1147,6 +1464,8 @@ function logGym(){
   gymStreakData.streak=s;
   document.getElementById('gymType').value='';
   document.getElementById('gymDuration').value='';
+  savePartial('gym_log', gymLog);
+  savePartial('gym_streak_data', gymStreakData);
   renderGymLog();
 }
 function renderGymLog(){
@@ -1185,6 +1504,7 @@ function updateStreak(plan){
     while(streakData.completedDays[d.toDateString()]){ s++; d.setDate(d.getDate()-1); }
     streakData.streak=s;
   }
+  savePartial('streak_data', streakData);
   return streakData.streak;
 }
 
@@ -1498,6 +1818,8 @@ function buildChecklist(plan){
   if(!document.getElementById('clMeals')) return;
 
   const day=DAYS[activeDay];
+  // Reset water cups when day changes
+  if(waterCupsDay !== day){ waterCups=0; waterCupsDay=day; }
   const mealTimes=calcMealTimes(plan.prof.wakeTime||'07:00');
   const meals=plan.weekly[day]?.meals||[];
   const dateStr=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
@@ -1531,7 +1853,7 @@ function buildChecklist(plan){
       const cup=document.createElement('div');
       cup.className='water-cup'+(i<waterCups?' filled':'');
       cup.textContent='💧';
-      cup.onclick=()=>{ waterCups=i<waterCups?i:i+1; buildChecklist(plan); };
+      cup.onclick=()=>{ waterCups=i<waterCups?i:i+1; buildChecklist(plan); savePartial('water_state',{cups:waterCups,day:waterCupsDay}); };
       clWaterCups.appendChild(cup);
     }
   }
@@ -1551,7 +1873,7 @@ function buildChecklist(plan){
           <div class="cl-meal-desc">${mealTimes[m.name]||''} · ${m.protein}g protein · ${m.kcal} kcal</div>
         </div>
         <div class="cl-meal-prot">${m.protein}g</div>`;
-      el.onclick=()=>{ checkState[key]=!done; buildChecklist(plan); updateStreak(plan); };
+      el.onclick=()=>{ checkState[key]=!done; buildChecklist(plan); updateStreak(plan); savePartial('check_state', checkState); };
       clMeals.appendChild(el);
     });
 
@@ -1624,6 +1946,7 @@ function logWeight(){
   if(weightLog.length&&weightLog[weightLog.length-1].date===today) weightLog[weightLog.length-1].weight=val;
   else weightLog.push({date:today,weight:val});
   document.getElementById('weightInput').value='';
+  savePartial('weight_log', weightLog);
   buildProgress(planData);
 }
 function buildProgress(plan){
@@ -1689,6 +2012,7 @@ function buildSupplements(plan){
 // ── SCREENS ──
 function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
 function resetToOnboarding(){ show('onboarding'); }
+window.addEventListener('load', initApp);
 
 // ── PARSE HEIGHT → cm ──
 function parseH(h){
@@ -1818,6 +2142,8 @@ function startGenerate(){
     stopAnim();
     planData=makePlan(nut,prof);
     _fetched=true;
+    // Save profile + plan to Supabase
+    saveToSupabase({ profile: prof, plan: { nut: planData.nut } });
     done();
     setTimeout(()=>{
       buildDash(planData);
@@ -2140,6 +2466,7 @@ function openMealModal(meal, diet, mealTimes, dayName, mealIndex){
 
 function applySwap(key, desc, protein, kcal){
   mealSwaps[key]={desc,protein,kcal};
+  savePartial('meal_swaps', mealSwaps);
   if(planData) renderDay(planData);
   // Re-render modal in place — find the original meal from the swap key
   const [dayName, idxStr]=key.split('_');
@@ -2154,6 +2481,7 @@ function applySwap(key, desc, protein, kcal){
 
 function clearSwap(key){
   delete mealSwaps[key];
+  savePartial('meal_swaps', mealSwaps);
   if(planData) renderDay(planData);
   // Re-render modal with original meal
   const [dayName,idxStr]=key.split('_');
