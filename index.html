@@ -2103,11 +2103,13 @@ function startGenerate(){
   const nut   = calcNutrition(bwKg,hCm,age,gender,goal,activity);
   const prof  = {bwKg,hCm,age,gender,goal,diet,activity,avoid,wakeTime};
 
-  // Re-run: skip fetch, build instantly
+  // Re-run: skip loading animation, rebuild instantly with new profile
   if(_fetched){
     planData = makePlan(nut,prof);
     buildDash(planData);
     show('dashboard');
+    // Save updated profile to Supabase
+    saveToSupabase({ profile: prof, plan: { nut: planData.nut }, check_state: {}, meal_swaps: {} });
     return;
   }
 
