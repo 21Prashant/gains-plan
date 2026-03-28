@@ -171,7 +171,9 @@ svg.ring{transform:rotate(-90deg)}
 .wo-rest-count-pill.over{background:rgba(255,107,71,.1);border-color:rgba(255,107,71,.3);color:var(--orange)}
 .wo-settings-divider{height:1px;background:var(--border);margin:12px 0}
 
-.wo-settings{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:14px}
+.wo-section-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:10px 0 6px;padding-left:2px}
+.wo-exercise.wo-warmup{opacity:.75;border-left:2px solid var(--amber)!important}
+.wo-exercise.wo-warmup .wo-ex-name{color:var(--amber)}
 .wo-settings-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .wo-settings-label{font-size:12px;font-weight:600;color:var(--text)}
 .wo-settings-sub{font-size:10px;color:var(--muted);margin-top:2px}
@@ -1040,10 +1042,18 @@ function buildBmiStrip(plan){
 
   // Training level from activity
   const lvl=activity==='sedentary'||activity==='light'?'beginner':activity==='moderate'?'intermediate':'advanced';
+  const isFemale=plan.prof.gender==='Female';
 
-  // Evidence-based LEAN muscle rates (Aragon & Helms)
-  // Beginner: 0.9–1.4kg/mo | Intermediate: 0.4–0.8kg/mo | Advanced: 0.2–0.4kg/mo
-  const leanRates={beginner:{lo:0.9,hi:1.4},intermediate:{lo:0.4,hi:0.8},advanced:{lo:0.2,hi:0.4}};
+  // Evidence-based LEAN muscle rates — gender-adjusted absolute kg/month
+  // Women gain at similar RELATIVE % but lower absolute kg (less baseline muscle mass, lower testosterone)
+  // Male: Beginner 0.9–1.4kg/mo | Intermediate 0.4–0.8 | Advanced 0.2–0.4
+  // Female: ~50–60% of male absolute rates (Precision Nutrition, Aragon model)
+  // Female: Beginner 0.5–0.8kg/mo | Intermediate 0.2–0.45 | Advanced 0.1–0.2
+  const leanRates={
+    beginner:    isFemale?{lo:0.5,hi:0.8}:{lo:0.9,hi:1.4},
+    intermediate:isFemale?{lo:0.2,hi:0.45}:{lo:0.4,hi:0.8},
+    advanced:    isFemale?{lo:0.1,hi:0.2}:{lo:0.2,hi:0.4},
+  };
   const lean=leanRates[lvl];
 
   // Week-1 glycogen/water spike scales with body weight
@@ -1099,19 +1109,25 @@ function buildBmiStrip(plan){
     const gained=Math.max(+(latestWeight-bwKg).toFixed(1),0);
 
     if(gained===0){
-      // Show SCALE weight expected (includes water/glycogen) — much more motivating
-      msg=`📈 Month 1: scale moves <b>+${scaleMonth1Lo}–${scaleMonth1Hi}kg</b> · Year 1: <b>+${scaleYrLo}–${scaleYrHi}kg</b>`;
-      highlight=`Week 1–2: scale jumps <b>${wk1lo}–${wk1hi}kg</b> (water + glycogen filling muscles — not fat!) · Then ${lean.lo}–${lean.hi}kg pure muscle/month · Tap for full breakdown`;
-      fill=2; leftTick=`${Math.round(bwKg)}kg`; midContent=`+${scaleMonth1Lo}–${scaleMonth1Hi}kg mo.1`; rightTick=`+${scaleYrHi}kg yr 1`;
+      if(isFemale){
+        // Women: reframe away from scale weight → body composition, toned look, strength
+        msg=`💪 Goal: <b>stronger, leaner, more defined</b> · ${lean.lo}–${lean.hi}kg muscle/month`;
+        highlight=`Scale may barely move — that's fine. You'll lose fat and gain muscle simultaneously. Mirror and strength gains tell the real story · Tap for full timeline`;
+        fill=2; leftTick=`${Math.round(bwKg)}kg`; midContent=`${lean.lo}–${lean.hi}kg/month`; rightTick=`Tap for roadmap`;
+      } else {
+        msg=`📈 Month 1: scale moves <b>+${scaleMonth1Lo}–${scaleMonth1Hi}kg</b> · Year 1: <b>+${scaleYrLo}–${scaleYrHi}kg</b>`;
+        highlight=`Week 1–2: scale jumps <b>${wk1lo}–${wk1hi}kg</b> (water + glycogen filling muscles — not fat!) · Then ${lean.lo}–${lean.hi}kg pure muscle/month · Tap for full breakdown`;
+        fill=2; leftTick=`${Math.round(bwKg)}kg`; midContent=`+${scaleMonth1Lo}–${scaleMonth1Hi}kg mo.1`; rightTick=`+${scaleYrHi}kg yr 1`;
+      }
     } else if(gained < lean.lo*3*1.3){
       const pct=Math.min((gained/(lean.lo*3*1.3))*100,100);
-      msg=`💪 Up <b>+${gained}kg</b> · Scale is moving — keep going!`;
-      highlight=`3-month target: +${scaleMo3Lo}–${scaleMo3Hi}kg on scale · You're tracking well · Keep hitting protein and training hard`;
-      fill=pct; leftTick=`${Math.round(bwKg)}kg`; midContent=`+${gained}kg gained`; rightTick=`+${scaleMo3Hi}kg 🏁`;
+      msg=isFemale?`💪 Up <b>+${gained}kg</b> · Building lean muscle — keep going!`:`💪 Up <b>+${gained}kg</b> · Scale is moving — keep going!`;
+      highlight=isFemale?`Focus on strength progress and mirror changes, not just scale · Hit protein every day`:`3-month target: +${scaleMo3Lo}–${scaleMo3Hi}kg on scale · You're tracking well · Keep hitting protein and training hard`;
+      fill=pct; leftTick=`${Math.round(bwKg)}kg`; midContent=`+${gained}kg gained`; rightTick=isFemale?`Strong 💪`:`+${scaleMo3Hi}kg 🏁`;
     } else if(gained < lean.lo*6*1.2){
       const pct=50+Math.min(((gained-lean.lo*3*1.3)/(lean.lo*3*1.2))*100,100)/2;
       msg=`🔥 3-month target smashed! Heading for <b>6-month goal</b>`;
-      highlight=`6-month target: +${scaleMo6Lo}–${scaleMo6Hi}kg · Visible transformation by now · People are noticing`;
+      highlight=isFemale?`You're well into your transformation · Strength gains are real · Keep the consistency`:`6-month target: +${scaleMo6Lo}–${scaleMo6Hi}kg · Visible transformation by now · People are noticing`;
       fill=pct; leftTick=`+${scaleMo3Hi}kg ✅`; midContent=`+${gained}kg total`; rightTick=`+${scaleMo6Hi}kg 🏁`;
     } else {
       msg=`🏆 <b>+${gained}kg gained</b> · Elite-level consistency 💪`;
@@ -1143,8 +1159,14 @@ function openGoalSheet(plan){
   const surplus=nut.kcal-nut.tdee;
   const latestWeight=weightLog.length>0?weightLog[weightLog.length-1].weight:bwKg;
   const lvl=activity==='sedentary'||activity==='light'?'beginner':activity==='moderate'?'intermediate':'advanced';
+  const isFemale=plan.prof.gender==='Female';
   const lvlLabel={beginner:'Beginner (0–2 yrs training)',intermediate:'Intermediate (2–4 yrs)',advanced:'Advanced (4+ yrs)'};
-  const lean={beginner:{lo:0.9,hi:1.4},intermediate:{lo:0.4,hi:0.8},advanced:{lo:0.2,hi:0.4}}[lvl];
+  const leanByGender={
+    beginner:    isFemale?{lo:0.5,hi:0.8}:{lo:0.9,hi:1.4},
+    intermediate:isFemale?{lo:0.2,hi:0.45}:{lo:0.4,hi:0.8},
+    advanced:    isFemale?{lo:0.1,hi:0.2}:{lo:0.2,hi:0.4},
+  };
+  const lean=leanByGender[lvl];
 
   let milestones=[], science='', title='', sub='';
 
@@ -1180,12 +1202,34 @@ function openGoalSheet(plan){
     const s12lo=(wk1lo+lean.lo*10*1.1).toFixed(1), s12hi=(wk1hi+lean.hi*10*1.1).toFixed(1);
 
     milestones=[
-      {icon:'👀',status:gained>=+s1lo?'done':'next',label:`Month 1 — scale: +${s1lo}–${s1hi}kg`,time:`~4 weeks`,desc:`Your scale jumps <b>${wk1lo}–${wk1hi}kg</b> in week 1 from water & glycogen filling your muscles — totally normal, not fat. Then ${lean.lo}–${lean.hi}kg of actual lean muscle every month on top. Strength increases noticeably from neural adaptations.`},
-      {icon:'💪',status:gained>=+s3lo?'done':gained>=+s1lo?'next':'future',label:`3 Months — scale: +${s3lo}–${s3hi}kg`,time:`~12 weeks`,desc:`${+(lean.lo*3).toFixed(1)}–${+(lean.hi*3).toFixed(1)}kg of lean muscle built. Shoulders broader, arms thicker, chest fuller. People who haven't seen you in 3 months will notice immediately. You look like someone who trains.`},
-      {icon:'🔥',status:gained>=+s6lo?'done':gained>=+s3lo?'next':'future',label:`6 Months — scale: +${s6lo}–${s6hi}kg`,time:`~26 weeks`,desc:`${+(lean.lo*6).toFixed(1)}–${+(lean.hi*6).toFixed(1)}kg of lean muscle total. Significant physique transformation. New personal bests on all major lifts. Clothes fit completely differently. This is the point people say "what happened to you?"`,},
-      {icon:'🏆',status:gained>=+s12lo?'done':gained>=+s6lo?'next':'future',label:`1 Year — scale: +${s12lo}–${s12hi}kg`,time:`~52 weeks`,desc:`${+(lean.lo*10).toFixed(1)}–${+(lean.hi*10).toFixed(1)}kg of lean muscle in one year. Top 10% of natural lifters. Dramatic, permanent transformation. You've changed your body's baseline forever.`},
+      {icon:'👀',status:gained>=+s1lo?'done':'next',
+        label:isFemale?`Month 1 — stronger & starting to define`:`Month 1 — scale: +${s1lo}–${s1hi}kg`,
+        time:`~4 weeks`,
+        desc:isFemale
+          ?`Your scale might barely move or stay the same — that's completely normal and actually ideal. You're losing fat and gaining muscle simultaneously. Strength on key lifts increases noticeably. Arms and shoulders start to feel firmer.`
+          :`Your scale jumps <b>${wk1lo}–${wk1hi}kg</b> in week 1 from water & glycogen filling your muscles — totally normal, not fat. Then ${lean.lo}–${lean.hi}kg of actual lean muscle every month on top. Strength increases noticeably from neural adaptations.`},
+      {icon:'💪',status:gained>=+s3lo?'done':gained>=+s1lo?'next':'future',
+        label:isFemale?`3 Months — visibly more toned`:`3 Months — scale: +${s3lo}–${s3hi}kg`,
+        time:`~12 weeks`,
+        desc:isFemale
+          ?`${+(lean.lo*3).toFixed(1)}–${+(lean.hi*3).toFixed(1)}kg of lean muscle built. Arms more defined, shoulders rounder, glutes and legs noticeably more toned. Clothes fit differently — tighter in the right places, looser around the waist. People who haven't seen you in 3 months will notice immediately.`
+          :`${+(lean.lo*3).toFixed(1)}–${+(lean.hi*3).toFixed(1)}kg of lean muscle built. Shoulders broader, arms thicker, chest fuller. People who haven't seen you in 3 months will notice immediately. You look like someone who trains.`},
+      {icon:'🔥',status:gained>=+s6lo?'done':gained>=+s3lo?'next':'future',
+        label:isFemale?`6 Months — significant body composition shift`:`6 Months — scale: +${s6lo}–${s6hi}kg`,
+        time:`~26 weeks`,
+        desc:isFemale
+          ?`${+(lean.lo*6).toFixed(1)}–${+(lean.hi*6).toFixed(1)}kg of lean muscle total. Major transformation visible — glutes, legs, arms all significantly more defined and strong. Scale may have barely moved but body fat % has dropped noticeably. This is the point people ask "what are you doing differently?"`
+          :`${+(lean.lo*6).toFixed(1)}–${+(lean.hi*6).toFixed(1)}kg of lean muscle total. Significant physique transformation. New personal bests on all major lifts. Clothes fit completely differently. This is the point people say "what happened to you?"`},
+      {icon:'🏆',status:gained>=+s12lo?'done':gained>=+s6lo?'next':'future',
+        label:isFemale?`1 Year — completely transformed physique`:`1 Year — scale: +${s12lo}–${s12hi}kg`,
+        time:`~52 weeks`,
+        desc:isFemale
+          ?`${+(lean.lo*10).toFixed(1)}–${+(lean.hi*10).toFixed(1)}kg of lean muscle in one year. Strong, defined, athletic. Body fat significantly lower than when you started even if scale weight is similar. This is a top 10% female natural physique transformation. You've built a permanently stronger body.`
+          :`${+(lean.lo*10).toFixed(1)}–${+(lean.hi*10).toFixed(1)}kg of lean muscle in one year. Top 10% of natural lifters. Dramatic, permanent transformation. You've changed your body's baseline forever.`},
     ];
-    science=`📊 <b>Why the scale moves more than "1kg/month":</b> Pure lean muscle grows at ${lean.lo}–${lean.hi}kg/month. But every gram of glycogen stored in muscle pulls ~3g of water with it. Week 1 alone your ${Math.round(bwKg)}kg body fills with +${wk1lo}–${wk1hi}kg of glycogen/water (not fat — this is your muscles getting fuller). This is why the mirror and strength gains matter more than the scale.`;
+    science=isFemale
+      ?`📊 <b>Why the scale barely moves (and that's the point):</b> Women's muscle gain at ${lean.lo}–${lean.hi}kg/month is smaller in absolute terms than men's, but the body composition change is dramatic — simultaneously losing fat and gaining muscle. A woman who gains ${+(lean.lo*6).toFixed(1)}–${+(lean.hi*6).toFixed(1)}kg of muscle in 6 months while losing similar fat weight looks completely different in the mirror even at the same scale weight. The mirror and how clothes fit matter far more than the number on the scale.`
+      :`📊 <b>Why the scale moves more than "1kg/month":</b> Pure lean muscle grows at ${lean.lo}–${lean.hi}kg/month. But every gram of glycogen stored in muscle pulls ~3g of water with it. Week 1 alone your ${Math.round(bwKg)}kg body fills with +${wk1lo}–${wk1hi}kg of glycogen/water (not fat — this is your muscles getting fuller). This is why the mirror and strength gains matter more than the scale.`;
   }
 
   document.getElementById('goalSheetContent').innerHTML=`
@@ -1265,7 +1309,37 @@ let woActiveDay=0;
 let woFrequency=4; // default 4x/week
 let userRestDays=new Set([3,5,6]); // default 3 rest days for 4x: Thu, Sat, Sun
 
-// Exercise library per goal and muscle group
+// ── WARMUP SETS ──
+// Per session type — shown before every workout for all genders
+const WARMUP={
+  push:[
+    {name:'Arm Circles + Band Pull-Apart',sets:'1',reps:'30s each',note:'Warm shoulders before pressing. Do not skip.'},
+    {name:'Push-ups (bodyweight)',sets:'2',reps:'10–15 reps',note:'Activate chest and triceps. Light and controlled.'},
+    {name:'Empty Bar / Light DB Overhead Press',sets:'1',reps:'15 reps',note:'Prime the shoulder joint before loading.'},
+  ],
+  pull:[
+    {name:'Dead Hangs / Shoulder Circles',sets:'1',reps:'20–30s hang',note:'Decompress spine, open lats.'},
+    {name:'Band Pull-Apart',sets:'2',reps:'15 reps',note:'Rear delt and rotator cuff activation.'},
+    {name:'Light Lat Pulldown',sets:'1',reps:'15 reps',note:'50% of working weight. Prime the pull pattern.'},
+  ],
+  legs:[
+    {name:'Hip Circles + Leg Swings',sets:'1',reps:'30s each direction',note:'Mobilise hip joint before loading.'},
+    {name:'Bodyweight Squat / Glute Bridge',sets:'2',reps:'15 reps',note:'Activate glutes and quads.'},
+    {name:'Light Romanian Deadlift',sets:'1',reps:'15 reps',note:'Prime the hip hinge. 40% of working weight.'},
+  ],
+  full:[
+    {name:'5 min Jog / Brisk Walk',sets:'1',reps:'5 min',note:'Raise core temperature before full-body work.'},
+    {name:'World\'s Greatest Stretch',sets:'1',reps:'5 reps/side',note:'Hip flexor, thoracic rotation, hamstring — all in one.'},
+    {name:'Jump Rope / Jumping Jacks',sets:'1',reps:'60s',note:'Elevate heart rate and prime the CNS.'},
+  ],
+  cardio:[
+    {name:'Brisk Walk',sets:'1',reps:'3–5 min',note:'Never start sprints cold. Build into it.'},
+    {name:'Leg Swings + Hip Circles',sets:'1',reps:'30s each',note:'Mobilise hips and ankles.'},
+  ],
+};
+
+// ── EXERCISE LIBRARY ──
+// Male-optimised (heavy compound focus, strength rep ranges)
 const EX={
   push_heavy:[
     {name:'Barbell Bench Press',sets:'4 sets',reps:'6–8 reps',note:'Primary chest builder. Control the descent.'},
@@ -1348,14 +1422,125 @@ const EX={
   ],
 };
 
+// ── FEMALE EXERCISE LIBRARY ──
+// Focus: glutes, posterior chain, moderate rep ranges, more cable/DB work, hip thrusts
+// Research: women have proportionally larger glutes and respond well to higher reps and volume
+const EX_F={
+  push_heavy:[
+    {name:'DB Shoulder Press',sets:'4 sets',reps:'10–12 reps',note:'Neutral grip. Control the descent. Great shoulder builder.'},
+    {name:'Incline DB Press',sets:'3 sets',reps:'10–12 reps',note:'Upper chest. Keep elbows at 45°.'},
+    {name:'Cable Lateral Raise',sets:'3 sets',reps:'15–20 reps',note:'Constant tension. Great for shoulder definition.'},
+    {name:'Tricep Pushdown (Rope)',sets:'3 sets',reps:'12–15 reps',note:'Full extension. Arms and back of shoulder toned.'},
+    {name:'Push-ups',sets:'3 sets',reps:'Max reps',note:'Chest and core. Progress to weighted vest when easy.'},
+  ],
+  push_volume:[
+    {name:'Cable Chest Fly',sets:'3 sets',reps:'15 reps',note:'Constant tension. Slow squeeze at peak.'},
+    {name:'DB Overhead Press',sets:'3 sets',reps:'12–15 reps',note:'Shoulder volume day. Full range.'},
+    {name:'Lateral Raise (Light)',sets:'4 sets',reps:'20 reps',note:'Side delts — key for that shoulder width.'},
+    {name:'Tricep Kickback',sets:'3 sets',reps:'12–15/side',note:'Isolate the tricep fully.'},
+    {name:'Face Pulls',sets:'3 sets',reps:'20 reps',note:'Rear delts and shoulder health. Never skip.'},
+  ],
+  pull_heavy:[
+    {name:'Lat Pulldown (Wide Grip)',sets:'4 sets',reps:'10–12 reps',note:'Pull elbows to ribs. Wide back = narrowed waist look.'},
+    {name:'Seated Cable Row',sets:'3 sets',reps:'10–12 reps',note:'Full stretch, full squeeze. Mid-back.'},
+    {name:'Single Arm DB Row',sets:'3 sets',reps:'12 reps/side',note:'Full stretch at bottom. Drives back thickness.'},
+    {name:'Face Pulls',sets:'3 sets',reps:'20 reps',note:'Rear delts and posture. Do not skip.'},
+    {name:'DB Bicep Curl',sets:'3 sets',reps:'12–15 reps',note:'Supinate at top. Full ROM.'},
+  ],
+  pull_volume:[
+    {name:'Assisted Pull-ups / Band Pull-ups',sets:'4 sets',reps:'8–10 reps',note:'Build toward full pull-up. Great lat developer.'},
+    {name:'Cable Pullover',sets:'3 sets',reps:'15 reps',note:'Lats from a different angle. Full stretch.'},
+    {name:'Seated Row (Narrow Grip)',sets:'3 sets',reps:'12–15 reps',note:'Mid-back and rhomboids.'},
+    {name:'Hammer Curl',sets:'3 sets',reps:'12 reps',note:'Brachialis and forearm. Arm definition.'},
+    {name:'Reverse Fly (Cable)',sets:'3 sets',reps:'15 reps',note:'Rear delts. No swinging.'},
+  ],
+  legs_heavy:[
+    {name:'Hip Thrust (Barbell or Smith)',sets:'4 sets',reps:'10–12 reps',note:'#1 glute builder. Full hip extension at top. Squeeze hard.'},
+    {name:'Goblet Squat / DB Squat',sets:'3 sets',reps:'10–12 reps',note:'Quad and glute. Upright torso. Break parallel.'},
+    {name:'Romanian Deadlift (DB)',sets:'3 sets',reps:'10–12 reps',note:'Hamstring and glute stretch. Feel the pull.'},
+    {name:'Cable Kickback',sets:'3 sets',reps:'15 reps/side',note:'Glute isolation. Squeeze at full extension.'},
+    {name:'Leg Press (feet high & wide)',sets:'3 sets',reps:'12–15 reps',note:'High foot position = more glute activation.'},
+  ],
+  legs_volume:[
+    {name:'Bulgarian Split Squat',sets:'3 sets',reps:'10–12 reps/leg',note:'Glutes and quads. Keep torso upright.'},
+    {name:'Hip Thrust (lighter, higher reps)',sets:'4 sets',reps:'15–20 reps',note:'Volume day. Same full squeeze every rep.'},
+    {name:'Sumo Squat',sets:'3 sets',reps:'12–15 reps',note:'Inner thigh and glute. Toes out 45°.'},
+    {name:'Lying Leg Curl',sets:'3 sets',reps:'12–15 reps',note:'Hamstring isolation. Slow eccentric.'},
+    {name:'Abductor Machine',sets:'3 sets',reps:'20 reps',note:'Outer glutes and hip. Great for definition.'},
+  ],
+  full_body:[
+    {name:'Goblet Squat',sets:'3 sets',reps:'12 reps',note:'Legs and core. Upright torso.'},
+    {name:'Hip Thrust',sets:'3 sets',reps:'15 reps',note:'Glute compound. Never skip.'},
+    {name:'Lat Pulldown',sets:'3 sets',reps:'12 reps',note:'Upper back and lats.'},
+    {name:'DB Shoulder Press',sets:'3 sets',reps:'10–12 reps',note:'Shoulder compound.'},
+    {name:'Romanian Deadlift',sets:'3 sets',reps:'10–12 reps',note:'Posterior chain.'},
+    {name:'Plank + Dead Bug',sets:'3 sets',reps:'30s each',note:'Core stability and anti-rotation.'},
+  ],
+  upper_body:[
+    {name:'DB Shoulder Press',sets:'3 sets',reps:'10–12 reps',note:'Primary shoulder compound.'},
+    {name:'Lat Pulldown',sets:'3 sets',reps:'12 reps',note:'Back compound. Wide grip.'},
+    {name:'Incline DB Press',sets:'3 sets',reps:'10–12 reps',note:'Chest and shoulder.'},
+    {name:'Seated Cable Row',sets:'3 sets',reps:'12 reps',note:'Mid-back thickness.'},
+    {name:'Tricep Pushdown',sets:'3 sets',reps:'12–15 reps',note:'Arm toning.'},
+    {name:'DB Bicep Curl',sets:'3 sets',reps:'12–15 reps',note:'Arm definition.'},
+  ],
+  lower_body:[
+    {name:'Hip Thrust',sets:'4 sets',reps:'12–15 reps',note:'#1 glute exercise. Full squeeze at top.'},
+    {name:'Romanian Deadlift',sets:'3 sets',reps:'10–12 reps',note:'Hamstring and glute.'},
+    {name:'Goblet Squat',sets:'3 sets',reps:'12 reps',note:'Quad dominant compound.'},
+    {name:'Leg Curl',sets:'3 sets',reps:'15 reps',note:'Hamstring isolation.'},
+    {name:'Abductor Machine',sets:'3 sets',reps:'20 reps',note:'Outer glutes and hip.'},
+  ],
+  cardio:[
+    {name:'Warm-up Walk',sets:'1',reps:'5 min',note:'Raise heart rate gradually.'},
+    {name:'Stairmaster / Incline Walk',sets:'1',reps:'15–20 min',note:'Best cardio for glute activation simultaneously.'},
+    {name:'HIIT Intervals',sets:'6–8 rounds',reps:'30s sprint / 90s walk',note:'Max effort on sprints.'},
+    {name:'Core: Plank + Glute Bridge',sets:'3 rounds',reps:'30s plank + 20 bridges',note:'Finish every session.'},
+  ],
+  fat_loss_full:[
+    {name:'Hip Thrust',sets:'3 sets',reps:'12–15 reps',note:'Glute compound. Short rest 60s.'},
+    {name:'Goblet Squat',sets:'3 sets',reps:'12–15 reps',note:'Leg and glute burner.'},
+    {name:'Lat Pulldown',sets:'3 sets',reps:'12 reps',note:'Upper body pull. Maintain muscle.'},
+    {name:'DB Shoulder Press',sets:'3 sets',reps:'12 reps',note:'Shoulder retention.'},
+    {name:'Romanian Deadlift',sets:'3 sets',reps:'10–12 reps',note:'Posterior chain.'},
+    {name:'Plank',sets:'3 sets',reps:'45s hold',note:'Core stability.'},
+  ],
+};
 // Build schedule based on frequency — assigns workout type to each day
-function buildSchedule(goal, freq, restDays){
-  // restDays = Set of day indices (0=Mon…6=Sun) chosen by user
-  // workDays = days NOT in restDays
+function buildSchedule(goal, freq, restDays, gender){
   const allDays=[0,1,2,3,4,5,6];
   const workDays=allDays.filter(i=>!restDays.has(i));
+  const isFemale = gender==='Female';
+  const exLib = isFemale ? EX_F : EX;
 
-  // Define workout sequence per goal and frequency
+  // Female sequences — more lower body / glute focus, upper/lower splits preferred
+  const sequencesF={
+    'Muscle Gain':{
+      3:['lower_body','upper_body','lower_body'],
+      4:['legs_heavy','upper_body','legs_volume','push_heavy'],
+      5:['legs_heavy','upper_body','legs_volume','pull_heavy','full_body'],
+      6:['legs_heavy','push_heavy','pull_heavy','legs_volume','upper_body','full_body'],
+    },
+    'Fat Loss':{
+      3:['fat_loss_full','cardio','fat_loss_full'],
+      4:['fat_loss_full','cardio','fat_loss_full','cardio'],
+      5:['fat_loss_full','cardio','fat_loss_full','fat_loss_full','cardio'],
+      6:['fat_loss_full','cardio','fat_loss_full','cardio','fat_loss_full','cardio'],
+    },
+    'Lean Bulk':{
+      3:['lower_body','upper_body','lower_body'],
+      4:['legs_heavy','upper_body','legs_volume','push_heavy'],
+      5:['legs_heavy','upper_body','legs_volume','pull_heavy','full_body'],
+      6:['legs_heavy','push_heavy','pull_heavy','legs_volume','upper_body','full_body'],
+    },
+    'Maintenance':{
+      3:['full_body','cardio','lower_body'],
+      4:['lower_body','upper_body','cardio','full_body'],
+      5:['legs_heavy','upper_body','lower_body','cardio','full_body'],
+      6:['legs_heavy','upper_body','lower_body','push_heavy','pull_heavy','cardio'],
+    },
+  };
+
   const sequences={
     'Muscle Gain':{
       3:['push_heavy','pull_heavy','legs_heavy'],
@@ -1384,30 +1569,35 @@ function buildSchedule(goal, freq, restDays){
   };
 
   const labels={
-    push_heavy:{label:'PUSH DAY',focus:'Chest · Shoulders · Triceps',badge:'push'},
-    push_volume:{label:'PUSH — VOLUME',focus:'Chest · Shoulders · Triceps',badge:'push'},
+    push_heavy:isFemale?{label:'PUSH DAY',focus:'Shoulders · Chest · Triceps',badge:'push'}:{label:'PUSH DAY',focus:'Chest · Shoulders · Triceps',badge:'push'},
+    push_volume:isFemale?{label:'PUSH — VOLUME',focus:'Shoulders · Chest · Arms',badge:'push'}:{label:'PUSH — VOLUME',focus:'Chest · Shoulders · Triceps',badge:'push'},
     pull_heavy:{label:'PULL DAY',focus:'Back · Biceps · Rear Delts',badge:'pull'},
     pull_volume:{label:'PULL — VOLUME',focus:'Back · Biceps',badge:'pull'},
-    legs_heavy:{label:'LEGS DAY',focus:'Quads · Hamstrings · Glutes · Calves',badge:'legs'},
-    legs_volume:{label:'LEGS — VOLUME',focus:'Quads · Hamstrings · Glutes',badge:'legs'},
-    full_body:{label:'FULL BODY',focus:'All muscle groups',badge:'full'},
-    upper_body:{label:'UPPER BODY',focus:'Chest · Back · Shoulders · Arms',badge:'push'},
-    lower_body:{label:'LOWER BODY',focus:'Quads · Hamstrings · Glutes · Calves',badge:'legs'},
-    fat_loss_full:{label:'FULL BODY',focus:'Compound lifts · High intensity',badge:'full'},
+    legs_heavy:isFemale?{label:'LEGS & GLUTES',focus:'Glutes · Hamstrings · Quads',badge:'legs'}:{label:'LEGS DAY',focus:'Quads · Hamstrings · Glutes · Calves',badge:'legs'},
+    legs_volume:isFemale?{label:'GLUTES & VOLUME',focus:'Glutes · Hamstrings · Inner Thigh',badge:'legs'}:{label:'LEGS — VOLUME',focus:'Quads · Hamstrings · Glutes',badge:'legs'},
+    full_body:isFemale?{label:'FULL BODY',focus:'All muscle groups · Glute focus',badge:'full'}:{label:'FULL BODY',focus:'All muscle groups',badge:'full'},
+    upper_body:isFemale?{label:'UPPER BODY',focus:'Back · Shoulders · Arms',badge:'push'}:{label:'UPPER BODY',focus:'Chest · Back · Shoulders · Arms',badge:'push'},
+    lower_body:isFemale?{label:'LOWER BODY',focus:'Glutes · Hamstrings · Outer Hip',badge:'legs'}:{label:'LOWER BODY',focus:'Quads · Hamstrings · Glutes · Calves',badge:'legs'},
+    fat_loss_full:isFemale?{label:'FULL BODY',focus:'Compound lifts · Glute focus',badge:'full'}:{label:'FULL BODY',focus:'Compound lifts · High intensity',badge:'full'},
     cardio:{label:'CARDIO / HIIT',focus:'Fat burn · Conditioning',badge:'cardio'},
   };
 
-  const seq=sequences[goal]?.[freq]||sequences['Maintenance'][4];
-  const schedule={}; // dayIdx → {label,focus,badge,exercises}
+  // Warmup key per session badge — used by renderWoDay
+  const warmupKey={push:'push',pull:'pull',legs:'legs',full:'full',cardio:'cardio'};
+
+  const activeSeq = isFemale ? sequencesF : sequences;
+  const seq=activeSeq[goal]?.[freq]||sequences['Maintenance'][4];
+  const schedule={};
 
   allDays.forEach(i=>{
     if(restDays.has(i)){
-      schedule[i]={label:'REST DAY',focus:'Recovery & Repair',badge:'rest',exercises:[]};
+      schedule[i]={label:'REST DAY',focus:'Recovery & Repair',badge:'rest',exercises:[],warmup:[]};
     } else {
       const wi=workDays.indexOf(i);
       const type=seq[wi%seq.length];
       const meta=labels[type]||labels.full_body;
-      schedule[i]={...meta,exercises:EX[type]||EX.full_body};
+      const wk=warmupKey[meta.badge]||'full';
+      schedule[i]={...meta,exercises:exLib[type]||exLib.full_body,warmup:WARMUP[wk]||WARMUP.full};
     }
   });
   return schedule;
@@ -1560,7 +1750,7 @@ function buildWorkout(plan){
 
   // Day selector
   const sel=document.getElementById('woDaySel'); sel.innerHTML='';
-  const schedule=buildSchedule(goal,woFrequency,userRestDays);
+  const schedule=buildSchedule(goal,woFrequency,userRestDays,planData.prof.gender);
   DAYS.forEach((d,i)=>{
     const dp=schedule[i];
     const isRest=dp.badge==='rest';
@@ -1607,12 +1797,23 @@ function renderWoDay(schedule,dayIdx){
           <div><div class="wo-day-label">${dp.label}</div><div class="wo-focus">${dp.focus}</div></div>
           <span class="wo-badge ${badgeMap[dp.badge]||'full'}">${DAYS[dayIdx].substring(0,3)}</span>
         </div>
+        <div class="wo-section-label">🔥 WARM-UP</div>
+        <div class="wo-exercise-list" id="woWarmupList"></div>
+        <div class="wo-section-label" style="margin-top:12px">💪 WORKING SETS</div>
         <div class="wo-exercise-list" id="woExList"></div>
         <div style="margin-top:14px;padding:10px 14px;background:rgba(232,255,71,.05);border:1px solid rgba(232,255,71,.12);border-radius:9px;font-size:10px;color:var(--muted)">
           💡 Rest 60–90s between sets for hypertrophy. Rest 2–3 min for strength sets (under 8 reps). Log your workout in Daily Checklist to track your gym streak.
         </div>
       </div>`;
     container.appendChild(card);
+    // Warmup
+    const warmupList=document.getElementById('woWarmupList');
+    (dp.warmup||[]).forEach(ex=>{
+      const row=document.createElement('div'); row.className='wo-exercise wo-warmup';
+      row.innerHTML=`<div><div class="wo-ex-name">${ex.name}</div><div class="wo-ex-meta">${ex.note}</div></div><div class="wo-ex-sets"><div>${ex.sets}</div><div style="color:var(--muted);font-size:10px">${ex.reps}</div></div>`;
+      warmupList.appendChild(row);
+    });
+    // Working sets
     const list=document.getElementById('woExList');
     dp.exercises.forEach(ex=>{
       const row=document.createElement('div'); row.className='wo-exercise';
