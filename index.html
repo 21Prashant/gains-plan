@@ -1011,30 +1011,67 @@ function closeModal(){ document.getElementById('mealModal').style.display='none'
 // ── BMI GOAL STRIP ──
 function buildBmiStrip(plan){
   const{bwKg,hCm,goal,gender}=plan.prof, nut=plan.nut;
-  const bmi=bwKg/((hCm/100)**2);
-  const ibw=22*((hCm/100)**2);
+  const bmi=+(bwKg/((hCm/100)**2)).toFixed(1);
+  const ibw=22*((hCm/100)**2); // healthy BMI 22 target weight
+  const goalBW=Math.round(ibw+2); // target ~BMI 24
   const el=document.getElementById('bmiGoalStrip');
 
-  let msg,fill,ticks,highlight;
+  let msg, fill, leftTick, rightTick, highlight;
+
   if(goal==='Fat Loss'){
-    const toGoal=Math.max(bwKg-ibw-2,0);
+    const totalToLose=Math.max(bwKg-goalBW, 0);
     const deficit=nut.tdee-nut.kcal;
-    const weeks=deficit>0?Math.round(toGoal*7700/deficit/7):null;
-    const pct=Math.min((ibw/bwKg)*100,100);
-    msg=`You are <b>${toGoal.toFixed(1)}kg</b> away from a healthy BMI of 22–24`;
-    highlight=weeks?`At your ${deficit} kcal/day deficit → ~<b>${weeks} weeks</b> to goal`:`Keep your deficit consistent to see progress`;
-    fill=pct; ticks=[`${Math.round(ibw)}kg (healthy)`,`${Math.round(bwKg)}kg (now)`];
+    const weeks=deficit>0&&totalToLose>0?Math.round(totalToLose*7700/deficit/7):null;
+
+    // Actual progress — use latest weight log entry if available
+    const latestWeight=weightLog.length>0?weightLog[weightLog.length-1].weight:bwKg;
+    const lost=Math.max(bwKg-latestWeight, 0); // kg lost since start
+    // Progress % = how much of the journey has been completed
+    const pct=totalToLose>0?Math.min((lost/totalToLose)*100,100):0;
+
+    msg=`<b>${Math.round(bwKg)}kg → ${goalBW}kg</b> · ${totalToLose.toFixed(1)}kg to lose · BMI ${bmi}`;
+    highlight=lost>0
+      ? `Lost <b>${lost.toFixed(1)}kg</b> so far${weeks?` · ~<b>${Math.round(weeks*(1-pct/100))} weeks</b> remaining at current pace`:''}`
+      : weeks
+        ? `At your ${deficit} kcal/day deficit → ~<b>${weeks} weeks</b> to reach ${goalBW}kg`
+        : `Start logging your weight to track progress`;
+
+    fill=pct;
+    leftTick=`${Math.round(bwKg)}kg (start)`;
+    rightTick=`${goalBW}kg (goal)`;
+
   } else if(goal==='Muscle Gain'||goal==='Lean Bulk'){
     const gainGoal=5;
-    const weeksEst=Math.round(gainGoal/0.25);
-    msg=`Goal: gain <b>${gainGoal}kg</b> of lean muscle at current surplus`;
-    highlight=`+300 kcal/day surplus → ~<b>${weeksEst} weeks</b> to add ${gainGoal}kg lean mass`;
-    fill=5; ticks=['Now','','','','+5kg goal'];
+    const weeksEst=goal==='Lean Bulk'?Math.round(gainGoal/0.2):Math.round(gainGoal/0.25);
+    const latestWeight=weightLog.length>0?weightLog[weightLog.length-1].weight:bwKg;
+    const gained=Math.max(latestWeight-bwKg, 0);
+    const pct=Math.min((gained/gainGoal)*100, 100);
+
+    msg=`<b>${Math.round(bwKg)}kg → ${Math.round(bwKg+gainGoal)}kg</b> · +${gainGoal}kg lean muscle target`;
+    highlight=gained>0
+      ? `Gained <b>${gained.toFixed(1)}kg</b> so far · ~<b>${Math.max(0,Math.round(weeksEst*(1-pct/100)))} weeks</b> remaining`
+      : `At current surplus → ~<b>${weeksEst} weeks</b> to add ${gainGoal}kg lean mass`;
+
+    fill=pct;
+    leftTick=`${Math.round(bwKg)}kg (start)`;
+    rightTick=`${Math.round(bwKg+gainGoal)}kg (goal)`;
+
   } else {
     el.style.display='none'; return;
   }
+
   el.style.display='block';
-  el.innerHTML=`<div class="bgs-row"><div class="bgs-label">${msg}</div></div><div class="bgs-track"><div class="bgs-fill" style="width:${fill}%"></div></div><div class="bgs-ticks">${ticks.map((t,i)=>`<span${i===0?' class="bgs-highlight"':''} >${t}</span>`).join('')}</div><div style="font-size:10px;color:var(--muted);margin-top:6px">${highlight}</div>`;
+  el.innerHTML=`
+    <div class="bgs-row" style="margin-bottom:6px">
+      <div class="bgs-label">${msg}</div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--muted);margin-bottom:4px">
+      <span style="color:var(--text);font-weight:600">${leftTick}</span>
+      <span>${fill.toFixed(0)}% complete</span>
+      <span style="color:var(--accent);font-weight:600">${rightTick}</span>
+    </div>
+    <div class="bgs-track"><div class="bgs-fill" style="width:${Math.max(fill,2)}%"></div></div>
+    <div style="font-size:10px;color:var(--muted);margin-top:6px">${highlight}</div>`;
 }
 
 // ── STREAK LOGIC ──
@@ -1948,6 +1985,7 @@ function logWeight(){
   document.getElementById('weightInput').value='';
   savePartial('weight_log', weightLog);
   buildProgress(planData);
+  buildBmiStrip(planData); // refresh goal strip with latest weight
 }
 function buildProgress(plan){
   const{goal,hCm}=plan.prof, startBW=plan.prof.bwKg, nut=plan.nut;
