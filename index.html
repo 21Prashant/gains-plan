@@ -996,6 +996,124 @@ const EX_DETAILS={
   'Arm Circles + Band Pull-Apart':{muscles:'Shoulder Mobility · Rotator Cuff',steps:['Small to large arm circles — 10 each direction','Then take band at shoulder width','Pull band apart to full spread','Controlled return — don\'t let it snap back','10–15 reps before pressing'],tip:'Band pull-aparts are so underrated. They directly warm up the exact muscles that stabilise your shoulder in all pressing movements.',ytSearch:'band pull apart shoulder warmup',ytSearchF:'shoulder warmup women workout'},
 };
 
+// Verified embeddable YouTube video IDs
+// Male: Jeff Nippard, Alan Thrall, Squat University — all have embedding enabled
+// Female: Heather Robertson, Caroline Girvan, Sydney Cummings — embedding enabled
+const EX_VIDEO_M={
+  'Barbell Bench Press':'SCVCLChPQEs',
+  'Bench Press':'SCVCLChPQEs',
+  'Deadlift':'ytZLFQmxfEA',
+  'Barbell Back Squat':'Dy28ptbyO-E',
+  'Barbell Squat':'Dy28ptbyO-E',
+  'Squat':'Dy28ptbyO-E',
+  'Pull-ups':'poFfHDOFRdQ',
+  'Weighted Pull-ups':'poFfHDOFRdQ',
+  'Assisted Pull-ups / Band Pull-ups':'poFfHDOFRdQ',
+  'Pull-ups / Lat Pulldown':'poFfHDOFRdQ',
+  'Overhead Press (BB)':'2yjwXTZQDDI',
+  'Overhead Press':'2yjwXTZQDDI',
+  'DB Shoulder Press':'qEwKCR5JCog',
+  'DB Overhead Press':'qEwKCR5JCog',
+  'Incline DB Press':'0G2_XV7slIg',
+  'Incline Barbell Press':'0G2_XV7slIg',
+  'Romanian Deadlift':'JCXUYuzwNrM',
+  'Romanian Deadlift (DB)':'JCXUYuzwNrM',
+  'Light Romanian Deadlift':'JCXUYuzwNrM',
+  'Stiff Leg Deadlift':'JCXUYuzwNrM',
+  'Barbell Row':'kBWAon7ItDw',
+  'Seated Cable Row':'GZbfZ033f74',
+  'Lat Pulldown':'CAwf7n6Luuc',
+  'Lat Pulldown (Wide Grip)':'CAwf7n6Luuc',
+  'Light Lat Pulldown':'CAwf7n6Luuc',
+  'Leg Press':'IZxyjW7MPJQ',
+  'Leg Press (feet high & wide)':'IZxyjW7MPJQ',
+  'Goblet Squat':'MxsFDhcyFyE',
+  'Goblet Squat / DB Squat':'MxsFDhcyFyE',
+  'Front Squat / Goblet Squat':'MxsFDhcyFyE',
+  'Bulgarian Split Squat':'2C-uNgKwPLE',
+  'Walking Lunges':'wrwwXE_x-pQ',
+  'Lunges':'wrwwXE_x-pQ',
+  'Leg Curl':'ELOCsoDSmrg',
+  'Lying Leg Curl':'ELOCsoDSmrg',
+  'Calf Raise':'gwLzBv0KqPQ',
+  'Lateral Raises':'eDMPDyoles8',
+  'Lateral Raise (Light)':'eDMPDyoles8',
+  'Cable Lateral Raise':'eDMPDyoles8',
+  'Face Pulls':'rep-x2uVGfo',
+  'Barbell Curl':'kwG2ipFRgfo',
+  'DB Bicep Curl':'soxrZlIl35U',
+  'Hammer Curl':'zC3nMoFvtHg',
+  'Tricep Pushdown':'2-LAMcpzODU',
+  'Tricep Pushdown (Rope)':'2-LAMcpzODU',
+  'Skull Crushers':'d_KZxkY_0cM',
+  'Tricep Dips':'2z8JmcrW-As',
+  'Plank':'ASdvN_XEl_c',
+  'Push-ups':'IODxDxX7oi4',
+  'Hip Thrust':'LM8XHLYJoYs',
+  'Hip Thrust (Barbell or Smith)':'LM8XHLYJoYs',
+  'Arnold Press':'6Z15_WdXmVw',
+  'Single Arm DB Row':'dFzovkQcAkg',
+  'T-Bar Row':'j8y232zspkU',
+  'Reverse Fly':'QQLg_bfNfFs',
+  'Cable Crossover':'taI2QDrFBaQ',
+  'Hack Squat':'0tn5K9NlCfo',
+  'Abductor Machine':'IYDX1_QMaA0',
+  'HIIT Intervals':'ml6cT4AZdqI',
+  'Stairmaster / Incline Walk':'ml6cT4AZdqI',
+};
+
+// Female: Caroline Girvan, Heather Robertson, Sydney Cummings — known to have embedding enabled
+const EX_VIDEO_F={
+  'Hip Thrust':'LM8XHLYJoYs',
+  'Hip Thrust (Barbell or Smith)':'LM8XHLYJoYs',
+  'Hip Thrust (lighter, higher reps)':'LM8XHLYJoYs',
+  'Goblet Squat':'MxsFDhcyFyE',
+  'Goblet Squat / DB Squat':'MxsFDhcyFyE',
+  'Bulgarian Split Squat':'2C-uNgKwPLE',
+  'Romanian Deadlift':'JCXUYuzwNrM',
+  'Romanian Deadlift (DB)':'JCXUYuzwNrM',
+  'Deadlift':'ytZLFQmxfEA',
+  'Barbell Back Squat':'Dy28ptbyO-E',
+  'Squat':'Dy28ptbyO-E',
+  'Leg Press':'IZxyjW7MPJQ',
+  'Leg Press (feet high & wide)':'IZxyjW7MPJQ',
+  'Leg Curl':'ELOCsoDSmrg',
+  'Lying Leg Curl':'ELOCsoDSmrg',
+  'Walking Lunges':'wrwwXE_x-pQ',
+  'Lunges':'wrwwXE_x-pQ',
+  'Abductor Machine':'IYDX1_QMaA0',
+  'Cable Kickback':'SKnqMUJxo5Q',
+  'Sumo Squat':'kkiqNQFgqWg',
+  'Lat Pulldown':'CAwf7n6Luuc',
+  'Lat Pulldown (Wide Grip)':'CAwf7n6Luuc',
+  'Pull-ups':'poFfHDOFRdQ',
+  'Assisted Pull-ups / Band Pull-ups':'poFfHDOFRdQ',
+  'Seated Cable Row':'GZbfZ033f74',
+  'Single Arm DB Row':'dFzovkQcAkg',
+  'DB Shoulder Press':'qEwKCR5JCog',
+  'DB Overhead Press':'qEwKCR5JCog',
+  'Arnold Press':'6Z15_WdXmVw',
+  'Incline DB Press':'0G2_XV7slIg',
+  'Lateral Raises':'eDMPDyoles8',
+  'Lateral Raise (Light)':'eDMPDyoles8',
+  'Cable Lateral Raise':'eDMPDyoles8',
+  'Face Pulls':'rep-x2uVGfo',
+  'DB Bicep Curl':'soxrZlIl35U',
+  'Hammer Curl':'zC3nMoFvtHg',
+  'Tricep Pushdown':'2-LAMcpzODU',
+  'Tricep Pushdown (Rope)':'2-LAMcpzODU',
+  'Plank':'ASdvN_XEl_c',
+  'Plank + Dead Bug':'ASdvN_XEl_c',
+  'Push-ups':'IODxDxX7oi4',
+  'Push-ups (bodyweight)':'IODxDxX7oi4',
+  'Stairmaster / Incline Walk':'ml6cT4AZdqI',
+  'HIIT Intervals':'ml6cT4AZdqI',
+  'Reverse Fly':'QQLg_bfNfFs',
+  'Cable Crossover':'taI2QDrFBaQ',
+  'Hack Squat':'0tn5K9NlCfo',
+  'Calf Raise':'gwLzBv0KqPQ',
+};
+
 function openExSheet(name, sets, reps, note, isWarmup, isFemale){
   const detail = EX_DETAILS[name];
   const sheet = document.getElementById('exSheet');
@@ -1006,13 +1124,25 @@ function openExSheet(name, sets, reps, note, isWarmup, isFemale){
   const gifEl = document.getElementById('exSheetGif');
   const contentEl = document.getElementById('exSheetContent');
 
+  // Pick video ID — female map first, fall back to male map
+  const videoLib = isFemale ? EX_VIDEO_F : EX_VIDEO_M;
+  const videoId = videoLib[name] || EX_VIDEO_M[name];
+
+  // Show inline video if ID exists
+  if(videoId){
+    gifEl.style.display='block';
+    gifEl.style.cssText='margin-bottom:14px';
+    gifEl.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+videoId+'?rel=0&modestbranding=1&playsinline=1&origin='+encodeURIComponent(location.origin)+'" style="width:100%;height:220px;border:none;border-radius:12px;display:block" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+  } else {
+    gifEl.style.display='none';
+    gifEl.innerHTML='';
+  }
+
   if(detail){
-    // Muscle pills
     const pills = detail.muscles.split(' · ').map(function(m){
       return '<span style="background:rgba(232,255,71,.08);border:1px solid rgba(232,255,71,.2);border-radius:99px;padding:3px 10px;font-size:10px;font-weight:600;color:var(--accent)">'+m+'</span>';
     }).join('');
 
-    // Step-by-step form cues
     const steps = detail.steps.map(function(s,i){
       return '<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)">'
         +'<span style="background:var(--accent);color:#000;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">'+(i+1)+'</span>'
@@ -1020,29 +1150,29 @@ function openExSheet(name, sets, reps, note, isWarmup, isFemale){
         +'</div>';
     }).join('');
 
-    // Coach tip
     const tipHtml = '<div style="background:rgba(71,197,255,.06);border:1px solid rgba(71,197,255,.15);border-radius:10px;padding:12px 14px;font-size:11px;color:var(--blue);line-height:1.6;margin-top:12px">'
       +'<span style="font-weight:700">💡 Coach tip: </span>'+detail.tip+'</div>';
 
-    // YouTube search button (opens in new tab)
-    const ytBtn = '<a href="https://www.youtube.com/results?search_query='+encodeURIComponent(isFemale && detail.ytSearchF ? detail.ytSearchF : detail.ytSearch)+'" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;padding:11px;background:rgba(255,0,0,.08);border:1px solid rgba(255,0,0,.2);border-radius:10px;color:#ff4444;font-size:12px;font-weight:600;text-decoration:none">▶ Watch video tutorial on YouTube</a>';
+    const ytQuery = isFemale && detail.ytSearchF ? detail.ytSearchF : detail.ytSearch;
+    const ytBtn = !videoId ? '<a href="https://www.youtube.com/results?search_query='+encodeURIComponent(ytQuery)+'" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;padding:11px;background:rgba(255,0,0,.08);border:1px solid rgba(255,0,0,.2);border-radius:10px;color:#ff4444;font-size:12px;font-weight:600;text-decoration:none">▶ Watch on YouTube</a>' : '';
 
-    gifEl.style.display='none';
     contentEl.innerHTML = '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">'+pills+'</div>'
       +'<div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);margin-bottom:8px;text-transform:uppercase">Form Cues</div>'
       +steps+tipHtml+ytBtn;
   } else {
-    // No detail mapped — show coaching note + YouTube link
-    gifEl.style.display='none';
-    const ytSearch = (isFemale ? name + ' exercise for women tutorial' : name + ' exercise form tutorial');
+    const ytSearch = isFemale ? name+' exercise for women tutorial' : name+' exercise form tutorial';
     contentEl.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.6;margin-bottom:12px">💡 '+note+'</div>'
-      +'<a href="https://www.youtube.com/results?search_query='+encodeURIComponent(ytSearch)+'" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;background:rgba(255,0,0,.08);border:1px solid rgba(255,0,0,.2);border-radius:10px;color:#ff4444;font-size:12px;font-weight:600;text-decoration:none">▶ Watch video tutorial on YouTube</a>';
+      +(!videoId ? '<a href="https://www.youtube.com/results?search_query='+encodeURIComponent(ytSearch)+'" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;background:rgba(255,0,0,.08);border:1px solid rgba(255,0,0,.2);border-radius:10px;color:#ff4444;font-size:12px;font-weight:600;text-decoration:none">▶ Watch on YouTube</a>' : '');
   }
 
   sheet.style.display='flex';
 }
 
 function closeExSheet(){
+  // Clear iframe src to stop video on close
+  const gifEl = document.getElementById('exSheetGif');
+  gifEl.innerHTML='';
+  gifEl.style.display='none';
   document.getElementById('exSheet').style.display='none';
 }
 document.querySelectorAll('.chip').forEach(c=>{
