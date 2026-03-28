@@ -1060,6 +1060,20 @@ const EX_VIDEO_M={
   'Abductor Machine':'IYDX1_QMaA0',
   'HIIT Intervals':'ml6cT4AZdqI',
   'Stairmaster / Incline Walk':'ml6cT4AZdqI',
+  'Arm Circles + Band Pull-Apart':'Huo20YHfXVc',
+  'Push-ups (bodyweight)':'IODxDxX7oi4',
+  'Empty Bar / Light DB Overhead Press':'2yjwXTZQDDI',
+  'Dead Hangs / Shoulder Circles':'eGo4IYlbE5g',
+  'Band Pull-Apart':'Huo20YHfXVc',
+  'Light Lat Pulldown':'CAwf7n6Luuc',
+  'Hip Circles + Leg Swings':'YpinPMbQLBo',
+  'Bodyweight Squat / Glute Bridge':'LM8XHLYJoYs',
+  'Light Romanian Deadlift':'JCXUYuzwNrM',
+  '5 min Jog / Brisk Walk':'ml6cT4AZdqI',
+  "World's Greatest Stretch":'YpinPMbQLBo',
+  'Jump Rope / Jumping Jacks':'ml6cT4AZdqI',
+  'Brisk Walk':'ml6cT4AZdqI',
+  'Leg Swings + Hip Circles':'YpinPMbQLBo',
 };
 
 // Female: Caroline Girvan, Heather Robertson, Sydney Cummings — known to have embedding enabled
@@ -1112,6 +1126,27 @@ const EX_VIDEO_F={
   'Cable Crossover':'taI2QDrFBaQ',
   'Hack Squat':'0tn5K9NlCfo',
   'Calf Raise':'gwLzBv0KqPQ',
+  'Cable Chest Fly':'taI2QDrFBaQ',
+  'Cable Pullover':'CUF1YoqDCzs',
+  'Core: Plank + Glute Bridge':'LM8XHLYJoYs',
+  'Reverse Fly (Cable)':'QQLg_bfNfFs',
+  'Seated Row (Narrow Grip)':'GZbfZ033f74',
+  'Tricep Kickback':'0H9l7SFk4gQ',
+  'Arm Circles + Band Pull-Apart':'Huo20YHfXVc',
+  'Push-ups (bodyweight)':'IODxDxX7oi4',
+  'Empty Bar / Light DB Overhead Press':'2yjwXTZQDDI',
+  'Dead Hangs / Shoulder Circles':'eGo4IYlbE5g',
+  'Band Pull-Apart':'Huo20YHfXVc',
+  'Light Lat Pulldown':'CAwf7n6Luuc',
+  'Hip Circles + Leg Swings':'YpinPMbQLBo',
+  'Bodyweight Squat / Glute Bridge':'LM8XHLYJoYs',
+  'Light Romanian Deadlift':'JCXUYuzwNrM',
+  '5 min Jog / Brisk Walk':'ml6cT4AZdqI',
+  "World's Greatest Stretch":'YpinPMbQLBo',
+  'Jump Rope / Jumping Jacks':'ml6cT4AZdqI',
+  'Brisk Walk':'ml6cT4AZdqI',
+  'Leg Swings + Hip Circles':'YpinPMbQLBo',
+  'Incline Treadmill Walk':'ml6cT4AZdqI',
 };
 
 function openExSheet(name, sets, reps, note, isWarmup, isFemale){
@@ -1126,7 +1161,7 @@ function openExSheet(name, sets, reps, note, isWarmup, isFemale){
 
   // Pick video ID — female map first, fall back to male map
   const videoLib = isFemale ? EX_VIDEO_F : EX_VIDEO_M;
-  const videoId = videoLib[name] || EX_VIDEO_M[name];
+  const videoId = videoLib[name];
 
   // Show inline video if ID exists
   if(videoId){
