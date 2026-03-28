@@ -928,6 +928,16 @@ async function saveEditProfile(){
 
   const bwKg = bwUnit==='lbs' ? parseFloat(bwRaw)*0.453592 : parseFloat(bwRaw);
   const hCm  = parseH(hRaw);
+  const bmi  = bwKg/((hCm/100)**2);
+
+  if(bmi < 15){
+    showToast('⚠️ BMI '+bmi.toFixed(1)+' is severely underweight. Please consult a doctor first.');
+    btn.disabled=false; btn.textContent='SAVE & UPDATE PLAN →'; return;
+  }
+  if(bmi < 18.5 && goal === 'Fat Loss'){
+    const proceed = confirm('⚠️ BMI '+bmi.toFixed(1)+' — already underweight.\nFat Loss is not recommended. Switch to Muscle Gain?\n\nPress OK to continue anyway or Cancel to go back.');
+    if(!proceed){ btn.disabled=false; btn.textContent='SAVE & UPDATE PLAN →'; return; }
+  }
   const age  = parseInt(ageRaw);
   const nut  = calcNutrition(bwKg,hCm,age,gender,goal,activity);
   const prof = {bwKg,hCm,age,gender,goal,diet,activity,avoid,wakeTime};
@@ -1110,10 +1120,14 @@ function buildBmiStrip(plan){
 
     if(gained===0){
       if(isFemale){
-        // Women: reframe away from scale weight → body composition, toned look, strength
         msg=`💪 Goal: <b>stronger, leaner, more defined</b> · ${lean.lo}–${lean.hi}kg muscle/month`;
         highlight=`Scale may barely move — that's fine. You'll lose fat and gain muscle simultaneously. Mirror and strength gains tell the real story · Tap for full timeline`;
         fill=2; leftTick=`${Math.round(bwKg)}kg`; midContent=`${lean.lo}–${lean.hi}kg/month`; rightTick=`Tap for roadmap`;
+      } else if(nut.isRecomp){
+        // Recomposition — maintenance calories, no surplus
+        msg=`🔄 Goal: <b>recomposition</b> · lose fat + build ${lean.lo}–${lean.hi}kg muscle/month`;
+        highlight=`At maintenance calories + high protein, your body burns fat while building muscle simultaneously · Scale moves slowly — mirror tells the real story · Tap for breakdown`;
+        fill=2; leftTick=`${Math.round(bwKg)}kg`; midContent=`recomp mode`; rightTick=`Tap for roadmap`;
       } else {
         msg=`📈 Month 1: scale moves <b>+${scaleMonth1Lo}–${scaleMonth1Hi}kg</b> · Year 1: <b>+${scaleYrLo}–${scaleYrHi}kg</b>`;
         highlight=`Week 1–2: scale jumps <b>${wk1lo}–${wk1hi}kg</b> (water + glycogen filling muscles — not fat!) · Then ${lean.lo}–${lean.hi}kg pure muscle/month · Tap for full breakdown`;
@@ -1190,7 +1204,7 @@ function openGoalSheet(plan){
     // MUSCLE GAIN — show both lean muscle AND total scale weight
     const gained=Math.max(+(latestWeight-bwKg).toFixed(1),0);
     title='YOUR MUSCLE GAIN ROADMAP';
-    sub=`${lvlLabel[lvl]} · ${lean.lo}–${lean.hi}kg lean muscle/month · ${surplus} kcal surplus · ${gained>0?'+'+gained+'kg so far':'Day 1'}`;
+    sub=`${lvlLabel[lvl]} · ${lean.lo}–${lean.hi}kg lean muscle/month · ${nut.isRecomp?'Maintenance calories (recomposition)':surplus>0?'+'+surplus+' kcal surplus':surplus+' kcal'} · ${gained>0?'+'+gained+'kg so far':'Day 1'}`;
 
     // Scale weight = lean + water stored with glycogen (~1.3x) + minimal fat
     // Week-1 spike scales with body weight (~1.8–2.5% of BW fills as glycogen+water)
@@ -2494,6 +2508,18 @@ function startGenerate(){
   const bwKg  = bwUnit==='lbs'?parseFloat(bwRaw)*0.453592:parseFloat(bwRaw);
   const hCm   = parseH(hRaw);
   const age   = parseInt(ageRaw);
+  const bmi   = bwKg/((hCm/100)**2);
+
+  // Block dangerous combinations before generating
+  if(bmi < 15){
+    alert('⚠️ BMI '+bmi.toFixed(1)+' is severely underweight. Please consult a doctor before following any fitness plan. We recommend selecting Muscle Gain or Maintenance.');
+    return;
+  }
+  if(bmi < 18.5 && goal === 'Fat Loss'){
+    const proceed = confirm('⚠️ Your BMI is '+bmi.toFixed(1)+' — already underweight.\n\nFat Loss is not recommended at this weight. We strongly suggest switching to Muscle Gain or Maintenance.\n\nDo you still want to continue?');
+    if(!proceed) return;
+  }
+
   const nut   = calcNutrition(bwKg,hCm,age,gender,goal,activity);
   const prof  = {bwKg,hCm,age,gender,goal,diet,activity,avoid,wakeTime};
 
