@@ -281,6 +281,20 @@ svg.ring{transform:rotate(-90deg)}
 .bgs-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--green));transition:width .8s ease}
 .bgs-ticks{display:flex;justify-content:space-between;font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--muted)}
 .bgs-highlight{color:var(--accent);font-weight:600}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.gs-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:var(--accent);margin-bottom:4px}
+.gs-sub{font-size:11px;color:var(--muted);margin-bottom:20px}
+.gs-milestone{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border)}
+.gs-milestone:last-child{border-bottom:none}
+.gs-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;margin-top:2px}
+.gs-dot.done{background:rgba(74,222,128,.15);border:2px solid var(--green)}
+.gs-dot.next{background:rgba(232,255,71,.1);border:2px solid var(--accent)}
+.gs-dot.future{background:var(--surface);border:1px solid var(--border)}
+.gs-m-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.gs-m-sub{font-size:11px;color:var(--muted);line-height:1.5}
+.gs-m-badge{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:600;padding:2px 7px;border-radius:99px;margin-left:6px}
+.gs-science{background:rgba(71,197,255,.06);border:1px solid rgba(71,197,255,.15);border-radius:10px;padding:12px 14px;margin-top:16px;font-size:11px;color:var(--blue);line-height:1.6}
+.gs-strip-hint{font-size:9px;color:var(--muted);margin-top:5px;text-align:center;letter-spacing:.5px}
 
 /* ── STREAK ── */
 .streak-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,107,71,.1);border:1px solid rgba(255,107,71,.3);border-radius:99px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--orange);margin-top:4px}
@@ -496,6 +510,14 @@ svg.ring{transform:rotate(-90deg)}
    </div>
   </div>
   <div class="bmi-goal-strip" id="bmiGoalStrip"></div>
+
+  <!-- Goal Roadmap Bottom Sheet -->
+  <div id="goalSheet" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:150;align-items:flex-end;justify-content:center" onclick="if(event.target===this)closeGoalSheet()">
+   <div style="background:var(--card);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 24px 32px;max-width:600px;width:100%;max-height:88vh;overflow-y:auto;animation:slideUp .3s ease">
+    <div style="width:36px;height:4px;background:var(--border);border-radius:99px;margin:0 auto 20px"></div>
+    <div id="goalSheetContent"></div>
+   </div>
+  </div>
   <div class="bmr-strip" id="bmrStrip"></div>
   <div class="macro-grid" id="macroGrid"></div>
   <div class="day-sel" id="daySel"></div>
@@ -1010,96 +1032,96 @@ function closeModal(){ document.getElementById('mealModal').style.display='none'
 
 // ── BMI GOAL STRIP ──
 function buildBmiStrip(plan){
-  const{bwKg,hCm,goal}=plan.prof, nut=plan.nut;
-  const bmi=+(bwKg/((hCm/100)**2)).toFixed(1);
+  const{bwKg,hCm,goal,activity}=plan.prof, nut=plan.nut;
   const el=document.getElementById('bmiGoalStrip');
   const deficit=nut.tdee-nut.kcal;
+  const surplus=nut.kcal-nut.tdee;
   const latestWeight=weightLog.length>0?weightLog[weightLog.length-1].weight:bwKg;
+
+  // Training level from activity
+  const lvl=activity==='sedentary'||activity==='light'?'beginner':activity==='moderate'?'intermediate':'advanced';
+
+  // Evidence-based LEAN muscle rates (Aragon & Helms)
+  // Beginner: 0.9–1.4kg/mo | Intermediate: 0.4–0.8kg/mo | Advanced: 0.2–0.4kg/mo
+  const leanRates={beginner:{lo:0.9,hi:1.4},intermediate:{lo:0.4,hi:0.8},advanced:{lo:0.2,hi:0.4}};
+  const lean=leanRates[lvl];
+
+  // TOTAL SCALE WEIGHT expected per month (lean + water/glycogen + small fat gain)
+  // Week 1: +1–2kg water/glycogen. Monthly ongoing: lean*1.5 (accounts for water stored with glycogen in muscle)
+  // This is what the scale actually shows — more motivating and honest
+  const scaleMonth1Lo=(1.5+lean.lo*1.3).toFixed(1); // week1 water + month lean+water
+  const scaleMonth1Hi=(2.5+lean.hi*1.3).toFixed(1);
+  const scaleMo3Lo=(lean.lo*3*1.3).toFixed(1);
+  const scaleMo3Hi=(lean.hi*3*1.3).toFixed(1);
+  const scaleMo6Lo=(lean.lo*6*1.2).toFixed(1);
+  const scaleMo6Hi=(lean.hi*6*1.2).toFixed(1);
+  const scaleYrLo=(lean.lo*10).toFixed(1); // 10 months realistic (training + life)
+  const scaleYrHi=(lean.hi*10).toFixed(1);
 
   let msg, fill, leftTick, midContent, rightTick, highlight;
 
   if(goal==='Fat Loss'){
-    // Show milestone-based progress — 5% then 10% body weight
-    // Science: just 5% loss improves insulin sensitivity, BP, cholesterol
-    const m1=+(bwKg*0.95).toFixed(1); // 5% milestone
-    const m2=+(bwKg*0.90).toFixed(1); // 10% milestone
+    const m1=+(bwKg*0.95).toFixed(1);
+    const m2=+(bwKg*0.90).toFixed(1);
     const lost=Math.max(+(bwKg-latestWeight).toFixed(1),0);
     const pctLost=+((lost/bwKg)*100).toFixed(1);
 
     if(lost===0){
-      // Not started — show 5% as first target
       const toM1=+(bwKg*0.05).toFixed(1);
       const wks=deficit>0?Math.ceil(toM1*7700/deficit/7):null;
       msg=`🎯 First goal: lose <b>${toM1}kg</b> — that's just 5% of your weight`;
-      highlight=wks
-        ? `At your ${deficit} kcal/day deficit → <b>~${wks} weeks</b> to first milestone · 5% loss clinically improves energy, BP and blood sugar`
-        : `Set your calorie deficit to see your timeline`;
+      highlight=wks?`At ${deficit} kcal deficit → <b>~${wks} weeks</b> to first milestone · 5% loss clinically improves energy, BP and blood sugar`:`Set your calorie deficit to see your timeline`;
       fill=2; leftTick=`${Math.round(bwKg)}kg`; midContent=`5% = ${m1}kg`; rightTick=`${m1}kg 🏁`;
-
     } else if(lost < bwKg*0.05){
-      // Tracking toward 5%
       const toM1=Math.max(+(latestWeight-m1).toFixed(1),0);
       const wks=deficit>0?Math.ceil(toM1*7700/deficit/7):null;
       const pct=Math.min((lost/(bwKg*0.05))*100,100);
       msg=`💪 Lost <b>${lost}kg</b> (${pctLost}%) · You're making real progress!`;
-      highlight=toM1>0&&wks
-        ? `<b>${toM1}kg more</b> to 5% milestone (${m1}kg) · ~${wks} week${wks>1?'s':''} away`
-        : `🎉 5% milestone reached! Your health is already improving.`;
+      highlight=toM1>0&&wks?`<b>${toM1}kg more</b> to 5% milestone (${m1}kg) · ~${wks} week${wks>1?'s':''} away`:`🎉 5% milestone reached! Your health is already improving.`;
       fill=pct; leftTick=`${Math.round(bwKg)}kg`; midContent=`−${lost}kg so far`; rightTick=`${m1}kg 🏁`;
-
     } else if(lost < bwKg*0.10){
-      // 5% done, tracking toward 10%
       const toM2=Math.max(+(latestWeight-m2).toFixed(1),0);
       const wks=deficit>0?Math.ceil(toM2*7700/deficit/7):null;
       const pct=50+Math.min(((lost-bwKg*0.05)/(bwKg*0.05))*100,100)/2;
       msg=`🔥 5% milestone crushed! Now targeting <b>10% (${m2}kg)</b>`;
-      highlight=toM2>0&&wks
-        ? `<b>${toM2}kg more</b> to 10% milestone · ~${wks} week${wks>1?'s':''} away · At 10% loss, energy and confidence transform`
-        : `🏆 10% milestone achieved! Major body transformation complete.`;
+      highlight=toM2>0&&wks?`<b>${toM2}kg more</b> to 10% milestone · ~${wks} week${wks>1?'s':''} away · At 10% loss, energy and confidence transform`:`🏆 10% milestone achieved! Major body transformation complete.`;
       fill=pct; leftTick=`${m1}kg ✅`; midContent=`−${lost}kg total`; rightTick=`${m2}kg 🏁`;
-
     } else {
-      // Past 10% — celebrate and show total progress
       msg=`🏆 <b>${pctLost}% lost</b> · ${lost}kg down · Absolutely incredible!`;
-      highlight=`You've passed the 10% milestone. Keep going — every kg from here compounds your health gains.`;
+      highlight=`You've passed the 10% milestone. Every kg from here compounds your health gains.`;
       fill=100; leftTick=`${Math.round(bwKg)}kg`; midContent=`−${lost}kg 🎉`; rightTick=`${m2}kg ✅`;
     }
 
   } else if(goal==='Muscle Gain'||goal==='Lean Bulk'){
-    const m1=+(bwKg+2).toFixed(1); // 2kg first milestone
-    const m2=+(bwKg+5).toFixed(1); // 5kg second milestone
     const gained=Math.max(+(latestWeight-bwKg).toFixed(1),0);
-    const surplus=nut.kcal-nut.tdee;
-    const rate=goal==='Lean Bulk'?0.2:0.25;
-    const wksTo2=Math.ceil(2/rate);
 
     if(gained===0){
-      msg=`🎯 First goal: gain <b>2kg</b> of lean muscle`;
-      highlight=`At ${surplus} kcal surplus → <b>~${wksTo2} weeks</b> to first visible gains · Hit your protein target every day`;
-      fill=2; leftTick=`${Math.round(bwKg)}kg`; midContent=`+2kg = ${m1}kg`; rightTick=`${m1}kg 🏁`;
-
-    } else if(gained<2){
-      const pct=Math.min((gained/2)*100,100);
-      msg=`💪 Gained <b>${gained}kg</b> so far · Muscles growing!`;
-      highlight=`<b>${+(2-gained).toFixed(1)}kg more</b> to first milestone · Keep training hard and hitting protein every day`;
-      fill=pct; leftTick=`${Math.round(bwKg)}kg`; midContent=`+${gained}kg gained`; rightTick=`${m1}kg 🏁`;
-
-    } else if(gained<5){
-      const pct=50+Math.min(((gained-2)/3)*100,100)/2;
-      msg=`🔥 2kg milestone done! Now targeting <b>+5kg total</b>`;
-      highlight=`<b>${+(5-gained).toFixed(1)}kg more</b> to +5kg milestone · Physique changes are becoming very visible now`;
-      fill=pct; leftTick=`${m1}kg ✅`; midContent=`+${gained}kg total`; rightTick=`${m2}kg 🏁`;
-
+      // Show SCALE weight expected (includes water/glycogen) — much more motivating
+      msg=`📈 Month 1: scale moves <b>+${scaleMonth1Lo}–${scaleMonth1Hi}kg</b> · Year 1: <b>+${scaleYrLo}–${scaleYrHi}kg</b>`;
+      highlight=`Week 1–2: scale jumps ${lvl==='beginner'?'1.5–2.5':'1–2'}kg (water + glycogen — totally normal!) · Then ${lean.lo}–${lean.hi}kg pure muscle/month consistently · Tap for full breakdown`;
+      fill=2; leftTick=`${Math.round(bwKg)}kg`; midContent=`+${scaleMonth1Lo}–${scaleMonth1Hi}kg mo.1`; rightTick=`+${scaleYrHi}kg yr 1`;
+    } else if(gained < lean.lo*3*1.3){
+      const pct=Math.min((gained/(lean.lo*3*1.3))*100,100);
+      msg=`💪 Up <b>+${gained}kg</b> · Scale is moving — keep going!`;
+      highlight=`3-month target: +${scaleMo3Lo}–${scaleMo3Hi}kg on scale · You're tracking well · Keep hitting protein and training hard`;
+      fill=pct; leftTick=`${Math.round(bwKg)}kg`; midContent=`+${gained}kg gained`; rightTick=`+${scaleMo3Hi}kg 🏁`;
+    } else if(gained < lean.lo*6*1.2){
+      const pct=50+Math.min(((gained-lean.lo*3*1.3)/(lean.lo*3*1.2))*100,100)/2;
+      msg=`🔥 3-month target smashed! Heading for <b>6-month goal</b>`;
+      highlight=`6-month target: +${scaleMo6Lo}–${scaleMo6Hi}kg · Visible transformation by now · People are noticing`;
+      fill=pct; leftTick=`+${scaleMo3Hi}kg ✅`; midContent=`+${gained}kg total`; rightTick=`+${scaleMo6Hi}kg 🏁`;
     } else {
-      msg=`🏆 <b>+${gained}kg gained</b> · Absolute unit energy 💪`;
-      highlight=`You've built ${gained}kg of lean mass. Serious transformation achieved.`;
-      fill=100; leftTick=`${Math.round(bwKg)}kg`; midContent=`+${gained}kg 🎉`; rightTick=`${m2}kg ✅`;
+      msg=`🏆 <b>+${gained}kg gained</b> · Elite-level consistency 💪`;
+      highlight=`You've exceeded the 6-month target. Serious transformation achieved.`;
+      fill=100; leftTick=`${Math.round(bwKg)}kg`; midContent=`+${gained}kg 🎉`; rightTick=`+${scaleMo6Hi}kg ✅`;
     }
   } else {
     el.style.display='none'; return;
   }
 
   el.style.display='block';
+  el.style.cursor='pointer';
+  el.onclick=()=>openGoalSheet(plan);
   el.innerHTML=`
     <div style="margin-bottom:8px"><div class="bgs-label">${msg}</div></div>
     <div style="display:flex;justify-content:space-between;align-items:center;font-size:9px;font-family:'JetBrains Mono',monospace;margin-bottom:5px">
@@ -1108,7 +1130,80 @@ function buildBmiStrip(plan){
       <span style="color:var(--accent);font-weight:600">${rightTick}</span>
     </div>
     <div class="bgs-track"><div class="bgs-fill" style="width:${Math.min(Math.max(fill,2),100)}%"></div></div>
-    <div style="font-size:10px;color:var(--muted);margin-top:7px;line-height:1.5">${highlight}</div>`;
+    <div style="font-size:10px;color:var(--muted);margin-top:7px;line-height:1.5">${highlight}</div>
+    <div class="gs-strip-hint">TAP FOR FULL ROADMAP ↑</div>`;
+}
+
+function openGoalSheet(plan){
+  const{bwKg,goal,activity}=plan.prof, nut=plan.nut;
+  const deficit=nut.tdee-nut.kcal;
+  const surplus=nut.kcal-nut.tdee;
+  const latestWeight=weightLog.length>0?weightLog[weightLog.length-1].weight:bwKg;
+  const lvl=activity==='sedentary'||activity==='light'?'beginner':activity==='moderate'?'intermediate':'advanced';
+  const lvlLabel={beginner:'Beginner (0–2 yrs training)',intermediate:'Intermediate (2–4 yrs)',advanced:'Advanced (4+ yrs)'};
+  const lean={beginner:{lo:0.9,hi:1.4},intermediate:{lo:0.4,hi:0.8},advanced:{lo:0.2,hi:0.4}}[lvl];
+
+  let milestones=[], science='', title='', sub='';
+
+  if(goal==='Fat Loss'){
+    const lost=Math.max(+(bwKg-latestWeight).toFixed(1),0);
+    const m5=+(bwKg*0.95).toFixed(1), m10=+(bwKg*0.90).toFixed(1), m15=+(bwKg*0.85).toFixed(1);
+    const wks5=deficit>0?Math.ceil(bwKg*0.05*7700/deficit/7):null;
+    const wks10=deficit>0?Math.ceil(bwKg*0.10*7700/deficit/7):null;
+    const wks15=deficit>0?Math.ceil(bwKg*0.15*7700/deficit/7):null;
+    title='YOUR FAT LOSS ROADMAP';
+    sub=`${Math.round(bwKg)}kg start · ${deficit} kcal/day deficit · ${lost>0?lost+'kg lost so far':'Day 1'}`;
+    milestones=[
+      {icon:'🎯',status:lost>=bwKg*0.05?'done':'next',label:`5% milestone — ${m5}kg`,time:wks5?`~${wks5} weeks`:'',desc:`Lose ${+(bwKg*0.05).toFixed(1)}kg. Blood pressure drops, insulin sensitivity improves, energy increases. This is where you FEEL the difference. Clothes start fitting differently.`},
+      {icon:'💪',status:lost>=bwKg*0.10?'done':lost>=bwKg*0.05?'next':'future',label:`10% milestone — ${m10}kg`,time:wks10?`~${wks10} weeks`:'',desc:`Lose ${+(bwKg*0.10).toFixed(1)}kg total. Sleep quality improves dramatically, joint pain reduces, confidence transforms. Friends and family are commenting now.`},
+      {icon:'🔥',status:lost>=bwKg*0.15?'done':lost>=bwKg*0.10?'next':'future',label:`15% milestone — ${m15}kg`,time:wks15?`~${wks15} weeks`:'',desc:`Lose ${+(bwKg*0.15).toFixed(1)}kg total. Major body composition shift. You're a completely different person in the mirror. Metabolic health fully normalized.`},
+      {icon:'🏆',status:'future',label:`Maintenance phase`,time:'Your forever',desc:`At this point the goal shifts from losing weight to building muscle and maintaining. The habits you've built are permanent. This is the real transformation.`},
+    ];
+    science=`📊 <b>Why your rate is right:</b> ${deficit} kcal/day deficit = ~${+(deficit*7/7700).toFixed(2)}kg fat loss per week. Faster than 1% body weight/week starts burning muscle mass alongside fat. Your protein target (${nut.protein}g/day) is specifically set to preserve muscle during the deficit.`;
+
+  } else {
+    // MUSCLE GAIN — show both lean muscle AND total scale weight
+    const gained=Math.max(+(latestWeight-bwKg).toFixed(1),0);
+    title='YOUR MUSCLE GAIN ROADMAP';
+    sub=`${lvlLabel[lvl]} · ${lean.lo}–${lean.hi}kg lean muscle/month · ${surplus} kcal surplus · ${gained>0?'+'+gained+'kg so far':'Day 1'}`;
+
+    // Scale weight = lean + water stored with glycogen (~1.3x) + minimal fat
+    const s1lo=(1.5+lean.lo*1.3).toFixed(1), s1hi=(2.5+lean.hi*1.3).toFixed(1);
+    const s3lo=(lean.lo*3*1.3).toFixed(1), s3hi=(lean.hi*3*1.3).toFixed(1);
+    const s6lo=(lean.lo*6*1.2).toFixed(1), s6hi=(lean.hi*6*1.2).toFixed(1);
+    const s12lo=(lean.lo*10).toFixed(1), s12hi=(lean.hi*10).toFixed(1);
+
+    milestones=[
+      {icon:'👀',status:gained>=(lean.lo*1.3)?'done':'next',label:`Month 1 — scale: +${s1lo}–${s1hi}kg`,time:`~4 weeks`,desc:`Scale jumps ${lvl==='beginner'?'1.5–2.5':'1–2'}kg in week 1 from water and glycogen filling your muscles (totally normal, not fat). Then ${lean.lo}–${lean.hi}kg of actual lean muscle per month on top. Strength increases noticeably from neural adaptations.`},
+      {icon:'💪',status:gained>=(lean.lo*3*1.3)?'done':gained>=(lean.lo*1.3)?'next':'future',label:`3 Months — scale: +${s3lo}–${s3hi}kg`,time:`~12 weeks`,desc:`${+(lean.lo*3).toFixed(1)}–${+(lean.hi*3).toFixed(1)}kg of lean muscle built. Shoulders broader, arms thicker, chest fuller. People who haven't seen you in 3 months will notice immediately. You look like someone who trains.`},
+      {icon:'🔥',status:gained>=(lean.lo*6*1.2)?'done':gained>=(lean.lo*3*1.3)?'next':'future',label:`6 Months — scale: +${s6lo}–${s6hi}kg`,time:`~26 weeks`,desc:`${+(lean.lo*6).toFixed(1)}–${+(lean.hi*6).toFixed(1)}kg of lean muscle total. Significant physique transformation. New personal bests on all major lifts. Clothes fit completely differently. This is where most people realize the investment was worth it.`},
+      {icon:'🏆',status:gained>=(lean.lo*10)?'done':gained>=(lean.lo*6*1.2)?'next':'future',label:`1 Year — scale: +${s12lo}–${s12hi}kg`,time:`~52 weeks`,desc:`${+(lean.lo*10).toFixed(1)}–${+(lean.hi*10).toFixed(1)}kg of lean muscle in one year. This puts you in the top 10% of natural lifters. The transformation is dramatic and, most importantly, permanent. You've changed your baseline forever.`},
+    ];
+    science=`📊 <b>Why the scale moves more than "1kg/month":</b> Pure lean muscle grows at ${lean.lo}–${lean.hi}kg/month. But every gram of glycogen stored in muscle pulls ~3g of water with it. So your scale shows more. Week 1 alone: +1.5–2.5kg from glycogen/water (not fat — this is your muscles filling up). This is why the mirror matters more than the scale for tracking progress.`;
+  }
+
+  document.getElementById('goalSheetContent').innerHTML=`
+    <div class="gs-title">${title}</div>
+    <div class="gs-sub">${sub}</div>
+    ${milestones.map(m=>`
+      <div class="gs-milestone">
+        <div class="gs-dot ${m.status}">${m.status==='done'?'✓':m.status==='next'?m.icon:'○'}</div>
+        <div style="flex:1">
+          <div class="gs-m-title">
+            ${m.label}
+            <span class="gs-m-badge" style="background:${m.status==='done'?'rgba(74,222,128,.12)':m.status==='next'?'rgba(232,255,71,.1)':'var(--surface)'};color:${m.status==='done'?'#4ade80':m.status==='next'?'#e8ff47':'var(--muted)'};border:1px solid ${m.status==='done'?'rgba(74,222,128,.3)':m.status==='next'?'rgba(232,255,71,.3)':'var(--border)'}">${m.status==='done'?'✅ Done':m.status==='next'?'🎯 Next':m.time}</span>
+          </div>
+          <div class="gs-m-sub">${m.desc}</div>
+        </div>
+      </div>`).join('')}
+    <div class="gs-science">${science}</div>
+    <button onclick="closeGoalSheet()" style="width:100%;margin-top:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--muted);cursor:pointer">Close</button>`;
+
+  document.getElementById('goalSheet').style.display='flex';
+}
+
+function closeGoalSheet(){
+  document.getElementById('goalSheet').style.display='none';
 }
 // ── STREAK LOGIC ──
 let streakData={streak:0,lastDate:null,completedDays:{}};
