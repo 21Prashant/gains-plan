@@ -513,6 +513,28 @@ svg.ring{transform:rotate(-90deg)}
   </div>
   <div class="bmi-goal-strip" id="bmiGoalStrip"></div>
 
+  <!-- Exercise Detail Bottom Sheet -->
+  <div id="exSheet" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:160;align-items:flex-end;justify-content:center" onclick="if(event.target===this)closeExSheet()">
+   <div style="background:var(--card);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:0;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;animation:slideUp .3s ease">
+    <div style="position:sticky;top:0;background:var(--card);padding:16px 20px 12px;border-bottom:1px solid var(--border);z-index:1">
+     <div style="width:36px;height:4px;background:var(--border);border-radius:99px;margin:0 auto 14px"></div>
+     <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div>
+       <div id="exSheetName" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);letter-spacing:1px"></div>
+       <div id="exSheetMeta" style="font-size:11px;color:var(--muted);margin-top:2px"></div>
+      </div>
+      <button onclick="closeExSheet()" style="background:var(--surface);border:1px solid var(--border);border-radius:50%;width:28px;height:28px;color:var(--muted);font-size:16px;cursor:pointer;flex-shrink:0">×</button>
+     </div>
+    </div>
+    <div style="padding:16px 20px">
+     <div id="exSheetGif" style="background:var(--surface);border-radius:12px;overflow:hidden;margin-bottom:14px;min-height:200px;display:flex;align-items:center;justify-content:center">
+      <div style="color:var(--muted);font-size:12px">Loading demo…</div>
+     </div>
+     <div id="exSheetContent"></div>
+    </div>
+   </div>
+  </div>
+
   <!-- Goal Roadmap Bottom Sheet -->
   <div id="goalSheet" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:150;align-items:flex-end;justify-content:center" onclick="if(event.target===this)closeGoalSheet()">
    <div style="background:var(--card);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 24px 32px;max-width:600px;width:100%;max-height:88vh;overflow-y:auto;animation:slideUp .3s ease">
@@ -964,7 +986,178 @@ async function saveEditProfile(){
   btn.disabled=false; btn.textContent='SAVE & UPDATE PLAN →';
 }
 
-// ── CHIP GROUPS (includes edit modal groups) ──
+// ── EXERCISE GIF SHEET ──
+// Maps exercise names to Giphy GIF IDs (reliable fitness GIFs)
+// Fallback: YouTube search link
+const EX_GIF={
+  'Barbell Bench Press':'R9zXHrNLnBQ9Up6bBJ',
+  'Barbell Back Squat':'3oEjI5P7RD2e1QH5aU',
+  'Barbell Squat':'3oEjI5P7RD2e1QH5aU',
+  'Squat':'3oEjI5P7RD2e1QH5aU',
+  'Deadlift':'ZFPHgwWTFuTKDmHvnI',
+  'Barbell Row':'26ufb5aRbJN1TiMaA',
+  'Overhead Press':'d3mlRBOTuSFwMuSk',
+  'Overhead Press (BB)':'d3mlRBOTuSFwMuSk',
+  'Pull-ups':'GBmr7oPxGHCEjaFb4v',
+  'Weighted Pull-ups':'GBmr7oPxGHCEjaFb4v',
+  'Assisted Pull-ups / Band Pull-ups':'GBmr7oPxGHCEjaFb4v',
+  'Pull-ups / Lat Pulldown':'GBmr7oPxGHCEjaFb4v',
+  'Lat Pulldown':'13HBDT3eBBjI4o',
+  'Lat Pulldown (Wide Grip)':'13HBDT3eBBjI4o',
+  'Light Lat Pulldown':'13HBDT3eBBjI4o',
+  'Incline DB Press':'sNBTnrLH6EOLQ0GqpN',
+  'Incline Barbell Press':'sNBTnrLH6EOLQ0GqpN',
+  'Romanian Deadlift':'h0PKFxN5sF4dGBTLkR',
+  'Romanian Deadlift (DB)':'h0PKFxN5sF4dGBTLkR',
+  'Light Romanian Deadlift':'h0PKFxN5sF4dGBTLkR',
+  'Stiff Leg Deadlift':'h0PKFxN5sF4dGBTLkR',
+  'Hip Thrust':'6HPGRkPHRVlHKmGpA0',
+  'Hip Thrust (Barbell or Smith)':'6HPGRkPHRVlHKmGpA0',
+  'Hip Thrust (lighter, higher reps)':'6HPGRkPHRVlHKmGpA0',
+  'Goblet Squat':'ZFPHgwWTFuTKDmHvnI',
+  'Goblet Squat / DB Squat':'ZFPHgwWTFuTKDmHvnI',
+  'Front Squat / Goblet Squat':'ZFPHgwWTFuTKDmHvnI',
+  'Leg Press':'iFhDHNHCrM5dC',
+  'Leg Press (feet high & wide)':'iFhDHNHCrM5dC',
+  'Leg Curl':'YFKVHnFbOOTsMTvIWR',
+  'Lying Leg Curl':'YFKVHnFbOOTsMTvIWR',
+  'Calf Raise':'3o7aTskHEUdgCQAXde',
+  'Lateral Raises':'kHU8tayaRjukau',
+  'Lateral Raise (Light)':'kHU8tayaRjukau',
+  'Cable Lateral Raise':'kHU8tayaRjukau',
+  'Face Pulls':'3oriNLmQJCiAm9t5VK',
+  'Barbell Curl':'3oriNLmQJCiAm9t5VK',
+  'DB Bicep Curl':'3oriNLmQJCiAm9t5VK',
+  'Hammer Curl':'3oriNLmQJCiAm9t5VK',
+  'Tricep Pushdown':'l0HlOBZcl7sbV6ANi',
+  'Tricep Pushdown (Rope)':'l0HlOBZcl7sbV6ANi',
+  'Skull Crushers':'l0HlOBZcl7sbV6ANi',
+  'Tricep Dips':'l0HlOBZcl7sbV6ANi',
+  'Tricep Kickback':'l0HlOBZcl7sbV6ANi',
+  'Seated Cable Row':'26ufb5aRbJN1TiMaA',
+  'Seated Row (Narrow Grip)':'26ufb5aRbJN1TiMaA',
+  'Single Arm DB Row':'26ufb5aRbJN1TiMaA',
+  'T-Bar Row':'26ufb5aRbJN1TiMaA',
+  'Cable Crossover':'sNBTnrLH6EOLQ0GqpN',
+  'Cable Chest Fly':'sNBTnrLH6EOLQ0GqpN',
+  'Cable Pullover':'13HBDT3eBBjI4o',
+  'Cable Kickback':'l0HlOBZcl7sbV6ANi',
+  'Arnold Press':'d3mlRBOTuSFwMuSk',
+  'DB Overhead Press':'d3mlRBOTuSFwMuSk',
+  'DB Shoulder Press':'d3mlRBOTuSFwMuSk',
+  'Reverse Fly':'3oriNLmQJCiAm9t5VK',
+  'Reverse Fly (Cable)':'3oriNLmQJCiAm9t5VK',
+  'Hack Squat':'ZFPHgwWTFuTKDmHvnI',
+  'Walking Lunges':'xT5LMzyCaGFPJzIiZa',
+  'Lunges':'xT5LMzyCaGFPJzIiZa',
+  'Bulgarian Split Squat':'xT5LMzyCaGFPJzIiZa',
+  'Sumo Squat':'ZFPHgwWTFuTKDmHvnI',
+  'Abductor Machine':'YFKVHnFbOOTsMTvIWR',
+  'Plank':'l0K4eVKTMHFjHOoUM',
+  'Plank + Dead Bug':'l0K4eVKTMHFjHOoUM',
+  'Push-ups':'11aBHLkQMOl0wM',
+  'Push-ups (bodyweight)':'11aBHLkQMOl0wM',
+  'Bench Press':'R9zXHrNLnBQ9Up6bBJ',
+  'Tricep Dips':'l0HlOBZcl7sbV6ANi',
+  'HIIT Intervals':'3oEjHPHlDuEFrB9j7i',
+  'Incline Treadmill Walk':'3oEjHPHlDuEFrB9j7i',
+  'Stairmaster / Incline Walk':'3oEjHPHlDuEFrB9j7i',
+  'Core Circuit':'l0K4eVKTMHFjHOoUM',
+  'Core: Plank + Glute Bridge':'l0K4eVKTMHFjHOoUM',
+  'Bodyweight Squat / Glute Bridge':'6HPGRkPHRVlHKmGpA0',
+  'Hip Circles + Leg Swings':'3oEjHPHlDuEFrB9j7i',
+  'Leg Swings + Hip Circles':'3oEjHPHlDuEFrB9j7i',
+  'Arm Circles + Band Pull-Apart':'3oriNLmQJCiAm9t5VK',
+  'Band Pull-Apart':'3oriNLmQJCiAm9t5VK',
+  'Dead Hangs / Shoulder Circles':'GBmr7oPxGHCEjaFb4v',
+  'Empty Bar / Light DB Overhead Press':'d3mlRBOTuSFwMuSk',
+  '5 min Jog / Brisk Walk':'3oEjHPHlDuEFrB9j7i',
+  'Brisk Walk':'3oEjHPHlDuEFrB9j7i',
+  'Jump Rope / Jumping Jacks':'3oEjHPHlDuEFrB9j7i',
+  "World's Greatest Stretch":'3oEjHPHlDuEFrB9j7i',
+};
+
+const EX_MUSCLES={
+  'Barbell Bench Press':'Chest · Triceps · Front Delts',
+  'Barbell Back Squat':'Quads · Glutes · Hamstrings · Core',
+  'Barbell Squat':'Quads · Glutes · Hamstrings · Core',
+  'Squat':'Quads · Glutes · Hamstrings · Core',
+  'Deadlift':'Hamstrings · Glutes · Lower Back · Traps',
+  'Barbell Row':'Lats · Rhomboids · Biceps · Rear Delts',
+  'Overhead Press':'Shoulders · Triceps · Upper Chest',
+  'Overhead Press (BB)':'Shoulders · Triceps · Upper Chest',
+  'Pull-ups':'Lats · Biceps · Core',
+  'Weighted Pull-ups':'Lats · Biceps · Core',
+  'Lat Pulldown':'Lats · Biceps · Mid-Back',
+  'Incline DB Press':'Upper Chest · Front Delts · Triceps',
+  'Romanian Deadlift':'Hamstrings · Glutes · Lower Back',
+  'Hip Thrust':'Glutes · Hamstrings · Core',
+  'Hip Thrust (Barbell or Smith)':'Glutes · Hamstrings · Core',
+  'Goblet Squat':'Quads · Glutes · Core',
+  'Leg Press':'Quads · Glutes · Hamstrings',
+  'Leg Curl':'Hamstrings',
+  'Calf Raise':'Calves',
+  'Lateral Raises':'Side Delts',
+  'Cable Lateral Raise':'Side Delts',
+  'Face Pulls':'Rear Delts · Rotator Cuff',
+  'Barbell Curl':'Biceps · Brachialis',
+  'DB Bicep Curl':'Biceps · Brachialis',
+  'Hammer Curl':'Brachialis · Brachioradialis',
+  'Tricep Pushdown':'Triceps (all heads)',
+  'Skull Crushers':'Triceps (long head)',
+  'Seated Cable Row':'Mid-Back · Lats · Biceps',
+  'Single Arm DB Row':'Lats · Rhomboids · Biceps',
+  'Arnold Press':'Shoulders (all heads)',
+  'DB Shoulder Press':'Shoulders · Triceps',
+  'Reverse Fly':'Rear Delts · Rhomboids',
+  'Walking Lunges':'Quads · Glutes · Hamstrings',
+  'Bulgarian Split Squat':'Quads · Glutes · Hip Flexors',
+  'Plank':'Core · Anti-rotation stability',
+  'Push-ups':'Chest · Triceps · Front Delts · Core',
+  'Hip Thrust (lighter, higher reps)':'Glutes · Hamstrings',
+};
+
+function openExSheet(name, sets, reps, note, isWarmup){
+  const gifId = EX_GIF[name];
+  const muscles = EX_MUSCLES[name] || '';
+  const sheet = document.getElementById('exSheet');
+  const gifEl = document.getElementById('exSheetGif');
+  const nameEl = document.getElementById('exSheetName');
+  const metaEl = document.getElementById('exSheetMeta');
+  const contentEl = document.getElementById('exSheetContent');
+
+  nameEl.textContent = name;
+  metaEl.innerHTML = `${isWarmup?'<span style="color:var(--amber);font-size:9px;font-weight:700;letter-spacing:1px">🔥 WARM-UP</span> · ':''}${sets} · ${reps}`;
+
+  // GIF section
+  if(gifId){
+    gifEl.innerHTML=`<img src="https://media.giphy.com/media/${gifId}/giphy.gif" alt="${name}" style="width:100%;max-height:280px;object-fit:cover;display:block;border-radius:12px" onerror="this.parentNode.innerHTML=fallbackExGif('${encodeURIComponent(name)}')">`;
+  } else {
+    gifEl.innerHTML=fallbackExGif(name);
+  }
+
+  // Content section
+  contentEl.innerHTML=`
+    ${muscles?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${muscles.split(' · ').map(m=>`<span style="background:rgba(232,255,71,.08);border:1px solid rgba(232,255,71,.2);border-radius:99px;padding:3px 10px;font-size:10px;font-weight:600;color:var(--accent)">${m}</span>`).join('')}</div>`:''}
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.6;margin-bottom:10px">
+      💡 ${note}
+    </div>
+    ${!isWarmup?`<a href="https://www.youtube.com/results?search_query=${encodeURIComponent(name+' exercise form tutorial')}" target="_blank" style="display:block;text-align:center;padding:10px;background:rgba(255,0,0,.08);border:1px solid rgba(255,0,0,.2);border-radius:10px;color:#ff4444;font-size:12px;font-weight:600;text-decoration:none">▶ Watch form tutorial on YouTube</a>`:''}`;
+
+  sheet.style.display='flex';
+}
+
+function fallbackExGif(name){
+  return `<div style="padding:40px 20px;text-align:center;color:var(--muted);font-size:12px">
+    <div style="font-size:32px;margin-bottom:8px">🏋️</div>
+    <div style="font-weight:600;color:var(--text);margin-bottom:4px">${decodeURIComponent(name)}</div>
+    <div>GIF not available</div>
+  </div>`;
+}
+
+function closeExSheet(){
+  document.getElementById('exSheet').style.display='none';
+}
 document.querySelectorAll('.chip').forEach(c=>{
   c.onclick=()=>{ document.querySelectorAll(`.chip[data-group="${c.dataset.group}"]`).forEach(x=>x.classList.remove('active')); c.classList.add('active'); };
 });
@@ -1421,7 +1614,6 @@ const EX={
     {name:'Calf Raise',sets:'3 sets',reps:'15–20 reps',note:'Don\'t skip calves.'},
   ],
   cardio:[
-    {name:'Warm-up Walk/Jog',sets:'1',reps:'5 min easy',note:'Raise heart rate gradually.'},
     {name:'HIIT Intervals',sets:'8–10 rounds',reps:'30s sprint / 90s walk',note:'Max effort on sprints.'},
     {name:'Incline Treadmill Walk',sets:'1',reps:'10–15 min',note:'Burns calories, low impact.'},
     {name:'Core Circuit',sets:'3 rounds',reps:'Plank 45s + 15 crunches',note:'Finish every cardio session.'},
@@ -1506,7 +1698,6 @@ const EX_F={
     {name:'Abductor Machine',sets:'3 sets',reps:'20 reps',note:'Outer glutes and hip.'},
   ],
   cardio:[
-    {name:'Warm-up Walk',sets:'1',reps:'5 min',note:'Raise heart rate gradually.'},
     {name:'Stairmaster / Incline Walk',sets:'1',reps:'15–20 min',note:'Best cardio for glute activation simultaneously.'},
     {name:'HIIT Intervals',sets:'6–8 rounds',reps:'30s sprint / 90s walk',note:'Max effort on sprints.'},
     {name:'Core: Plank + Glute Bridge',sets:'3 rounds',reps:'30s plank + 20 bridges',note:'Finish every session.'},
@@ -1820,18 +2011,22 @@ function renderWoDay(schedule,dayIdx){
         </div>
       </div>`;
     container.appendChild(card);
-    // Warmup
+    // Warmup rows — clickable
     const warmupList=document.getElementById('woWarmupList');
     (dp.warmup||[]).forEach(ex=>{
       const row=document.createElement('div'); row.className='wo-exercise wo-warmup';
+      row.style.cursor='pointer';
       row.innerHTML=`<div><div class="wo-ex-name">${ex.name}</div><div class="wo-ex-meta">${ex.note}</div></div><div class="wo-ex-sets"><div>${ex.sets}</div><div style="color:var(--muted);font-size:10px">${ex.reps}</div></div>`;
+      row.onclick=()=>openExSheet(ex.name,ex.sets,ex.reps,ex.note,true);
       warmupList.appendChild(row);
     });
-    // Working sets
+    // Working set rows — clickable
     const list=document.getElementById('woExList');
     dp.exercises.forEach(ex=>{
       const row=document.createElement('div'); row.className='wo-exercise';
-      row.innerHTML=`<div><div class="wo-ex-name">${ex.name}</div><div class="wo-ex-meta">${ex.note}</div></div><div class="wo-ex-sets"><div>${ex.sets}</div><div style="color:var(--muted);font-size:10px">${ex.reps}</div></div>`;
+      row.style.cursor='pointer';
+      row.innerHTML=`<div><div class="wo-ex-name">${ex.name}</div><div class="wo-ex-meta">${ex.note}</div></div><div class="wo-ex-sets"><div>${ex.sets}</div><div style="color:var(--muted);font-size:10px">${ex.reps}</div></div><div style="font-size:9px;color:var(--muted);margin-top:2px">Tap for demo →</div>`;
+      row.onclick=()=>openExSheet(ex.name,ex.sets,ex.reps,ex.note,false);
       list.appendChild(row);
     });
   }
