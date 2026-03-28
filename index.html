@@ -513,35 +513,7 @@ svg.ring{transform:rotate(-90deg)}
   </div>
   <div class="bmi-goal-strip" id="bmiGoalStrip"></div>
 
-  <!-- Exercise Detail Bottom Sheet -->
-  <div id="exSheet" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:160;align-items:flex-end;justify-content:center" onclick="if(event.target===this)closeExSheet()">
-   <div style="background:var(--card);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:0;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;animation:slideUp .3s ease">
-    <div style="position:sticky;top:0;background:var(--card);padding:16px 20px 12px;border-bottom:1px solid var(--border);z-index:1">
-     <div style="width:36px;height:4px;background:var(--border);border-radius:99px;margin:0 auto 14px"></div>
-     <div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div>
-       <div id="exSheetName" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);letter-spacing:1px"></div>
-       <div id="exSheetMeta" style="font-size:11px;color:var(--muted);margin-top:2px"></div>
-      </div>
-      <button onclick="closeExSheet()" style="background:var(--surface);border:1px solid var(--border);border-radius:50%;width:28px;height:28px;color:var(--muted);font-size:16px;cursor:pointer;flex-shrink:0">×</button>
-     </div>
-    </div>
-    <div style="padding:16px 20px">
-     <div id="exSheetGif" style="background:var(--surface);border-radius:12px;overflow:hidden;margin-bottom:14px;min-height:200px;display:flex;align-items:center;justify-content:center">
-      <div style="color:var(--muted);font-size:12px">Loading demo…</div>
-     </div>
-     <div id="exSheetContent"></div>
-    </div>
-   </div>
-  </div>
 
-  <!-- Goal Roadmap Bottom Sheet -->
-  <div id="goalSheet" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:150;align-items:flex-end;justify-content:center" onclick="if(event.target===this)closeGoalSheet()">
-   <div style="background:var(--card);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 24px 32px;max-width:600px;width:100%;max-height:88vh;overflow-y:auto;animation:slideUp .3s ease">
-    <div style="width:36px;height:4px;background:var(--border);border-radius:99px;margin:0 auto 20px"></div>
-    <div id="goalSheetContent"></div>
-   </div>
-  </div>
   <div class="bmr-strip" id="bmrStrip"></div>
   <div class="macro-grid" id="macroGrid"></div>
   <div class="day-sel" id="daySel"></div>
@@ -3360,5 +3332,34 @@ function renderTip(tips){
   document.querySelectorAll('.tdot').forEach((d,i)=>d.classList.toggle('active',i===activeTip));
 }
 </script>
+
+<!-- Exercise Detail Bottom Sheet -->
+<div id="exSheet" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:flex-end;justify-content:center" onclick="if(event.target===this)closeExSheet()">
+ <div style="background:var(--card);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:0;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;animation:slideUp .3s ease">
+  <div style="position:sticky;top:0;background:var(--card);padding:16px 20px 12px;border-bottom:1px solid var(--border);z-index:1">
+   <div style="width:36px;height:4px;background:var(--border);border-radius:99px;margin:0 auto 14px"></div>
+   <div style="display:flex;justify-content:space-between;align-items:flex-start">
+    <div>
+     <div id="exSheetName" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);letter-spacing:1px"></div>
+     <div id="exSheetMeta" style="font-size:11px;color:var(--muted);margin-top:2px"></div>
+    </div>
+    <button onclick="closeExSheet()" style="background:var(--surface);border:1px solid var(--border);border-radius:50%;width:28px;height:28px;color:var(--muted);font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;line-height:1">×</button>
+   </div>
+  </div>
+  <div style="padding:16px 20px">
+   <div id="exSheetGif" style="background:var(--surface);border-radius:12px;overflow:hidden;margin-bottom:14px;min-height:200px;display:flex;align-items:center;justify-content:center">
+    <div style="color:var(--muted);font-size:12px">Loading demo…</div>
+   </div>
+   <div id="exSheetContent"></div>
+  </div>
+ </div>
+</div>
+<!-- Goal Roadmap Bottom Sheet -->
+<div id="goalSheet" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9998;align-items:flex-end;justify-content:center" onclick="if(event.target===this)closeGoalSheet()">
+ <div style="background:var(--card);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 24px 32px;max-width:600px;width:100%;max-height:88vh;overflow-y:auto;animation:slideUp .3s ease">
+  <div style="width:36px;height:4px;background:var(--border);border-radius:99px;margin:0 auto 20px"></div>
+  <div id="goalSheetContent"></div>
+ </div>
+</div>
 </body>
 </html>
