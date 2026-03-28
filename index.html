@@ -1168,16 +1168,20 @@ function openGoalSheet(plan){
     sub=`${lvlLabel[lvl]} · ${lean.lo}–${lean.hi}kg lean muscle/month · ${surplus} kcal surplus · ${gained>0?'+'+gained+'kg so far':'Day 1'}`;
 
     // Scale weight = lean + water stored with glycogen (~1.3x) + minimal fat
-    const s1lo=(1.5+lean.lo*1.3).toFixed(1), s1hi=(2.5+lean.hi*1.3).toFixed(1);
-    const s3lo=(lean.lo*3*1.3).toFixed(1), s3hi=(lean.hi*3*1.3).toFixed(1);
-    const s6lo=(lean.lo*6*1.2).toFixed(1), s6hi=(lean.hi*6*1.2).toFixed(1);
-    const s12lo=(lean.lo*10).toFixed(1), s12hi=(lean.hi*10).toFixed(1);
+    // All scale numbers are CUMULATIVE total above starting weight
+    // = one-time week1 water/glycogen spike + ongoing lean muscle*1.2 (accounts for glycogen water in muscle)
+    // This ensures numbers always increase month over month
+    const wk1lo=1.5, wk1hi=2.5; // week 1 water+glycogen spike (one-time)
+    const s1lo=(wk1lo+lean.lo*1.2).toFixed(1), s1hi=(wk1hi+lean.hi*1.2).toFixed(1);
+    const s3lo=(wk1lo+lean.lo*3*1.2).toFixed(1), s3hi=(wk1hi+lean.hi*3*1.2).toFixed(1);
+    const s6lo=(wk1lo+lean.lo*6*1.1).toFixed(1), s6hi=(wk1hi+lean.hi*6*1.1).toFixed(1);
+    const s12lo=(wk1lo+lean.lo*10*1.1).toFixed(1), s12hi=(wk1hi+lean.hi*10*1.1).toFixed(1);
 
     milestones=[
-      {icon:'👀',status:gained>=(lean.lo*1.3)?'done':'next',label:`Month 1 — scale: +${s1lo}–${s1hi}kg`,time:`~4 weeks`,desc:`Scale jumps ${lvl==='beginner'?'1.5–2.5':'1–2'}kg in week 1 from water and glycogen filling your muscles (totally normal, not fat). Then ${lean.lo}–${lean.hi}kg of actual lean muscle per month on top. Strength increases noticeably from neural adaptations.`},
-      {icon:'💪',status:gained>=(lean.lo*3*1.3)?'done':gained>=(lean.lo*1.3)?'next':'future',label:`3 Months — scale: +${s3lo}–${s3hi}kg`,time:`~12 weeks`,desc:`${+(lean.lo*3).toFixed(1)}–${+(lean.hi*3).toFixed(1)}kg of lean muscle built. Shoulders broader, arms thicker, chest fuller. People who haven't seen you in 3 months will notice immediately. You look like someone who trains.`},
-      {icon:'🔥',status:gained>=(lean.lo*6*1.2)?'done':gained>=(lean.lo*3*1.3)?'next':'future',label:`6 Months — scale: +${s6lo}–${s6hi}kg`,time:`~26 weeks`,desc:`${+(lean.lo*6).toFixed(1)}–${+(lean.hi*6).toFixed(1)}kg of lean muscle total. Significant physique transformation. New personal bests on all major lifts. Clothes fit completely differently. This is where most people realize the investment was worth it.`},
-      {icon:'🏆',status:gained>=(lean.lo*10)?'done':gained>=(lean.lo*6*1.2)?'next':'future',label:`1 Year — scale: +${s12lo}–${s12hi}kg`,time:`~52 weeks`,desc:`${+(lean.lo*10).toFixed(1)}–${+(lean.hi*10).toFixed(1)}kg of lean muscle in one year. This puts you in the top 10% of natural lifters. The transformation is dramatic and, most importantly, permanent. You've changed your baseline forever.`},
+      {icon:'👀',status:gained>=+s1lo?'done':'next',label:`Month 1 — scale: +${s1lo}–${s1hi}kg`,time:`~4 weeks`,desc:`Your scale jumps ${lvl==='beginner'?'1.5–2.5':'1–2'}kg in week 1 from water & glycogen filling your muscles — totally normal, not fat. Then ${lean.lo}–${lean.hi}kg of actual lean muscle every month. Strength increases noticeably from neural adaptations.`},
+      {icon:'💪',status:gained>=+s3lo?'done':gained>=+s1lo?'next':'future',label:`3 Months — scale: +${s3lo}–${s3hi}kg`,time:`~12 weeks`,desc:`${+(lean.lo*3).toFixed(1)}–${+(lean.hi*3).toFixed(1)}kg of lean muscle built. Shoulders broader, arms thicker, chest fuller. People who haven't seen you in 3 months will notice immediately. You look like someone who trains.`},
+      {icon:'🔥',status:gained>=+s6lo?'done':gained>=+s3lo?'next':'future',label:`6 Months — scale: +${s6lo}–${s6hi}kg`,time:`~26 weeks`,desc:`${+(lean.lo*6).toFixed(1)}–${+(lean.hi*6).toFixed(1)}kg of lean muscle total. Significant physique transformation. New personal bests on all major lifts. Clothes fit completely differently. This is the point people say "what happened to you?"`,},
+      {icon:'🏆',status:gained>=+s12lo?'done':gained>=+s6lo?'next':'future',label:`1 Year — scale: +${s12lo}–${s12hi}kg`,time:`~52 weeks`,desc:`${+(lean.lo*10).toFixed(1)}–${+(lean.hi*10).toFixed(1)}kg of lean muscle in one year. Top 10% of natural lifters. Dramatic, permanent transformation. You've changed your body's baseline forever.`},
     ];
     science=`📊 <b>Why the scale moves more than "1kg/month":</b> Pure lean muscle grows at ${lean.lo}–${lean.hi}kg/month. But every gram of glycogen stored in muscle pulls ~3g of water with it. So your scale shows more. Week 1 alone: +1.5–2.5kg from glycogen/water (not fat — this is your muscles filling up). This is why the mirror matters more than the scale for tracking progress.`;
   }
