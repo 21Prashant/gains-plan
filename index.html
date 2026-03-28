@@ -1010,70 +1010,106 @@ function closeModal(){ document.getElementById('mealModal').style.display='none'
 
 // ── BMI GOAL STRIP ──
 function buildBmiStrip(plan){
-  const{bwKg,hCm,goal,gender}=plan.prof, nut=plan.nut;
+  const{bwKg,hCm,goal}=plan.prof, nut=plan.nut;
   const bmi=+(bwKg/((hCm/100)**2)).toFixed(1);
-  const ibw=22*((hCm/100)**2); // healthy BMI 22 target weight
-  const goalBW=Math.round(ibw+2); // target ~BMI 24
   const el=document.getElementById('bmiGoalStrip');
+  const deficit=nut.tdee-nut.kcal;
+  const latestWeight=weightLog.length>0?weightLog[weightLog.length-1].weight:bwKg;
 
-  let msg, fill, leftTick, rightTick, highlight;
+  let msg, fill, leftTick, midContent, rightTick, highlight;
 
   if(goal==='Fat Loss'){
-    const totalToLose=Math.max(bwKg-goalBW, 0);
-    const deficit=nut.tdee-nut.kcal;
-    const weeks=deficit>0&&totalToLose>0?Math.round(totalToLose*7700/deficit/7):null;
+    // Show milestone-based progress — 5% then 10% body weight
+    // Science: just 5% loss improves insulin sensitivity, BP, cholesterol
+    const m1=+(bwKg*0.95).toFixed(1); // 5% milestone
+    const m2=+(bwKg*0.90).toFixed(1); // 10% milestone
+    const lost=Math.max(+(bwKg-latestWeight).toFixed(1),0);
+    const pctLost=+((lost/bwKg)*100).toFixed(1);
 
-    // Actual progress — use latest weight log entry if available
-    const latestWeight=weightLog.length>0?weightLog[weightLog.length-1].weight:bwKg;
-    const lost=Math.max(bwKg-latestWeight, 0); // kg lost since start
-    // Progress % = how much of the journey has been completed
-    const pct=totalToLose>0?Math.min((lost/totalToLose)*100,100):0;
+    if(lost===0){
+      // Not started — show 5% as first target
+      const toM1=+(bwKg*0.05).toFixed(1);
+      const wks=deficit>0?Math.ceil(toM1*7700/deficit/7):null;
+      msg=`🎯 First goal: lose <b>${toM1}kg</b> — that's just 5% of your weight`;
+      highlight=wks
+        ? `At your ${deficit} kcal/day deficit → <b>~${wks} weeks</b> to first milestone · 5% loss clinically improves energy, BP and blood sugar`
+        : `Set your calorie deficit to see your timeline`;
+      fill=2; leftTick=`${Math.round(bwKg)}kg`; midContent=`5% = ${m1}kg`; rightTick=`${m1}kg 🏁`;
 
-    msg=`<b>${Math.round(bwKg)}kg → ${goalBW}kg</b> · ${totalToLose.toFixed(1)}kg to lose · BMI ${bmi}`;
-    highlight=lost>0
-      ? `Lost <b>${lost.toFixed(1)}kg</b> so far${weeks?` · ~<b>${Math.round(weeks*(1-pct/100))} weeks</b> remaining at current pace`:''}`
-      : weeks
-        ? `At your ${deficit} kcal/day deficit → ~<b>${weeks} weeks</b> to reach ${goalBW}kg`
-        : `Start logging your weight to track progress`;
+    } else if(lost < bwKg*0.05){
+      // Tracking toward 5%
+      const toM1=Math.max(+(latestWeight-m1).toFixed(1),0);
+      const wks=deficit>0?Math.ceil(toM1*7700/deficit/7):null;
+      const pct=Math.min((lost/(bwKg*0.05))*100,100);
+      msg=`💪 Lost <b>${lost}kg</b> (${pctLost}%) · You're making real progress!`;
+      highlight=toM1>0&&wks
+        ? `<b>${toM1}kg more</b> to 5% milestone (${m1}kg) · ~${wks} week${wks>1?'s':''} away`
+        : `🎉 5% milestone reached! Your health is already improving.`;
+      fill=pct; leftTick=`${Math.round(bwKg)}kg`; midContent=`−${lost}kg so far`; rightTick=`${m1}kg 🏁`;
 
-    fill=pct;
-    leftTick=`${Math.round(bwKg)}kg (start)`;
-    rightTick=`${goalBW}kg (goal)`;
+    } else if(lost < bwKg*0.10){
+      // 5% done, tracking toward 10%
+      const toM2=Math.max(+(latestWeight-m2).toFixed(1),0);
+      const wks=deficit>0?Math.ceil(toM2*7700/deficit/7):null;
+      const pct=50+Math.min(((lost-bwKg*0.05)/(bwKg*0.05))*100,100)/2;
+      msg=`🔥 5% milestone crushed! Now targeting <b>10% (${m2}kg)</b>`;
+      highlight=toM2>0&&wks
+        ? `<b>${toM2}kg more</b> to 10% milestone · ~${wks} week${wks>1?'s':''} away · At 10% loss, energy and confidence transform`
+        : `🏆 10% milestone achieved! Major body transformation complete.`;
+      fill=pct; leftTick=`${m1}kg ✅`; midContent=`−${lost}kg total`; rightTick=`${m2}kg 🏁`;
+
+    } else {
+      // Past 10% — celebrate and show total progress
+      msg=`🏆 <b>${pctLost}% lost</b> · ${lost}kg down · Absolutely incredible!`;
+      highlight=`You've passed the 10% milestone. Keep going — every kg from here compounds your health gains.`;
+      fill=100; leftTick=`${Math.round(bwKg)}kg`; midContent=`−${lost}kg 🎉`; rightTick=`${m2}kg ✅`;
+    }
 
   } else if(goal==='Muscle Gain'||goal==='Lean Bulk'){
-    const gainGoal=5;
-    const weeksEst=goal==='Lean Bulk'?Math.round(gainGoal/0.2):Math.round(gainGoal/0.25);
-    const latestWeight=weightLog.length>0?weightLog[weightLog.length-1].weight:bwKg;
-    const gained=Math.max(latestWeight-bwKg, 0);
-    const pct=Math.min((gained/gainGoal)*100, 100);
+    const m1=+(bwKg+2).toFixed(1); // 2kg first milestone
+    const m2=+(bwKg+5).toFixed(1); // 5kg second milestone
+    const gained=Math.max(+(latestWeight-bwKg).toFixed(1),0);
+    const surplus=nut.kcal-nut.tdee;
+    const rate=goal==='Lean Bulk'?0.2:0.25;
+    const wksTo2=Math.ceil(2/rate);
 
-    msg=`<b>${Math.round(bwKg)}kg → ${Math.round(bwKg+gainGoal)}kg</b> · +${gainGoal}kg lean muscle target`;
-    highlight=gained>0
-      ? `Gained <b>${gained.toFixed(1)}kg</b> so far · ~<b>${Math.max(0,Math.round(weeksEst*(1-pct/100)))} weeks</b> remaining`
-      : `At current surplus → ~<b>${weeksEst} weeks</b> to add ${gainGoal}kg lean mass`;
+    if(gained===0){
+      msg=`🎯 First goal: gain <b>2kg</b> of lean muscle`;
+      highlight=`At ${surplus} kcal surplus → <b>~${wksTo2} weeks</b> to first visible gains · Hit your protein target every day`;
+      fill=2; leftTick=`${Math.round(bwKg)}kg`; midContent=`+2kg = ${m1}kg`; rightTick=`${m1}kg 🏁`;
 
-    fill=pct;
-    leftTick=`${Math.round(bwKg)}kg (start)`;
-    rightTick=`${Math.round(bwKg+gainGoal)}kg (goal)`;
+    } else if(gained<2){
+      const pct=Math.min((gained/2)*100,100);
+      msg=`💪 Gained <b>${gained}kg</b> so far · Muscles growing!`;
+      highlight=`<b>${+(2-gained).toFixed(1)}kg more</b> to first milestone · Keep training hard and hitting protein every day`;
+      fill=pct; leftTick=`${Math.round(bwKg)}kg`; midContent=`+${gained}kg gained`; rightTick=`${m1}kg 🏁`;
 
+    } else if(gained<5){
+      const pct=50+Math.min(((gained-2)/3)*100,100)/2;
+      msg=`🔥 2kg milestone done! Now targeting <b>+5kg total</b>`;
+      highlight=`<b>${+(5-gained).toFixed(1)}kg more</b> to +5kg milestone · Physique changes are becoming very visible now`;
+      fill=pct; leftTick=`${m1}kg ✅`; midContent=`+${gained}kg total`; rightTick=`${m2}kg 🏁`;
+
+    } else {
+      msg=`🏆 <b>+${gained}kg gained</b> · Absolute unit energy 💪`;
+      highlight=`You've built ${gained}kg of lean mass. Serious transformation achieved.`;
+      fill=100; leftTick=`${Math.round(bwKg)}kg`; midContent=`+${gained}kg 🎉`; rightTick=`${m2}kg ✅`;
+    }
   } else {
     el.style.display='none'; return;
   }
 
   el.style.display='block';
   el.innerHTML=`
-    <div class="bgs-row" style="margin-bottom:6px">
-      <div class="bgs-label">${msg}</div>
-    </div>
-    <div style="display:flex;justify-content:space-between;font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--muted);margin-bottom:4px">
+    <div style="margin-bottom:8px"><div class="bgs-label">${msg}</div></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;font-size:9px;font-family:'JetBrains Mono',monospace;margin-bottom:5px">
       <span style="color:var(--text);font-weight:600">${leftTick}</span>
-      <span>${fill.toFixed(0)}% complete</span>
+      <span style="color:var(--accent)">${midContent}</span>
       <span style="color:var(--accent);font-weight:600">${rightTick}</span>
     </div>
-    <div class="bgs-track"><div class="bgs-fill" style="width:${Math.max(fill,2)}%"></div></div>
-    <div style="font-size:10px;color:var(--muted);margin-top:6px">${highlight}</div>`;
+    <div class="bgs-track"><div class="bgs-fill" style="width:${Math.min(Math.max(fill,2),100)}%"></div></div>
+    <div style="font-size:10px;color:var(--muted);margin-top:7px;line-height:1.5">${highlight}</div>`;
 }
-
 // ── STREAK LOGIC ──
 let streakData={streak:0,lastDate:null,completedDays:{}};
 let gymLog={}; // { "Mon Mar 25 2024": [{type,duration,time}] }
