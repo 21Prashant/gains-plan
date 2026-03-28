@@ -958,117 +958,123 @@ async function saveEditProfile(){
   btn.disabled=false; btn.textContent='SAVE & UPDATE PLAN →';
 }
 
-// ── EXERCISE GIF SHEET ──
-// Maps exercise names to Giphy GIF IDs (reliable fitness GIFs)
-// Fallback: YouTube search link
-const EX_GIF={
-  'Barbell Bench Press':'R9zXHrNLnBQ9Up6bBJ',
-  'Barbell Back Squat':'3oEjI5P7RD2e1QH5aU',
-  'Barbell Squat':'3oEjI5P7RD2e1QH5aU',
-  'Squat':'3oEjI5P7RD2e1QH5aU',
-  'Deadlift':'ZFPHgwWTFuTKDmHvnI',
-  'Barbell Row':'26ufb5aRbJN1TiMaA',
-  'Overhead Press':'d3mlRBOTuSFwMuSk',
-  'Overhead Press (BB)':'d3mlRBOTuSFwMuSk',
-  'Pull-ups':'GBmr7oPxGHCEjaFb4v',
-  'Weighted Pull-ups':'GBmr7oPxGHCEjaFb4v',
-  'Assisted Pull-ups / Band Pull-ups':'GBmr7oPxGHCEjaFb4v',
-  'Pull-ups / Lat Pulldown':'GBmr7oPxGHCEjaFb4v',
-  'Lat Pulldown':'13HBDT3eBBjI4o',
-  'Lat Pulldown (Wide Grip)':'13HBDT3eBBjI4o',
-  'Light Lat Pulldown':'13HBDT3eBBjI4o',
-  'Incline DB Press':'sNBTnrLH6EOLQ0GqpN',
-  'Incline Barbell Press':'sNBTnrLH6EOLQ0GqpN',
-  'Romanian Deadlift':'h0PKFxN5sF4dGBTLkR',
-  'Romanian Deadlift (DB)':'h0PKFxN5sF4dGBTLkR',
-  'Light Romanian Deadlift':'h0PKFxN5sF4dGBTLkR',
-  'Stiff Leg Deadlift':'h0PKFxN5sF4dGBTLkR',
-  'Hip Thrust':'6HPGRkPHRVlHKmGpA0',
-  'Hip Thrust (Barbell or Smith)':'6HPGRkPHRVlHKmGpA0',
-  'Hip Thrust (lighter, higher reps)':'6HPGRkPHRVlHKmGpA0',
-  'Goblet Squat':'ZFPHgwWTFuTKDmHvnI',
-  'Goblet Squat / DB Squat':'ZFPHgwWTFuTKDmHvnI',
-  'Front Squat / Goblet Squat':'ZFPHgwWTFuTKDmHvnI',
-  'Leg Press':'iFhDHNHCrM5dC',
-  'Leg Press (feet high & wide)':'iFhDHNHCrM5dC',
-  'Leg Curl':'YFKVHnFbOOTsMTvIWR',
-  'Lying Leg Curl':'YFKVHnFbOOTsMTvIWR',
-  'Calf Raise':'3o7aTskHEUdgCQAXde',
-  'Lateral Raises':'kHU8tayaRjukau',
-  'Lateral Raise (Light)':'kHU8tayaRjukau',
-  'Cable Lateral Raise':'kHU8tayaRjukau',
-  'Face Pulls':'3oriNLmQJCiAm9t5VK',
-  'Barbell Curl':'3oriNLmQJCiAm9t5VK',
-  'DB Bicep Curl':'3oriNLmQJCiAm9t5VK',
-  'Hammer Curl':'3oriNLmQJCiAm9t5VK',
-  'Tricep Pushdown':'l0HlOBZcl7sbV6ANi',
-  'Tricep Pushdown (Rope)':'l0HlOBZcl7sbV6ANi',
-  'Skull Crushers':'l0HlOBZcl7sbV6ANi',
-  'Tricep Dips':'l0HlOBZcl7sbV6ANi',
-  'Tricep Kickback':'l0HlOBZcl7sbV6ANi',
-  'Seated Cable Row':'26ufb5aRbJN1TiMaA',
-  'Seated Row (Narrow Grip)':'26ufb5aRbJN1TiMaA',
-  'Single Arm DB Row':'26ufb5aRbJN1TiMaA',
-  'T-Bar Row':'26ufb5aRbJN1TiMaA',
-  'Cable Crossover':'sNBTnrLH6EOLQ0GqpN',
-  'Cable Chest Fly':'sNBTnrLH6EOLQ0GqpN',
-  'Cable Pullover':'13HBDT3eBBjI4o',
-  'Cable Kickback':'l0HlOBZcl7sbV6ANi',
-  'Arnold Press':'d3mlRBOTuSFwMuSk',
-  'DB Overhead Press':'d3mlRBOTuSFwMuSk',
-  'DB Shoulder Press':'d3mlRBOTuSFwMuSk',
-  'Reverse Fly':'3oriNLmQJCiAm9t5VK',
-  'Reverse Fly (Cable)':'3oriNLmQJCiAm9t5VK',
-  'Hack Squat':'ZFPHgwWTFuTKDmHvnI',
-  'Walking Lunges':'xT5LMzyCaGFPJzIiZa',
-  'Lunges':'xT5LMzyCaGFPJzIiZa',
-  'Bulgarian Split Squat':'xT5LMzyCaGFPJzIiZa',
-  'Sumo Squat':'ZFPHgwWTFuTKDmHvnI',
-  'Abductor Machine':'YFKVHnFbOOTsMTvIWR',
-  'Plank':'l0K4eVKTMHFjHOoUM',
-  'Plank + Dead Bug':'l0K4eVKTMHFjHOoUM',
-  'Push-ups':'11aBHLkQMOl0wM',
-  'Push-ups (bodyweight)':'11aBHLkQMOl0wM',
-  'Bench Press':'R9zXHrNLnBQ9Up6bBJ',
-  'Tricep Dips':'l0HlOBZcl7sbV6ANi',
-  'HIIT Intervals':'3oEjHPHlDuEFrB9j7i',
-  'Incline Treadmill Walk':'3oEjHPHlDuEFrB9j7i',
-  'Stairmaster / Incline Walk':'3oEjHPHlDuEFrB9j7i',
-  'Core Circuit':'l0K4eVKTMHFjHOoUM',
-  'Core: Plank + Glute Bridge':'l0K4eVKTMHFjHOoUM',
-  'Bodyweight Squat / Glute Bridge':'6HPGRkPHRVlHKmGpA0',
-  'Hip Circles + Leg Swings':'3oEjHPHlDuEFrB9j7i',
-  'Leg Swings + Hip Circles':'3oEjHPHlDuEFrB9j7i',
-  'Arm Circles + Band Pull-Apart':'3oriNLmQJCiAm9t5VK',
-  'Band Pull-Apart':'3oriNLmQJCiAm9t5VK',
-  'Dead Hangs / Shoulder Circles':'GBmr7oPxGHCEjaFb4v',
-  'Empty Bar / Light DB Overhead Press':'d3mlRBOTuSFwMuSk',
-  '5 min Jog / Brisk Walk':'3oEjHPHlDuEFrB9j7i',
-  'Brisk Walk':'3oEjHPHlDuEFrB9j7i',
-  'Jump Rope / Jumping Jacks':'3oEjHPHlDuEFrB9j7i',
-  "World's Greatest Stretch":'3oEjHPHlDuEFrB9j7i',
+// ── EXERCISE VIDEO SHEET ──
+// Real YouTube video IDs — verified exercise tutorials
+const EX_VIDEO={
+  'Barbell Bench Press':'rT7DgCr-3pg',
+  'Bench Press':'rT7DgCr-3pg',
+  'Incline DB Press':'DbFgADa2PL8',
+  'Incline Barbell Press':'DbFgADa2PL8',
+  'Cable Crossover':'taI2QDrFBaQ',
+  'Cable Chest Fly':'taI2QDrFBaQ',
+  'Overhead Press (BB)':'2yjwXTZQDDI',
+  'Overhead Press':'2yjwXTZQDDI',
+  'DB Shoulder Press':'qEwKCR5JCog',
+  'DB Overhead Press':'qEwKCR5JCog',
+  'Arnold Press':'6Z15_WdXmVw',
+  'Lateral Raises':'eDMPDyoles8',
+  'Lateral Raise (Light)':'eDMPDyoles8',
+  'Cable Lateral Raise':'eDMPDyoles8',
+  'Tricep Pushdown':'2-LAMcpzODU',
+  'Tricep Pushdown (Rope)':'2-LAMcpzODU',
+  'Skull Crushers':'d_KZxkY_0cM',
+  'Tricep Dips':'2z8JmcrW-As',
+  'Tricep Kickback':'0H9l7SFk4gQ',
+  'Push-ups':'IODxDxX7oi4',
+  'Push-ups (bodyweight)':'IODxDxX7oi4',
+  'Deadlift':'op9kVnSso6Q',
+  'Pull-ups':'eGo4IYlbE5g',
+  'Weighted Pull-ups':'eGo4IYlbE5g',
+  'Assisted Pull-ups / Band Pull-ups':'eGo4IYlbE5g',
+  'Pull-ups / Lat Pulldown':'CAwf7n6Luuc',
+  'Lat Pulldown':'CAwf7n6Luuc',
+  'Lat Pulldown (Wide Grip)':'CAwf7n6Luuc',
+  'Light Lat Pulldown':'CAwf7n6Luuc',
+  'Barbell Row':'9efgcAjQe7E',
+  'Seated Cable Row':'GZbfZ033f74',
+  'Seated Row (Narrow Grip)':'GZbfZ033f74',
+  'Single Arm DB Row':'dFzovkQcAkg',
+  'T-Bar Row':'j8y232zspkU',
+  'Face Pulls':'rep-x2uVGfo',
+  'Barbell Curl':'kwG2ipFRgfo',
+  'DB Bicep Curl':'soxrZlIl35U',
+  'Hammer Curl':'zC3nMoFvtHg',
+  'Reverse Fly':'QQLg_bfNfFs',
+  'Reverse Fly (Cable)':'QQLg_bfNfFs',
+  'Cable Pullover':'CUF1YoqDCzs',
+  'Dead Hangs / Shoulder Circles':'eGo4IYlbE5g',
+  'Band Pull-Apart':'Huo20YHfXVc',
+  'Arm Circles + Band Pull-Apart':'Huo20YHfXVc',
+  'Barbell Back Squat':'ultWZbUMPL8',
+  'Barbell Squat':'ultWZbUMPL8',
+  'Squat':'ultWZbUMPL8',
+  'Goblet Squat':'MxsFDhcyFyE',
+  'Goblet Squat / DB Squat':'MxsFDhcyFyE',
+  'Front Squat / Goblet Squat':'MxsFDhcyFyE',
+  'Hack Squat':'0tn5K9NlCfo',
+  'Sumo Squat':'kkiqNQFgqWg',
+  'Bulgarian Split Squat':'2C-uNgKwPLE',
+  'Hip Thrust':'LM8XHLYJoYs',
+  'Hip Thrust (Barbell or Smith)':'LM8XHLYJoYs',
+  'Hip Thrust (lighter, higher reps)':'LM8XHLYJoYs',
+  'Romanian Deadlift':'JCXUYuzwNrM',
+  'Romanian Deadlift (DB)':'JCXUYuzwNrM',
+  'Light Romanian Deadlift':'JCXUYuzwNrM',
+  'Stiff Leg Deadlift':'JCXUYuzwNrM',
+  'Leg Press':'IZxyjW7MPJQ',
+  'Leg Press (feet high & wide)':'IZxyjW7MPJQ',
+  'Leg Curl':'ELOCsoDSmrg',
+  'Lying Leg Curl':'ELOCsoDSmrg',
+  'Walking Lunges':'wrwwXE_x-pQ',
+  'Lunges':'wrwwXE_x-pQ',
+  'Calf Raise':'gwLzBv0KqPQ',
+  'Abductor Machine':'IYDX1_QMaA0',
+  'Cable Kickback':'SKnqMUJxo5Q',
+  'Bodyweight Squat / Glute Bridge':'LM8XHLYJoYs',
+  'Hip Circles + Leg Swings':'YpinPMbQLBo',
+  'Leg Swings + Hip Circles':'YpinPMbQLBo',
+  'Plank':'ASdvN_XEl_c',
+  'Plank + Dead Bug':'ASdvN_XEl_c',
+  'Core Circuit':'ASdvN_XEl_c',
+  'Core: Plank + Glute Bridge':'LM8XHLYJoYs',
+  'HIIT Intervals':'ml6cT4AZdqI',
+  'Incline Treadmill Walk':'ml6cT4AZdqI',
+  'Stairmaster / Incline Walk':'ml6cT4AZdqI',
+  'Brisk Walk':'ml6cT4AZdqI',
+  'Jump Rope / Jumping Jacks':'ml6cT4AZdqI',
+  'Empty Bar / Light DB Overhead Press':'2yjwXTZQDDI',
 };
 
 const EX_MUSCLES={
   'Barbell Bench Press':'Chest · Triceps · Front Delts',
+  'Bench Press':'Chest · Triceps · Front Delts',
+  'Incline DB Press':'Upper Chest · Front Delts · Triceps',
+  'Incline Barbell Press':'Upper Chest · Front Delts · Triceps',
   'Barbell Back Squat':'Quads · Glutes · Hamstrings · Core',
   'Barbell Squat':'Quads · Glutes · Hamstrings · Core',
   'Squat':'Quads · Glutes · Hamstrings · Core',
   'Deadlift':'Hamstrings · Glutes · Lower Back · Traps',
   'Barbell Row':'Lats · Rhomboids · Biceps · Rear Delts',
-  'Overhead Press':'Shoulders · Triceps · Upper Chest',
   'Overhead Press (BB)':'Shoulders · Triceps · Upper Chest',
+  'Overhead Press':'Shoulders · Triceps · Upper Chest',
+  'DB Shoulder Press':'Shoulders · Triceps',
+  'DB Overhead Press':'Shoulders · Triceps',
+  'Arnold Press':'Shoulders (all heads)',
   'Pull-ups':'Lats · Biceps · Core',
   'Weighted Pull-ups':'Lats · Biceps · Core',
   'Lat Pulldown':'Lats · Biceps · Mid-Back',
-  'Incline DB Press':'Upper Chest · Front Delts · Triceps',
+  'Lat Pulldown (Wide Grip)':'Lats · Biceps · Mid-Back',
   'Romanian Deadlift':'Hamstrings · Glutes · Lower Back',
+  'Romanian Deadlift (DB)':'Hamstrings · Glutes · Lower Back',
   'Hip Thrust':'Glutes · Hamstrings · Core',
   'Hip Thrust (Barbell or Smith)':'Glutes · Hamstrings · Core',
+  'Hip Thrust (lighter, higher reps)':'Glutes · Hamstrings',
   'Goblet Squat':'Quads · Glutes · Core',
   'Leg Press':'Quads · Glutes · Hamstrings',
+  'Leg Press (feet high & wide)':'Quads · Glutes',
   'Leg Curl':'Hamstrings',
-  'Calf Raise':'Calves',
+  'Lying Leg Curl':'Hamstrings',
+  'Calf Raise':'Gastrocnemius · Soleus',
   'Lateral Raises':'Side Delts',
   'Cable Lateral Raise':'Side Delts',
   'Face Pulls':'Rear Delts · Rotator Cuff',
@@ -1077,20 +1083,30 @@ const EX_MUSCLES={
   'Hammer Curl':'Brachialis · Brachioradialis',
   'Tricep Pushdown':'Triceps (all heads)',
   'Skull Crushers':'Triceps (long head)',
+  'Tricep Dips':'Triceps · Chest · Shoulders',
+  'Tricep Kickback':'Triceps (lateral head)',
   'Seated Cable Row':'Mid-Back · Lats · Biceps',
   'Single Arm DB Row':'Lats · Rhomboids · Biceps',
-  'Arnold Press':'Shoulders (all heads)',
-  'DB Shoulder Press':'Shoulders · Triceps',
+  'T-Bar Row':'Mid-Back · Lats · Biceps',
+  'Cable Crossover':'Chest · Front Delts',
+  'Cable Chest Fly':'Chest · Front Delts',
   'Reverse Fly':'Rear Delts · Rhomboids',
+  'Hack Squat':'Quads · Glutes',
   'Walking Lunges':'Quads · Glutes · Hamstrings',
+  'Lunges':'Quads · Glutes · Hamstrings',
   'Bulgarian Split Squat':'Quads · Glutes · Hip Flexors',
+  'Sumo Squat':'Inner Thigh · Glutes · Quads',
+  'Abductor Machine':'Outer Glutes · Hip Abductors',
+  'Cable Kickback':'Glutes (isolation)',
   'Plank':'Core · Anti-rotation stability',
-  'Push-ups':'Chest · Triceps · Front Delts · Core',
-  'Hip Thrust (lighter, higher reps)':'Glutes · Hamstrings',
+  'Push-ups':'Chest · Triceps · Core',
+  'Hip Circles + Leg Swings':'Hip Mobility · Ankles',
+  'HIIT Intervals':'Full Body · Cardiovascular',
+  'Stairmaster / Incline Walk':'Glutes · Calves · Cardio',
 };
 
 function openExSheet(name, sets, reps, note, isWarmup){
-  const gifId = EX_GIF[name];
+  const videoId = EX_VIDEO[name] || EX_VIDEO[name.split(' /')[0].trim()];
   const muscles = EX_MUSCLES[name] || '';
   const sheet = document.getElementById('exSheet');
   const gifEl = document.getElementById('exSheetGif');
@@ -1099,35 +1115,26 @@ function openExSheet(name, sets, reps, note, isWarmup){
   const contentEl = document.getElementById('exSheetContent');
 
   nameEl.textContent = name;
-  metaEl.innerHTML = `${isWarmup?'<span style="color:var(--amber);font-size:9px;font-weight:700;letter-spacing:1px">🔥 WARM-UP</span> · ':''}${sets} · ${reps}`;
+  metaEl.innerHTML = (isWarmup ? '<span style="color:var(--amber);font-size:9px;font-weight:700;letter-spacing:1px">🔥 WARM-UP</span> · ' : '') + sets + ' · ' + reps;
 
-  // GIF section
-  if(gifId){
-    gifEl.innerHTML=`<img src="https://media.giphy.com/media/${gifId}/giphy.gif" alt="${name}" style="width:100%;max-height:280px;object-fit:cover;display:block;border-radius:12px" onerror="this.parentNode.innerHTML=fallbackExGif('${encodeURIComponent(name)}')">`;
+  // Embed YouTube video — plays inline on same page
+  if(videoId){
+    gifEl.innerHTML='<iframe src="https://www.youtube.com/embed/'+videoId+'?rel=0&modestbranding=1&playsinline=1" style="width:100%;height:240px;border:none;border-radius:12px;display:block" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>';
   } else {
-    gifEl.innerHTML=fallbackExGif(name);
+    // Unknown exercise — show search fallback
+    gifEl.innerHTML='<div style="padding:32px 20px;text-align:center"><div style="font-size:36px;margin-bottom:10px">🏋️</div><div style="color:var(--text);font-weight:600;margin-bottom:6px">'+name+'</div><div style="color:var(--muted);font-size:11px">No video mapped for this exercise yet</div></div>';
   }
 
-  // Content section
-  contentEl.innerHTML=`
-    ${muscles?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${muscles.split(' · ').map(m=>`<span style="background:rgba(232,255,71,.08);border:1px solid rgba(232,255,71,.2);border-radius:99px;padding:3px 10px;font-size:10px;font-weight:600;color:var(--accent)">${m}</span>`).join('')}</div>`:''}
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.6;margin-bottom:10px">
-      💡 ${note}
-    </div>
-    ${!isWarmup?`<a href="https://www.youtube.com/results?search_query=${encodeURIComponent(name+' exercise form tutorial')}" target="_blank" style="display:block;text-align:center;padding:10px;background:rgba(255,0,0,.08);border:1px solid rgba(255,0,0,.2);border-radius:10px;color:#ff4444;font-size:12px;font-weight:600;text-decoration:none">▶ Watch form tutorial on YouTube</a>`:''}`;
+  // Muscle pills + coaching note
+  const pillsHtml = muscles ? '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">' + muscles.split(' · ').map(function(m){ return '<span style="background:rgba(232,255,71,.08);border:1px solid rgba(232,255,71,.2);border-radius:99px;padding:3px 10px;font-size:10px;font-weight:600;color:var(--accent)">'+m+'</span>'; }).join('') + '</div>' : '';
+  contentEl.innerHTML = pillsHtml + '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.6">💡 '+note+'</div>';
 
   sheet.style.display='flex';
 }
 
-function fallbackExGif(name){
-  return `<div style="padding:40px 20px;text-align:center;color:var(--muted);font-size:12px">
-    <div style="font-size:32px;margin-bottom:8px">🏋️</div>
-    <div style="font-weight:600;color:var(--text);margin-bottom:4px">${decodeURIComponent(name)}</div>
-    <div>GIF not available</div>
-  </div>`;
-}
-
 function closeExSheet(){
+  // Clear iframe to stop video playback on close
+  document.getElementById('exSheetGif').innerHTML='<div style="color:var(--muted);font-size:12px">Loading demo…</div>';
   document.getElementById('exSheet').style.display='none';
 }
 document.querySelectorAll('.chip').forEach(c=>{
